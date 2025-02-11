@@ -26,7 +26,7 @@ export function About() {
               className="aspect-[4/3] relative rounded-2xl overflow-hidden"
             >
               <Image
-                src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/myself-img_1.jpg"
+                src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/myself_img_1.jpg"
                 alt="About image 1"
                 fill
                 className="object-cover"
@@ -40,7 +40,7 @@ export function About() {
               className="absolute -bottom-12 -right-12 w-80 aspect-[4/3] rounded-2xl overflow-hidden hidden lg:block"
             >
               <Image
-                src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/myself-img_4.jpg"
+                src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/myself_img_4.jpg"
                 alt="About image 2"
                 fill
                 className="object-cover"
