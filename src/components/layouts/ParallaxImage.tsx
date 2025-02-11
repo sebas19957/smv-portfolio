@@ -93,7 +93,7 @@ export default function ParallaxImage({ className }: Props) {
           }}
         >
           {/* <Image
-            src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/myself-img_3.jpg"
+            src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/myself_img_3.jpg"
             alt="Parallax Demo Image"
             width={400}
             height={500}
@@ -101,7 +101,7 @@ export default function ParallaxImage({ className }: Props) {
             priority
           /> */}
           <Image
-            src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/myself-img_3.jpg"
+            src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/myself_img_3.jpg"
             alt="Parallax Demo Image"
             width={400}
             height={500}

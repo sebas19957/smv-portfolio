@@ -98,7 +98,7 @@ export function Home() {
           className="lg:hidden mt-10 p-4"
         >
           <Image
-            src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/myself-img_3.jpg"
+            src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/myself_img_3.jpg"
             alt="Parallax Demo Image"
             width={400}
             height={500}
