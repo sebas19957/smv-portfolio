@@ -1,25 +1,41 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Facebook, Instagram, Linkedin } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
+import { ElementType } from "react";
 
-const socialLinks = [
+interface SocialLink {
+  name: string;
+  icon: ElementType;
+  href: string;
+  isEmail: boolean;
+}
+
+const socialLinks: SocialLink[] = [
   {
     name: "Facebook",
     icon: Facebook,
     href: "https://www.facebook.com/sebastian.mosqueravalencia",
+    isEmail: false,
   },
-
   {
     name: "Instagram",
     icon: Instagram,
     href: "https://www.instagram.com/sebasmv95",
+    isEmail: false,
   },
   {
     name: "Linkedin",
     icon: Linkedin,
     href: "https://www.linkedin.com/in/semosva/",
+    isEmail: false,
+  },
+  {
+    name: "Email",
+    icon: Mail,
+    href: "mailto:sebas19957@hotmail.com",
+    isEmail: true, // Indicamos que es un email
   },
 ];
 
@@ -33,7 +49,17 @@ export function SocialLinks() {
     >
       {socialLinks.map((link) => {
         const Icon = link.icon;
-        return (
+
+        return link.isEmail ? (
+          <a
+            key={link.name}
+            href={link.href}
+            className="text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+          >
+            <Icon className="h-5 w-5" />
+            <span className="sr-only">{link.name}</span>
+          </a>
+        ) : (
           <Link
             key={link.name}
             href={link.href}
