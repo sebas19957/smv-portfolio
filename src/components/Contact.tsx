@@ -70,7 +70,19 @@ export function Contact() {
                 <div>
                   <p className="text-sm text-muted-foreground">Email</p>
                   <p className="text-lg font-medium text-primary">
-                    sebas19957@hotmail.com - sebasmval@gmail.com
+                    <a
+                      href="mailto:sebas19957@hotmail.com"
+                      className="hover:underline"
+                    >
+                      sebas19957@hotmail.com
+                    </a>
+                    <span className="mx-1">-</span>
+                    <a
+                      href="mailto:sebasmval@gmail.com"
+                      className="hover:underline"
+                    >
+                      sebasmval@gmail.com
+                    </a>
                   </p>
                 </div>
               </motion.div>
