@@ -6,7 +6,7 @@ import { Download } from "lucide-react";
 export function DownloadCVButton() {
   const handleDownload = () => {
     const fileUrl =
-      "https://personal-smv-assets.s3.sa-east-1.amazonaws.com/pdfs/Hoja+de+Vida+-+Sebastian+Mosquera+Valencia+2025.pdf";
+      "https://personal-smv-assets.s3.sa-east-1.amazonaws.com/pdfs/cv_Sebastian_Mosquera.pdf";
 
     window.open(fileUrl, "_blank");
   };

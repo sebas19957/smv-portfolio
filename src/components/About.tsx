@@ -23,7 +23,7 @@ export function About() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: false }}
               transition={{ delay: 0.2 }}
-              className="aspect-[4/3] relative rounded-2xl overflow-hidden"
+              className="aspect-4/3 relative rounded-2xl overflow-hidden"
             >
               <Image
                 src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/myself_img_1.jpg"
@@ -37,7 +37,7 @@ export function About() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: false }}
               transition={{ delay: 0.3 }}
-              className="absolute -bottom-12 -right-12 w-80 aspect-[4/3] rounded-2xl overflow-hidden hidden lg:block"
+              className="absolute -bottom-12 -right-12 w-80 aspect-4/3 rounded-2xl overflow-hidden hidden lg:block"
             >
               <Image
                 src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/myself_img_4.jpg"
