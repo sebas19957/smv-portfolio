@@ -80,7 +80,7 @@ const NotificationAlert: FC<NotificationAlertProps> = ({
   return (
     <Card className={`${getTypeStyles(type)} relative overflow-hidden mt-4`}>
       <CardContent className="flex items-center p-3">
-        <div className="flex-shrink-0">{getIcon(type)}</div>
+        <div className="shrink-0">{getIcon(type)}</div>
         <div className="ml-3">
           <h3 className="text-sm font-medium">{title}</h3>
           <div className="mt-2 text-sm">

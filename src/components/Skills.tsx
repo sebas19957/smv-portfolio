@@ -1,39 +1,7 @@
 "use client";
 
+import { skills } from "@/lib/data/skills";
 import { motion } from "framer-motion";
-
-const skills = [
-  // Frontend
-  { name: "React.js", percentage: 95, category: "Frontend" },
-  { name: "Next.js", percentage: 90, category: "Frontend" },
-  { name: "TypeScript", percentage: 90, category: "Frontend" },
-  { name: "JavaScript", percentage: 95, category: "Frontend" },
-  { name: "GraphQL", percentage: 75, category: "Frontend" },
-
-  // Backend
-  { name: "Node.js", percentage: 85, category: "Backend" },
-  { name: "Nest.js", percentage: 85, category: "Backend" },
-  { name: "SQL Server", percentage: 70, category: "Backend" },
-  { name: "MongoDB", percentage: 75, category: "Backend" },
-  { name: ".NET 8", percentage: 40, category: "Backend" },
-
-  // DevOps & Testing
-  { name: "Docker", percentage: 65, category: "DevOps & Testing" },
-  { name: "GitHub", percentage: 85, category: "DevOps & Testing" },
-  { name: "CI/CD", percentage: 65, category: "DevOps & Testing" },
-  { name: "Jest", percentage: 80, category: "DevOps & Testing" },
-  {
-    name: "React Testing Library",
-    percentage: 77,
-    category: "DevOps & Testing",
-  },
-
-  // Cloud
-  { name: "AWS", percentage: 30, category: "Cloud" },
-  { name: "GCP", percentage: 40, category: "Cloud" },
-  { name: "Azure", percentage: 30, category: "Cloud" },
-  { name: "IIS", percentage: 80, category: "Cloud" },
-];
 
 export function Skills() {
   const categories = Array.from(new Set(skills.map((skill) => skill.category)));
@@ -48,12 +16,12 @@ export function Skills() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: false }}
-          className="text-xl mb-4 block"
+          className="text-xl mb-4 block font-bold"
         >
           Mis Habilidades
         </motion.span>
         <div className="grid lg:grid-cols-2 gap-12 items-start">
-          <div className="space-y-6">
+          <div className="space-y-4">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
