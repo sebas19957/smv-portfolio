@@ -62,7 +62,7 @@ export function Nav() {
   };
 
   return (
-    <nav className="fixed top-0 z-50 w-full bg-background/80 backdrop-blur-sm">
+    <nav className="fixed top-0 z-50 w-full bg-background/80 backdrop-blur-xs">
       <div className="container flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/">
           <Logo />
