@@ -1,15 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Facebook, Instagram, Linkedin, Mail } from "lucide-react";
+import { Facebook, Instagram, Linkedin, LucideIcon, Mail } from "lucide-react";
 import Link from "next/link";
-import { ElementType } from "react";
 
 interface SocialLink {
   name: string;
-  icon: ElementType;
+  icon: LucideIcon;
   href: string;
   isEmail: boolean;
+  color: string;
 }
 
 const socialLinks: SocialLink[] = [
@@ -18,24 +18,28 @@ const socialLinks: SocialLink[] = [
     icon: Facebook,
     href: "https://www.facebook.com/sebastian.mosqueravalencia",
     isEmail: false,
+    color: "#1877F2", // Azul de Facebook
   },
   {
     name: "Instagram",
     icon: Instagram,
     href: "https://www.instagram.com/sebasmv95",
     isEmail: false,
+    color: "#E4405F", // Rosa de Instagram
   },
   {
     name: "Linkedin",
     icon: Linkedin,
     href: "https://www.linkedin.com/in/semosva/",
     isEmail: false,
+    color: "#0077B5", // Azul de LinkedIn
   },
   {
     name: "Email",
     icon: Mail,
     href: "mailto:sebas19957@hotmail.com",
-    isEmail: true, // Indicamos que es un email
+    isEmail: true,
+    color: "#D44638", // Rojo de Gmail
   },
 ];
 
@@ -54,9 +58,9 @@ export function SocialLinks() {
           <a
             key={link.name}
             href={link.href}
-            className="text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+            className="text-muted-foreground hover:text-primary hover:translate-x-2 transition-transform duration-300 cursor-pointer"
           >
-            <Icon className="h-5 w-5" />
+            <Icon size={30} style={{ color: link.color }} />
             <span className="sr-only">{link.name}</span>
           </a>
         ) : (
@@ -64,9 +68,9 @@ export function SocialLinks() {
             key={link.name}
             href={link.href}
             target="_blank"
-            className="text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+            className="text-muted-foreground hover:text-primary hover:translate-x-2 transition-transform duration-300 cursor-pointer"
           >
-            <Icon className="h-5 w-5" />
+            <Icon size={30} style={{ color: link.color }} />
             <span className="sr-only">{link.name}</span>
           </Link>
         );
