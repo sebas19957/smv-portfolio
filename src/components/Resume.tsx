@@ -1,10 +1,15 @@
 "use client";
 
-import { education, experience } from "@/lib/data/resume";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { educationByLanguage, experienceByLanguage } from "@/lib/data/resume";
 import { motion } from "framer-motion";
 import { GraduationCap, Briefcase } from "lucide-react";
 
 export function Resume() {
+  const { language, t } = useLanguage();
+  const education = educationByLanguage[language];
+  const experience = experienceByLanguage[language];
+
   return (
     <section id="resume" className="py-24 relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -14,7 +19,7 @@ export function Resume() {
             whileInView={{ opacity: 1, y: 0 }}
             className="text-4xl sm:text-5xl font-bold mb-4"
           >
-            Mi Experiencia
+            {t("resume.title")}
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -22,9 +27,7 @@ export function Resume() {
             transition={{ delay: 0.2 }}
             className="text-lg text-muted-foreground"
           >
-            He trabajado en diversos proyectos de desarrollo web, optimización
-            de aplicaciones y despliegue en la nube, garantizando soluciones
-            eficientes y escalables.
+            {t("resume.subtitle")}
           </motion.p>
         </header>
 
@@ -32,7 +35,7 @@ export function Resume() {
         <section className="mb-20">
           <header className="flex items-center gap-2 mb-8">
             <div className="h-1 w-8 bg-primary" />
-            <h3 className="text-2xl font-bold">Experiencia Laboral</h3>
+            <h3 className="text-2xl font-bold">{t("resume.subtitle2")}:</h3>
           </header>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
@@ -61,14 +64,18 @@ export function Resume() {
 
                 <p className="mt-3 text-muted-foreground">{job.description}</p>
 
-                <h5 className="font-semibold mt-4">Tareas y deberes:</h5>
+                <h5 className="font-semibold mt-4">
+                  {t("resume.experience.subtitle1")}:
+                </h5>
                 <ul className="list-disc pl-5 text-muted-foreground space-y-1">
                   {job.responsibilities.map((task, i) => (
                     <li key={i}>{task}</li>
                   ))}
                 </ul>
 
-                <h5 className="font-semibold mt-4">Logros:</h5>
+                <h5 className="font-semibold mt-4">
+                  {t("resume.experience.subtitle2")}:
+                </h5>
                 <ul className="list-disc pl-5 text-muted-foreground space-y-1">
                   {job.achievements.map((ach, i) => (
                     <li key={i}>{ach}</li>
@@ -83,7 +90,7 @@ export function Resume() {
         <section>
           <header className="flex items-center gap-2 mb-8">
             <div className="h-1 w-8 bg-primary" />
-            <h3 className="text-2xl font-bold">Educación</h3>
+            <h3 className="text-2xl font-bold">{t("resume.subtitle3")}</h3>
           </header>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
