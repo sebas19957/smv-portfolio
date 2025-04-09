@@ -1,11 +1,3 @@
-// En components/Icon.tsx
-// import type { SVGProps } from "react";
-
-// interface IconProps extends SVGProps<SVGSVGElement> {
-//   size?: number;
-//   color?: string;
-// }
-
 export function Logo(props: React.SVGProps<SVGSVGElement>) {
   const handleClick = (e: React.MouseEvent<SVGSVGElement>, href: string) => {
     e.preventDefault();
