@@ -3,18 +3,12 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const initialTitles = [
-  "Ingeniero de Sistemas",
-  "Desarrollador Frontend",
-  "Desarrollador Backend",
-];
-
 interface Props {
   titles?: string[];
   className?: string;
 }
 
-const RotatingText = ({ titles = initialTitles, className }: Props) => {
+const RotatingText = ({ titles = [], className }: Props) => {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
