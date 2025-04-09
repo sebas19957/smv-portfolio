@@ -1,6 +1,6 @@
 import { Education, Experience } from "@/types/resume";
 
-export const education: Education[] = [
+export const educationES: Education[] = [
   {
     degree: "Ingeniería de Sistemas",
     school: "Universidad de Medellín",
@@ -23,7 +23,30 @@ export const education: Education[] = [
   },
 ];
 
-export const experience: Experience[] = [
+export const educationEN: Education[] = [
+  {
+    degree: "Systems Engineering",
+    school: "University of Medellín",
+    period: "2018 - 2025",
+    description:
+      "Training in systems engineering, with an emphasis on Software Engineering, Programming Logic.",
+  },
+  {
+    degree: "Health Administrative Process Management",
+    school: "Escolme University Institution (SENA)",
+    period: "2014 - 2016",
+    description:
+      "Technical training in administrative process management in the healthcare sector.",
+  },
+  {
+    degree: "Diploma in React.js and Next.js",
+    school: "Udemy",
+    period: "2020",
+    description: "Specialization in web development with React.js and Next.js.",
+  },
+];
+
+export const experienceES: Experience[] = [
   {
     position: "Desarrollador Web",
     company: "Mercadeo Virtual S.A",
@@ -93,3 +116,84 @@ export const experience: Experience[] = [
     ],
   },
 ];
+
+export const experienceEN: Experience[] = [
+  {
+    position: "Web Developer",
+    company: "Mercadeo Virtual S.A",
+    period: "March 2021 - February 2025",
+    location: "Medellín, Colombia",
+    description:
+      "Responsible for the development and maintenance of web interfaces, database optimization, and deployment of applications in cloud and local environments.",
+    technologies: [
+      "React.js",
+      "Next.js",
+      "TypeScript",
+      "JavaScript",
+      "HTML",
+      "CSS",
+      "Tailwind",
+      "Redux",
+      "Zustand",
+      "Node.js",
+      "Express.js",
+      "Webpack",
+      "GraphQL",
+      "SQL Server",
+      "MongoDB",
+      "PostgreSQL",
+      "Nest.js",
+      "GitHub",
+      "Docker",
+      "Jest",
+      "React Testing Library",
+    ],
+    responsibilities: [
+      "Development and maintenance of responsive web interfaces.",
+      "Design and implementation of REST and GraphQL APIs.",
+      "Optimization and management of relational and NoSQL databases.",
+      "Automation of deployments and CI/CD with Docker and GitHub Actions.",
+      "Analysis and resolution of production incidents.",
+      "Implementation of unit and integration tests to improve code quality.",
+    ],
+    achievements: [
+      "Developed new websites and improved the architecture of existing projects.",
+      "Migrated and optimized internal services using Nest.js and Node.js, improving backend efficiency by 30%.",
+      "Automated the deployment process on both on-premises infrastructure and the cloud (IIS, GCP, AWS, Azure, and Vercel).",
+      "Reduced application load times by 40% through asset optimization and database query improvements.",
+      "Developed internal tools to improve team productivity.",
+    ],
+  },
+  {
+    position: "Web Developer",
+    company: "Atlas Global Solutions",
+    period: "January 2020 - November 2020",
+    location: "Medellín, Colombia",
+    description:
+      "Responsible for maintaining and customizing WordPress, integrating forms, and providing basic technical support in Salesforce.",
+    technologies: ["Salesforce", "HTML", "CSS", "WordPress", "PHP"],
+    responsibilities: [
+      "Maintaining and updating content in WordPress.",
+      "Customizing templates and styling adjustments with HTML and CSS.",
+      "Managing and configuring data in Salesforce.",
+      "Providing technical support for minor incidents on the platform.",
+    ],
+    achievements: [
+      "Updated forms and improved usability in WordPress.",
+      "Optimized styles and design by adjusting HTML and CSS.",
+      "Automated basic processes within Salesforce to improve data management.",
+      "Developed custom email templates in Salesforce for marketing campaigns.",
+      "Implemented unit tests in Salesforce to validate the functionality of custom modules.",
+    ],
+  },
+];
+
+export const educationByLanguage = {
+  es: educationES,
+  en: educationEN,
+};
+
+export const experienceByLanguage = {
+  es: experienceES,
+  en: experienceEN,
+};
