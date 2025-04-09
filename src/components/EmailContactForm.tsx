@@ -6,9 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Send, Loader2 } from "lucide-react";
-import NotificationAlert from "./layouts/NotificationAlert";
+
+import { useLanguage } from "@/contexts/LanguageContext";
+import NotificationAlert from "./shared/NotificationAlert";
 
 export default function EmailForm() {
+  const { t } = useLanguage();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [errors, setErrors] = useState({ name: "", email: "", message: "" });
   const [loading, setLoading] = useState(false);
@@ -21,13 +24,13 @@ export default function EmailForm() {
     let error = "";
 
     if (name === "name" && value.trim().length < 3) {
-      error = "El nombre debe tener al menos 3 caracteres.";
+      error = `${t("contact.form.name.error")}`;
     }
     if (name === "email" && !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)) {
-      error = "Ingrese un correo válido.";
+      error = `${t("contact.form.email.error")}`;
     }
     if (name === "message" && value.trim().length < 10) {
-      error = "El mensaje debe tener al menos 10 caracteres.";
+      error = `${t("contact.form.message.error")}`;
     }
 
     setErrors((prev) => ({ ...prev, [name]: error }));
@@ -73,15 +76,15 @@ export default function EmailForm() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al enviar el mensaje");
+      if (!res.ok) throw new Error(data.error || `${t("contact.error")}`);
 
       setStatus({
-        message: "Mensaje enviado con éxito",
+        message: `${t("contact.success")}`,
         error: false,
       });
       setForm({ name: "", email: "", message: "" });
     } catch (error) {
-      setStatus({ message: "No se pudo enviar el mensaje", error: true });
+      setStatus({ message: `${t("contact.error")}`, error: true });
       console.log(error);
     } finally {
       setLoading(false);
@@ -102,7 +105,7 @@ export default function EmailForm() {
             name="name"
             value={form.name}
             onChange={handleChange}
-            placeholder="Nombre"
+            placeholder={`${t("contact.form.name")}`}
             className="bg-background"
             required
           />
@@ -116,7 +119,7 @@ export default function EmailForm() {
             name="email"
             value={form.email}
             onChange={handleChange}
-            placeholder="Correo Electrónico"
+            placeholder={`${t("contact.form.email")}`}
             className="bg-background"
             required
           />
@@ -129,7 +132,7 @@ export default function EmailForm() {
             name="message"
             value={form.message}
             onChange={handleChange}
-            placeholder="Mensaje"
+            placeholder={`${t("contact.form.message")}`}
             className="min-h-[200px] bg-background"
             required
           />
@@ -145,11 +148,12 @@ export default function EmailForm() {
         >
           {loading ? (
             <>
-              Enviando... <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+              {t("contact.form.button.loading")}{" "}
+              <Loader2 className="w-4 h-4 ml-2 animate-spin" />
             </>
           ) : (
             <>
-              Enviar Mensaje <Send className="w-4 h-4 ml-2" />
+              {t("contact.form.button")} <Send className="w-4 h-4 ml-2" />
             </>
           )}
         </Button>
@@ -165,7 +169,7 @@ export default function EmailForm() {
         ) : (
           <NotificationAlert
             type="success"
-            title="Operación exitosa"
+            title={`${t("ontact.notificacion.success")}`}
             message={status.message}
             duration={10}
           />

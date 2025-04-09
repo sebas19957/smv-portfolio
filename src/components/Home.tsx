@@ -1,60 +1,19 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
-import { Facebook, Instagram, Linkedin, LucideIcon, Mail } from "lucide-react";
+import { motion } from "framer-motion";
+
+import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { smoothScroll } from "@/lib/helpers/smoothScroll";
 
 import RotatingText from "./RotatingText";
-import ParallaxRotateImg from "./layouts/ParallaxRotateImg";
-import MouseAnimation from "./layouts/MouseAnimation";
-
-interface SocialLink {
-  name: string;
-  icon: LucideIcon;
-  href: string;
-  isEmail: boolean;
-}
-
-const socialLinks: SocialLink[] = [
-  {
-    name: "Facebook",
-    icon: Facebook,
-    href: "https://www.facebook.com/sebastian.mosqueravalencia",
-    isEmail: false,
-  },
-  {
-    name: "Instagram",
-    icon: Instagram,
-    href: "https://www.instagram.com/sebasmv95",
-    isEmail: false,
-  },
-  {
-    name: "Linkedin",
-    icon: Linkedin,
-    href: "https://www.linkedin.com/in/semosva/",
-    isEmail: false,
-  },
-  {
-    name: "Email",
-    icon: Mail,
-    href: "mailto:sebas19957@hotmail.com",
-    isEmail: true,
-  },
-];
+import MouseAnimation from "./shared/MouseAnimation";
+import { SocialLinks } from "./shared/SocialLinks";
 
 export function Home() {
-  const handleClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    href: string
-  ) => {
-    e.preventDefault();
-    const targetId = href.slice(1);
-    const targetElement = document.getElementById(targetId);
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+  const { tArray, t } = useLanguage();
 
   return (
     <section id="home" className="min-h-screen  pt-16 relative overflow-hidden">
@@ -74,7 +33,7 @@ export function Home() {
               viewport={{ once: false }}
               className="text-base sm:text-lg mb-4 block text-muted-foreground"
             >
-              Hola, Soy
+              {t("home.title")}
             </motion.span>
             <motion.h1
               initial={{ opacity: 0, x: -20 }}
@@ -83,10 +42,14 @@ export function Home() {
               viewport={{ once: false }}
               className="text-6xl lg:text-6xl 2xl:text-7xl font-bold mb-4 text-gradient"
             >
-              Sebastián Mosquera Valencia
+              {t("global.fullname")}
             </motion.h1>
 
-            <RotatingText className="justify-center lg:justify-start items-center" />
+            <RotatingText
+              titles={tArray("global.profession")}
+              className="justify-center lg:justify-start items-center"
+            />
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -97,9 +60,9 @@ export function Home() {
               <Button asChild size="lg" className="w-full sm:w-auto">
                 <Link
                   href="#contact"
-                  onClick={(e) => handleClick(e, "#contact")}
+                  onClick={(e) => smoothScroll(e, "#contact")}
                 >
-                  Contáctame
+                  {t("home.contact")}
                 </Link>
               </Button>
               <Button
@@ -108,8 +71,8 @@ export function Home() {
                 variant="outline"
                 className="w-full sm:w-auto"
               >
-                <Link href="#about" onClick={(e) => handleClick(e, "#about")}>
-                  Sobre Mí
+                <Link href="#about" onClick={(e) => smoothScroll(e, "#about")}>
+                  {t("home.about")}
                 </Link>
               </Button>
             </motion.div>
@@ -117,32 +80,8 @@ export function Home() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 }}
-              className="flex justify-center lg:justify-start gap-4 mt-8"
             >
-              {socialLinks.map((link) => {
-                const Icon = link.icon;
-
-                return link.isEmail ? (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
-                  >
-                    <Icon />
-                    <span className="sr-only">{link.name}</span>
-                  </a>
-                ) : (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    target="_blank"
-                    className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
-                  >
-                    <Icon />
-                    <span className="sr-only">{link.name}</span>
-                  </Link>
-                );
-              })}
+              <SocialLinks />
             </motion.div>
             <div className="mt-8 flex justify-center lg:justify-start">
               <MouseAnimation />
@@ -153,8 +92,15 @@ export function Home() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: false }}
+            className="justify-items-center"
           >
-            <ParallaxRotateImg />
+            <Image
+              src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/avatars/elegant/me.png"
+              alt="Descripción de la imagen"
+              width={500}
+              height={500}
+              className="rounded-full w-[400px] h-[400px] md:w-[500px] md:h-[500px] object-cover shadow-lg"
+            />
           </motion.div>
         </div>
       </div>

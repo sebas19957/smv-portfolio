@@ -6,12 +6,17 @@ import Image from "next/image";
 import { ExternalLink, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { projects } from "@/lib/data/projects";
+import { projectsByLanguage } from "@/lib/data/projects";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Projects() {
+  const { language, t } = useLanguage();
+
   const [selectedCategory, setSelectedCategory] = useState<
     "all" | "company" | "personal"
   >("all");
+
+  const projects = projectsByLanguage[language];
 
   const filteredProjects = projects.filter((project) =>
     selectedCategory === "all" ? true : project.category === selectedCategory
@@ -27,7 +32,7 @@ export function Projects() {
             viewport={{ once: false }}
             className="text-primary font-medium mb-4 block curs"
           >
-            Mi Trabajo
+            {t("projects.title")}
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -36,7 +41,7 @@ export function Projects() {
             transition={{ delay: 0.2 }}
             className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4"
           >
-            Proyectos Destacados
+            {t("projects.subtitle")}
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -45,8 +50,7 @@ export function Projects() {
             transition={{ delay: 0.3 }}
             className="text-muted-foreground max-w-2xl mx-auto"
           >
-            Una colección de proyectos en los que he trabajado, tanto a nivel
-            profesional como personal.
+            {t("projects.subtitle2")}
           </motion.p>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -55,11 +59,7 @@ export function Projects() {
             transition={{ delay: 0.4 }}
             className="text-muted-foreground max-w-4xl mx-auto mt-4 text-xs"
           >
-            Por razones de confidencialidad y en cumplimiento de acuerdos de
-            privacidad establecidos con las empresas en las que trabajé, no
-            puedo revelar detalles sobre algunos proyectos clave en los que
-            participé, a pesar de que fueron fundamentales para mi desarrollo
-            profesional.
+            {t("projects.subtitle3")}
           </motion.p>
         </header>
 
@@ -74,19 +74,19 @@ export function Projects() {
             variant={selectedCategory === "all" ? "default" : "outline"}
             onClick={() => setSelectedCategory("all")}
           >
-            Todos los Proyectos
+            {t("projects.button")}
           </Button>
           <Button
             variant={selectedCategory === "company" ? "default" : "outline"}
             onClick={() => setSelectedCategory("company")}
           >
-            Proyectos Laborales
+            {t("projects.button2")}
           </Button>
           <Button
             variant={selectedCategory === "personal" ? "default" : "outline"}
             onClick={() => setSelectedCategory("personal")}
           >
-            Proyectos Personales
+            {t("projects.button3")}
           </Button>
         </motion.div>
 
