@@ -1,103 +1,133 @@
 "use client";
 
-import { skills } from "@/lib/data/skills";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
+import Image from "next/image";
+import { useState } from "react";
+import SkillCard from "./shared/SkillCard";
+import { getSkills } from "./shared/SkillsList";
+import { Button } from "./ui/button";
+import { Category } from "@/types/skills";
+
+// Definición de tipos
+type CategoryId = "all" | "frontend" | "backend" | "devops" | "cloud";
 
 export function Skills() {
-  const categories = Array.from(new Set(skills.map((skill) => skill.category)));
+  const { t } = useLanguage();
+  const [activeCategory, setActiveCategory] = useState<CategoryId>("all");
+
+  const categories: Category[] = [
+    { id: "all", name: `${t("skills.button")}` },
+    { id: "frontend", name: "Frontend" },
+    { id: "backend", name: "Backend" },
+    { id: "devops", name: "DevOps & Testing" },
+    { id: "cloud", name: "Cloud" },
+  ];
+
+  const skills = getSkills(activeCategory);
 
   return (
     <section
       id="skills"
-      className="py-24 relative overflow-hidden bg-primary text-primary-foreground"
+      className="py-16 px-4 min-h-screen"
+      style={{
+        backgroundImage:
+          'url("https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/bg-6.webp")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+      }}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.span
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: false }}
-          className="text-xl mb-4 block font-bold"
-        >
-          Mis Habilidades
-        </motion.span>
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
-          <div className="space-y-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-8">
+          <div className="text-left max-w-2xl text-black">
+            <motion.span
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: false }}
+              transition={{ delay: 0.1 }}
+              className="text-2xl mb-2 font-bold"
+            >
+              {t("skills.title")}
+            </motion.span>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false }}
               transition={{ delay: 0.2 }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold"
+              className="text-4xl sm:text-5xl mb-4 font-bold"
             >
-              Más de 4 años de
+              {t("skills.subtitle")}
             </motion.h2>
-            <motion.h3
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false }}
-              transition={{ delay: 0.3 }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold"
-            >
-              experiencia
-            </motion.h3>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false }}
-              transition={{ delay: 0.4 }}
-              className="text-lg max-w-lg"
+              transition={{ delay: 0.3 }}
+              className="text-lg sm:text-xl"
             >
-              Desarrollador Frontend con amplia experiencia en tecnologías web
-              modernas y una sólida formación en desarrollo backend y prácticas
-              DevOps.
+              {t("skills.description")}
             </motion.p>
           </div>
-          <div className="space-y-12">
-            {categories.map((category, categoryIndex) => (
-              <motion.div
-                key={category}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ delay: 0.2 + categoryIndex * 0.1 }}
-                className="space-y-4"
-              >
-                <h4 className="text-xl font-semibold">{category}</h4>
-                <div className="grid gap-6 sm:grid-cols-2">
-                  {skills
-                    .filter((skill) => skill.category === category)
-                    .map((skill, index) => (
-                      <motion.div
-                        key={skill.name}
-                        initial={{ opacity: 0, x: -50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: false }}
-                        transition={{ delay: 0.2 + index * 0.1 }}
-                        className="space-y-2"
-                      >
-                        <div className="flex justify-between text-sm font-medium">
-                          <span>{skill.name}</span>
-                          <span>{skill.percentage}%</span>
-                        </div>
-                        <div className="h-2 bg-primary-foreground/20 rounded-full overflow-hidden">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            whileInView={{ width: `${skill.percentage}%` }}
-                            viewport={{ once: false }}
-                            transition={{
-                              duration: 1,
-                              delay: 0.5 + index * 0.1,
-                            }}
-                            className="h-full bg-primary-foreground rounded-full"
-                          />
-                        </div>
-                      </motion.div>
-                    ))}
-                </div>
-              </motion.div>
-            ))}
+          <div className="relative flex-shrink-0">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false }}
+              transition={{ delay: 0.4 }}
+              className="flex justify-center lg:justify-start items-center mt-8"
+            >
+              <Image
+                src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/avatars/elegant/me-down-r.webp"
+                alt="Descripción de la imagen"
+                width={300}
+                height={300}
+                className="w-[300px] h-[300px] hidden lg:block"
+              />
+              <Image
+                src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/avatars/elegant/me-down.webp"
+                alt="Descripción de la imagen"
+                width={300}
+                height={300}
+                className="w-[300px] h-[300px] block lg:hidden"
+              />
+            </motion.div>
           </div>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ delay: 0.5 }}
+          className="flex flex-wrap justify-center gap-2 mb-8"
+        >
+          {categories.map((category) => (
+            <Button
+              key={category.id}
+              onClick={() => setActiveCategory(category.id)}
+              className={`px-4 py-2 rounded-full transition-all text-sm hover:bg-white/30 ${
+                activeCategory === category.id
+                  ? "bg-white shadow-lg text-black"
+                  : "bg-white/20 hover:bg-white/50"
+              }`}
+            >
+              {category.name}
+            </Button>
+          ))}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ delay: 0.5 }}
+          className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4"
+        >
+          {skills.map((skill, index) => (
+            <SkillCard key={index} skill={skill} />
+          ))}
+        </motion.div>
       </div>
     </section>
   );
