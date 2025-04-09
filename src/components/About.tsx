@@ -4,9 +4,12 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 import RotatingText from "./RotatingText";
-import { DownloadCVButton } from "./DownloadCVButton";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { DownloadCVButton } from "./shared/DownloadCVButton";
 
 export function About() {
+  const { tArray, t } = useLanguage();
+
   return (
     <section id="about" className="py-24 relative overflow-hidden">
       <div className="container mx-auto flex px-4 sm:px-6 lg:px-8">
@@ -26,7 +29,7 @@ export function About() {
               className="aspect-4/3 relative rounded-2xl overflow-hidden"
             >
               <Image
-                src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/myself_img_1.jpg"
+                src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/myself/myself_1.webp"
                 alt="About image 1"
                 fill
                 className="object-cover"
@@ -37,10 +40,10 @@ export function About() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: false }}
               transition={{ delay: 0.3 }}
-              className="absolute -bottom-12 -right-12 w-80 aspect-4/3 rounded-2xl overflow-hidden hidden lg:block"
+              className="absolute -bottom-3/12 -right-10 lg:-bottom-8/12 lg:-right-12 xl:-bottom-12 xl:-right-12 w-80 aspect-4/3 rounded-2xl overflow-hidden hidden sm:block"
             >
               <Image
-                src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/myself_img_4.jpg"
+                src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/myself/myself_2.webp"
                 alt="About image 2"
                 fill
                 className="object-cover"
@@ -62,7 +65,7 @@ export function About() {
               transition={{ delay: 0.2 }}
               className="text-primary font-medium mb-4 block"
             >
-              Acerca de mí
+              {t("about.title")}
             </motion.span>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -71,12 +74,16 @@ export function About() {
               transition={{ delay: 0.3 }}
             >
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2">
-                Soy <span className="text-primary">Sebastián</span>
+                {t("about.name")}{" "}
+                <span className="text-primary">{t("global.name")}</span>
               </h2>
 
-              <RotatingText className="justify-start items-start" />
+              <RotatingText
+                titles={tArray("global.profession")}
+                className="justify-start items-start"
+              />
               <p className="text-lg sm:text-xl text-muted-foreground mb-4">
-                Medellín, Antioquia, Colombia
+                {t("about.location")}
               </p>
             </motion.div>
             <motion.div
@@ -86,28 +93,10 @@ export function About() {
               transition={{ delay: 0.4 }}
               className="space-y-4"
             >
-              <p className="text-muted-foreground">
-                ¡Hola! Soy Sebastián Mosquera, desarrollador de software con más
-                de 4 años de experiencia. Me encanta resolver desafíos técnicos
-                y crear software de calidad
-              </p>
-              <p className="text-muted-foreground">
-                Más allá de la técnica, el desarrollo de software es para mí una
-                pasión que nace de la curiosidad y el deseo de aprender. Me
-                entusiasma explorar nuevas tecnologías y herramientas, descubrir
-                cómo funcionan las cosas y encontrar formas innovadoras de
-                aplicarlas. Cada desafío es una oportunidad para crecer, para
-                ampliar mis habilidades y conocimientos, y para convertirme en
-                un mejor profesional. La programación es mi forma de expresión,
-                mi manera de dejar mi huella en el mundo digital.
-              </p>
-              <p className="text-muted-foreground">
-                Mi enfoque es construir soluciones escalables, eficientes y
-                centradas en el usuario.
-              </p>
-              {/* <Button size="lg" className="mt-8 w-full sm:w-auto">
-                <Download className="mr-2 h-4 w-4" /> Download CV
-              </Button> */}
+              <p className="text-muted-foreground">{t("about.description")}</p>
+              <p className="text-muted-foreground">{t("about.description2")}</p>
+              <p className="text-muted-foreground">{t("about.description3")}</p>
+
               <DownloadCVButton />
             </motion.div>
           </div>

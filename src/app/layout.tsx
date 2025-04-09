@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import type React from "react"; // Import React
-import Cursor from "@/components/layouts/Cursor";
+
+import { LanguageProvider } from "@/contexts/LanguageContext";
+import Cursor from "@/components/shared/Cursor";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -43,8 +45,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${inter.className} bg-background text-foreground`}>
-        <main className="p-4 sm:p-0">{children}</main>
-        <Cursor />
+        <LanguageProvider>
+          <main className="p-4 sm:p-0">{children}</main>
+          <Cursor />
+        </LanguageProvider>
       </body>
     </html>
   );
