@@ -47,7 +47,9 @@ export default function RootLayout({
       <body className={`${inter.className} bg-background text-foreground`}>
         <LanguageProvider>
           <main className="p-4 sm:p-0">{children}</main>
-          <Cursor />
+          <div className="hidden md:block">
+            <Cursor />
+          </div>
         </LanguageProvider>
       </body>
     </html>

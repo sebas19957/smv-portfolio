@@ -74,12 +74,49 @@ export function Nav() {
 
   return (
     <nav className="fixed top-0 z-50 w-full bg-background/80 backdrop-blur-xs">
-      <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="flex h-16 items-center justify-between px-2 sm:px-6 lg:px-8">
         {/* Sección 1: Logo (izquierda) */}
         <div className="flex-shrink-0">
           <Link href="/">
             <Logo />
           </Link>
+        </div>
+
+        <div className="flex gap-2 lg:hidden">
+          <Button
+            className={`px-2 ${
+              language === "en"
+                ? "text-primary font-medium bg-primary/30"
+                : "text-muted-foreground"
+            }`}
+            variant={language === "en" ? "outline" : "ghost"}
+            size="icon"
+            onClick={() => changeLanguage("en")}
+          >
+            <Image
+              src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/svgs/en.svg"
+              alt="English"
+              width={28}
+              height={28}
+            />
+          </Button>
+          <Button
+            className={`px-2 ${
+              language === "es"
+                ? "text-primary font-medium bg-primary/30"
+                : "text-muted-foreground"
+            }`}
+            variant={language === "es" ? "outline" : "ghost"}
+            size="icon"
+            onClick={() => changeLanguage("es")}
+          >
+            <Image
+              src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/svgs/es.svg"
+              alt="English"
+              width={28}
+              height={28}
+            />
+          </Button>
         </div>
 
         {/* Sección 2: Menú de navegación (centro) - solo visible en desktop */}
@@ -162,27 +199,34 @@ export function Nav() {
                 <SheetTitle>Menú de navegación</SheetTitle>
               </div>
 
-              {links.map((link) => (
-                <Link
-                  key={link.key}
-                  href={link.href}
-                  className="text-lg font-medium transition-colors hover:text-primary"
-                  onClick={(e) => {
-                    handleClick(e, link.href);
-                    const sheet = document.querySelector('[data-state="open"]');
-                    if (sheet) {
-                      const closeButton = sheet.querySelector(
-                        'button[aria-label="Close"]'
+              {links.map((link) => {
+                const isActive = activeSection === link.href.slice(1);
+                return (
+                  <Link
+                    key={link.key}
+                    href={link.href}
+                    className={`text-lg font-medium transition-colors hover:text-primary relative ${
+                      isActive ? "text-primary underline" : "text-foreground"
+                    }`}
+                    onClick={(e) => {
+                      handleClick(e, link.href);
+                      const sheet = document.querySelector(
+                        '[data-state="open"]'
                       );
-                      if (closeButton instanceof HTMLElement) {
-                        closeButton.click();
+                      if (sheet) {
+                        const closeButton = sheet.querySelector(
+                          'button[aria-label="Close"]'
+                        );
+                        if (closeButton instanceof HTMLElement) {
+                          closeButton.click();
+                        }
                       }
-                    }
-                  }}
-                >
-                  {t(link.key)}
-                </Link>
-              ))}
+                    }}
+                  >
+                    {t(link.key)}
+                  </Link>
+                );
+              })}
 
               {/* Selector de idioma para móvil */}
               <div className="mt-4 pt-4 border-t border-border">
