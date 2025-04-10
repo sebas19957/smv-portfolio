@@ -92,15 +92,25 @@ export function Home() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: false }}
-            className="justify-items-center"
+            className="relative justify-items-center"
           >
             <Image
               src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/avatars/elegant/me.png"
               alt="Descripción de la imagen"
               width={500}
               height={500}
-              className="rounded-full w-[400px] h-[400px] md:w-[500px] md:h-[500px] object-cover shadow-lg"
+              className="w-[400px] h-[400px] md:w-[500px] md:h-[500px] object-cover shadow-lg mt-10 md:mt-0"
             />
+
+            <div className="absolute -top-10 right-0 lg:top-1 md:right-28 lg:-right-10 xl:-right-5 2xl:right-10 border-4 border-primary/20 rounded-full">
+              <Image
+                src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/myself/myself_1.jpg"
+                alt="Descripción de la imagen"
+                width={200}
+                height={200}
+                className="rounded-full w-[110px] h-[110px] lg:w-[150px] lg:h-[150px] object-cover "
+              />
+            </div>
           </motion.div>
         </div>
       </div>
