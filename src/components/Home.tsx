@@ -99,6 +99,7 @@ export function Home() {
               alt="Descripción de la imagen"
               width={500}
               height={500}
+              priority
               className="w-[400px] h-[400px] md:w-[500px] md:h-[500px] object-cover shadow-lg mt-10 md:mt-0"
             />
 

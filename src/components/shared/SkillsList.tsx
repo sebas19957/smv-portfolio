@@ -2,6 +2,7 @@ import { Skill } from "@/types/skills";
 import { Cloud, Code, Database, Server } from "lucide-react";
 import {
   SiAmazonwebservices,
+  SiAngular,
   SiDocker,
   SiGithub,
   SiGooglecloud,
@@ -35,6 +36,11 @@ export const getSkills = (activeCategory: CategoryId): SkillWithCategory[] => {
         name: "Next.js",
         icon: <SiNextdotjs className="text-black" />,
         level: 90,
+      },
+      {
+        name: "Angular",
+        icon: <SiAngular className="text-[#DD0031]" />,
+        level: 75,
       },
       {
         name: "TypeScript",
