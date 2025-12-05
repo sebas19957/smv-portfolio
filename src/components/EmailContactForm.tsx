@@ -76,7 +76,17 @@ export default function EmailForm() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || `${t("contact.error")}`);
+      
+      if (!res.ok) {
+        // Determinar el mensaje de error apropiado
+        let errorMessage = `${t("contact.error")}`;
+        if (res.status === 429) {
+          errorMessage = `${t("contact.error.ratelimit")}`;
+        } else if (data.error) {
+          errorMessage = data.error;
+        }
+        throw new Error(errorMessage);
+      }
 
       setStatus({
         message: `${t("contact.success")}`,
@@ -84,8 +94,8 @@ export default function EmailForm() {
       });
       setForm({ name: "", email: "", message: "" });
     } catch (error) {
-      setStatus({ message: `${t("contact.error")}`, error: true });
-      console.log(error);
+      const errorMessage = error instanceof Error ? error.message : `${t("contact.error")}`;
+      setStatus({ message: errorMessage, error: true });
     } finally {
       setLoading(false);
     }
@@ -162,14 +172,14 @@ export default function EmailForm() {
         (status.error ? (
           <NotificationAlert
             type="error"
-            title="Error"
+            title={`${t("contact.notificacion.error")}`}
             message={status.message}
             duration={10}
           />
         ) : (
           <NotificationAlert
             type="success"
-            title={`${t("ontact.notificacion.success")}`}
+            title={`${t("contact.notificacion.success")}`}
             message={status.message}
             duration={10}
           />

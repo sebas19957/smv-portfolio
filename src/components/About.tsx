@@ -32,6 +32,7 @@ export function About() {
                 src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/myself/myself_1.webp"
                 alt="About image 1"
                 fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
               />
             </motion.div>
@@ -46,6 +47,7 @@ export function About() {
                 src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/myself/myself_2.webp"
                 alt="About image 2"
                 fill
+                sizes="320px"
                 className="object-cover"
               />
             </motion.div>
