@@ -112,7 +112,7 @@ export function Nav() {
           >
             <Image
               src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/svgs/es.svg"
-              alt="English"
+              alt="Spanish"
               width={28}
               height={28}
             />

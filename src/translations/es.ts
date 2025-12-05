@@ -31,7 +31,7 @@ const spanishTranslations = {
   "about.name": "Soy",
   "about.location": "Medellín, Antioquia, Colombia",
   "about.description":
-    "¡Hola! Soy Sebastián Mosquera, desarrollador de software con más de 4 años de experiencia. Me encanta resolver desafíos técnicos y crear software de calidad.",
+    "¡Hola! Soy Sebastián Mosquera, desarrollador de software con más de 5 años de experiencia. Me encanta resolver desafíos técnicos y crear software de calidad.",
   "about.description2":
     "Más allá de la técnica, el desarrollo de software es para mí una pasión que nace de la curiosidad y el deseo de aprender. Me entusiasma explorar nuevas tecnologías y herramientas, descubrir cómo funcionan las cosas y encontrar formas innovadoras de aplicarlas. Cada desafío es una oportunidad para crecer, para ampliar mis habilidades y conocimientos, y para convertirme en un mejor profesional. La programación es mi forma de expresión, mi manera de dejar mi huella en el mundo digital.",
   "about.description3":
@@ -40,7 +40,7 @@ const spanishTranslations = {
 
   // Habilidades
   "skills.title": "Mis Habilidades",
-  "skills.subtitle": "Más de 4 años de experiencia",
+  "skills.subtitle": "Más de 5 años de experiencia",
   "skills.description":
     "Desarrollador Frontend con amplia experiencia en tecnologías web modernas y una sólida formación en desarrollo backend y prácticas DevOps.",
   "skills.button": "Todas las Habilidades",
@@ -73,7 +73,7 @@ const spanishTranslations = {
   "contact.title": "Contáctame",
   "contact.subtitle": "Conéctate conmigo con confianza",
   "contact.subtitle2":
-    "Por favor, rellene el formulario de esta sección para ponerse en contacto conmigo. O llame entre las 9:00 a. m. y las 8:00 p. m., de lunes a viernes.",
+    "Por favor, rellena el formulario de esta sección para ponerte en contacto conmigo. O llama entre las 9:00 a. m. y las 8:00 p. m., de lunes a viernes.",
   "contact.phone": "Llámame",
   "contact.email": "Correo electrónico",
   //Formulario de contacto
@@ -89,15 +89,17 @@ const spanishTranslations = {
   // Mensajes de éxito y error
   "contact.success": "¡Mensaje enviado con éxito!",
   "contact.error": "Error al enviar el mensaje. Por favor intenta de nuevo.",
+  "contact.error.ratelimit": "Has alcanzado el límite de envíos. Intenta en 24 horas.",
   // Titulo notificación
   "contact.notificacion.success": "Operación exitosa",
+  "contact.notificacion.error": "Error",
 
   // Footer
   "footer.text":
     "Soy un desarrollador creativo que transforma ideas en experiencias digitales memorables.",
   "footer.links": "Enlaces",
   "footer.follow": "Sígueme",
-  "footer.legal": "SebastiánMV Portafolio. Todos los derechos resevados.",
+  "footer.legal": "SebastiánMV Portafolio. Todos los derechos reservados.",
 };
 
 export default spanishTranslations;

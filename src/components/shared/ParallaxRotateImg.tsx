@@ -44,6 +44,7 @@ const ParallaxRotateImg = () => {
             src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/bg.jpg"
             alt="Background Image"
             layout="fill"
+            sizes="350px"
             className="object-cover"
             priority
           />
@@ -66,6 +67,7 @@ const ParallaxRotateImg = () => {
             src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/me.png"
             alt="Main Image"
             layout="fill"
+            sizes="350px"
             className="object-cover"
             priority
           />
