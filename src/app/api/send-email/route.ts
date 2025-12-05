@@ -1,9 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-import Redis from "ioredis";
 
-// Configura Redis
-const redis = new Redis(process.env.NEXT_PUBLIC_REDIS_URL!);
+// Almacenamiento local para intentos de contacto
+interface AttemptRecord {
+  count: number;
+  timestamp: number;
+}
+
+const contactAttempts = new Map<string, AttemptRecord>();
+const ATTEMPT_LIMIT = 3;
+const TIME_WINDOW = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+
+// Limpiar registros antiguos periódicamente
+function cleanOldAttempts() {
+  const now = Date.now();
+  for (const [ip, record] of contactAttempts.entries()) {
+    if (now - record.timestamp > TIME_WINDOW) {
+      contactAttempts.delete(ip);
+    }
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,14 +32,23 @@ export async function POST(req: NextRequest) {
       req.headers.get("x-real-ip") ||
       "Desconocida";
 
-    // Verificar intentos en Redis
-    const attempts = await redis.get(`contact_attempts:${ip}`);
+    // Limpiar intentos antiguos
+    cleanOldAttempts();
 
-    if (attempts && parseInt(attempts) >= 3) {
-      return NextResponse.json(
-        { error: "Has alcanzado el límite de envíos. Intenta en 24 horas." },
-        { status: 429 }
-      );
+    // Verificar intentos locales
+    const now = Date.now();
+    const attemptRecord = contactAttempts.get(ip);
+
+    if (attemptRecord) {
+      // Si han pasado más de 24 horas, resetear el contador
+      if (now - attemptRecord.timestamp > TIME_WINDOW) {
+        contactAttempts.delete(ip);
+      } else if (attemptRecord.count >= ATTEMPT_LIMIT) {
+        return NextResponse.json(
+          { error: "Has alcanzado el límite de envíos. Intenta en 24 horas." },
+          { status: 429 }
+        );
+      }
     }
 
     // Configurar Nodemailer
@@ -54,13 +79,12 @@ export async function POST(req: NextRequest) {
 
     await transporter.sendMail(mailOptions);
 
-    // Incrementar intentos en Redis con expiración de 24 horas
-    await redis.set(
-      `contact_attempts:${ip}`,
-      (parseInt(attempts || "0") + 1).toString(),
-      "EX",
-      86400
-    );
+    // Incrementar intentos locales
+    if (attemptRecord) {
+      attemptRecord.count += 1;
+    } else {
+      contactAttempts.set(ip, { count: 1, timestamp: now });
+    }
 
     return NextResponse.json(
       { success: "Correo enviado correctamente" },

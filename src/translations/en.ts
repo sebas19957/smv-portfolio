@@ -31,7 +31,7 @@ const englishTranslations = {
   "about.name": "I'm",
   "about.location": "Medellín, Antioquia, Colombia",
   "about.description":
-    "Hello! I am Sebastián Mosquera, a software developer with more than 4 years of experience. I love solving technical challenges and creating quality software.",
+    "Hello! I am Sebastián Mosquera, a software developer with more than 5 years of experience. I love solving technical challenges and creating quality software.",
   "about.description2":
     "Beyond the technical aspect, software development is a passion for me that stems from curiosity and the desire to learn. I am excited to explore new technologies and tools, to discover how things work, and to find innovative ways to apply them. Every challenge is an opportunity to grow, to expand my skills and knowledge, and to become a better professional. Programming is my form of expression, my way of leaving my mark in the digital world.",
   "about.description3":
@@ -40,7 +40,7 @@ const englishTranslations = {
 
   // Skills
   "skills.title": "My Skills",
-  "skills.subtitle": "Over 4 years of experience.",
+  "skills.subtitle": "Over 5 years of experience.",
   "skills.description":
     "Frontend Developer with extensive experience in modern web technologies and a strong background in backend development and DevOps practices.",
   "skills.button": "All Skills",
@@ -62,7 +62,7 @@ const englishTranslations = {
   "projects.subtitle3":
     "For confidentiality reasons and in compliance with privacy agreements established with the companies in which I worked, I cannot reveal details about some key projects in which I participated, even though they were fundamental to my professional development.",
   "projects.button": "All Projects",
-  "projects.button2": "Labor Projects",
+  "projects.button2": "Work Projects",
   "projects.button3": "Personal Projects",
 
   // Testimonials
@@ -90,8 +90,10 @@ const englishTranslations = {
   // Success and error messages
   "contact.success": "Message sent successfully!",
   "contact.error": "Error sending message. Please try again.",
+  "contact.error.ratelimit": "You have reached the submission limit. Try again in 24 hours.",
   // Notification title
   "contact.notificacion.success": "Successful operation.",
+  "contact.notificacion.error": "Error",
 
   // Footer
   "footer.text":
