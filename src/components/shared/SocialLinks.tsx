@@ -4,8 +4,10 @@ import { socialLinks } from "@/lib/data/socialLinks";
 import Link from "next/link";
 
 export function SocialLinks() {
+  const linkStyles = "size-9 rounded-full border border-foreground/40 flex items-center justify-center text-foreground/60 hover:border-foreground hover:text-foreground transition-colors";
+
   return (
-    <div className="flex justify-center lg:justify-start gap-4 mt-4">
+    <div className="flex justify-start gap-4 mt-6">
       {socialLinks.map((link) => {
         const Icon = link.icon;
 
@@ -13,9 +15,9 @@ export function SocialLinks() {
           <a
             key={link.name}
             href={link.href}
-            className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+            className={linkStyles}
           >
-            <Icon />
+            <Icon className="size-4" />
             <span className="sr-only">{link.name}</span>
           </a>
         ) : (
@@ -23,9 +25,9 @@ export function SocialLinks() {
             key={link.name}
             href={link.href}
             target="_blank"
-            className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+            className={linkStyles}
           >
-            <Icon />
+            <Icon className="size-4" />
             <span className="sr-only">{link.name}</span>
           </Link>
         );
