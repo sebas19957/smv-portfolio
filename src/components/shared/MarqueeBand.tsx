@@ -40,7 +40,7 @@ export function MarqueeBand({ className = "", variant = "yellow" }: MarqueeBandP
       {/* Borde superior blanco */}
       <div className="h-1 bg-white w-full" />
       <div
-        className={`${isYellow ? "bg-yellow-400" : "bg-black"} py-3 md:py-5`}
+        className={`${isYellow ? "bg-yellow-400" : "bg-black"} py-3 md:py-4`}
       >
         <motion.div
           className="flex items-center whitespace-nowrap"
