@@ -100,7 +100,7 @@ export function Home() {
       </div>
 
       {/* Contenido debajo de la banda */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-24 md:pb-64 lg:pb-32">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-24 md:pb-64 lg:pb-24">
         <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-8">
           {/* Columna izquierda - Descripción con borde e iconos */}
           <motion.div
