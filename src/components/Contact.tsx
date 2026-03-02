@@ -94,13 +94,6 @@ export function Contact() {
                   </p>
                   <p className="text-lg font-medium text-primary">
                     <a
-                      href="mailto:sebas19957@hotmail.com"
-                      className="hover:underline"
-                    >
-                      sebas19957@hotmail.com
-                    </a>
-                    <span className="mx-1">-</span>
-                    <a
                       href="mailto:sebasmval@gmail.com"
                       className="hover:underline"
                     >
