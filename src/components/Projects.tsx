@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { ExternalLink, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { projectsByLanguage } from "@/lib/data/projects";
 import { useLanguage } from "@/contexts/LanguageContext";
 
