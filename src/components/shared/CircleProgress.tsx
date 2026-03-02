@@ -15,9 +15,9 @@ const CircleProgress = ({
   const [isInView, setIsInView] = useState<boolean>(false);
   const ref = useRef<HTMLDivElement | null>(null);
 
-  const strokeWidth = 6;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = radius * 2 * Math.PI;
+  const strokeWidth = 4;
+  const innerSize = size - strokeWidth * 2;
+  const perimeter = (innerSize) * 4;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -42,35 +42,38 @@ const CircleProgress = ({
   return (
     <div ref={ref} className="relative" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="transform -rotate-90">
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
+        {/* Fondo del cuadrado */}
+        <rect
+          x={strokeWidth / 2}
+          y={strokeWidth / 2}
+          width={size - strokeWidth}
+          height={size - strokeWidth}
           fill="transparent"
           stroke="#ffffff33"
           strokeWidth={strokeWidth}
         />
-        <motion.circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
+        {/* Progreso del cuadrado */}
+        <motion.rect
+          x={strokeWidth / 2}
+          y={strokeWidth / 2}
+          width={size - strokeWidth}
+          height={size - strokeWidth}
           fill="transparent"
           stroke="white"
           strokeWidth={strokeWidth}
-          strokeDasharray={circumference}
-          initial={{ strokeDashoffset: circumference }}
+          strokeDasharray={perimeter}
+          initial={{ strokeDashoffset: perimeter }}
           animate={
             isInView
               ? {
                   strokeDashoffset:
-                    circumference - (percentage / 100) * circumference,
+                    perimeter - (percentage / 100) * perimeter,
                 }
               : {
-                  strokeDashoffset: circumference,
+                  strokeDashoffset: perimeter,
                 }
           }
           transition={{ duration: 1.5, ease: "easeOut" }}
-          strokeLinecap="round"
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center text-3xl">

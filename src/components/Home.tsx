@@ -48,10 +48,10 @@ export function Home() {
               MOSQUERA
             </h1>
             <h1
-              className="text-[5rem] sm:text-[5.5rem] md:text-[9rem] lg:text-[8rem] xl:text-[10rem] font-black leading-[0.8] tracking-tight -mt-1 sm:-mt-2 md:-mt-4"
+              className="text-[5rem] sm:text-[5.5rem] md:text-[9rem] lg:text-[8rem] xl:text-[10rem] font-black leading-[0.8] tracking-tight -mt-1 sm:-mt-2 md:-mt-4 text-[#facc15]"
               style={{
-                WebkitTextStroke: "2px #facc15",
-                WebkitTextFillColor: "transparent",
+                // WebkitTextStroke: "2px #facc15",
+                // WebkitTextFillColor: "transparent",
                 fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
               }}
             >
@@ -66,7 +66,7 @@ export function Home() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative hidden lg:block"
           >
-            <div className="relative w-[280px] xl:w-[320px] aspect-[3/4] rounded-2xl overflow-hidden">
+            <div className="relative w-[280px] xl:w-[320px] aspect-[3/4] overflow-hidden">
               <Image
                 src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/myself/myself_1.webp"
                 alt="Sebastián Mosquera"
@@ -75,19 +75,19 @@ export function Home() {
                 sizes="320px"
               />
               {/* Badge STATUS */}
-              <div className="absolute top-4 left-4 bg-white rounded-lg px-3 py-2 shadow-lg">
+              <div className="absolute top-4 left-4 bg-white px-3 py-2 shadow-lg">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 bg-green-500 rounded-full" />
+                  <span className="w-2 h-2 bg-green-500" />
                   <div>
-                    <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Status</p>
-                    <p className="text-xs text-gray-900 font-semibold">Open to new projects</p>
+                    <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">{t("home.badge.status")}</p>
+                    <p className="text-xs text-gray-900 font-semibold">{t("home.badge.status.text")}</p>
                   </div>
                 </div>
               </div>
               {/* Badge YEARS EXP */}
-              <div className="absolute bottom-4 right-4 bg-yellow-400 rounded-lg px-4 py-3 shadow-lg">
+              <div className="absolute bottom-4 right-4 bg-yellow-400 px-4 py-3 shadow-lg">
                 <p className="text-2xl font-black text-black">6+</p>
-                <p className="text-[10px] text-black font-bold uppercase tracking-wider">Years Exp.</p>
+                <p className="text-[10px] text-black font-bold uppercase tracking-wider">{t("home.badge.years")}</p>
               </div>
             </div>
           </motion.div>
@@ -111,10 +111,7 @@ export function Home() {
           >
             <div className="border-l-2 border-muted-foreground/30 pl-4">
               <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                Crafting digital experiences that merge{" "}
-                <span className="font-bold text-foreground">brutalist aesthetics</span>{" "}
-                with seamless interaction. Specialized in building accessible,
-                high-performance web interfaces.
+                {t("home.description")}
               </p>
             </div>
             <SocialLinks />
@@ -133,7 +130,7 @@ export function Home() {
               className="px-8 py-5 text-sm font-bold uppercase tracking-wider"
             >
               <Link href="#contact" onClick={(e) => smoothScroll(e, "#contact")}>
-                START A PROJECT
+                {t("home.button.project")}
               </Link>
             </Button>
             <Button
@@ -142,8 +139,8 @@ export function Home() {
               variant="outline"
               className="px-8 py-5 text-sm font-bold uppercase tracking-wider border-2 border-foreground"
             >
-              <Link href="#about" onClick={(e) => smoothScroll(e, "#about")}>
-                READ RESUME
+              <Link href="#resume" onClick={(e) => smoothScroll(e, "#resume")}>
+                {t("home.button.resume")}
               </Link>
             </Button>
           </motion.div>

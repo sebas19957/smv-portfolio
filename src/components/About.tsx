@@ -26,7 +26,7 @@ export function About() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: false }}
               transition={{ delay: 0.2 }}
-              className="aspect-4/3 relative rounded-2xl overflow-hidden"
+              className="aspect-4/3 relative overflow-hidden"
             >
               <Image
                 src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/myself/myself_1.webp"
@@ -41,7 +41,7 @@ export function About() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: false }}
               transition={{ delay: 0.3 }}
-              className="absolute -bottom-3/12 -right-10 lg:-bottom-8/12 lg:-right-12 xl:-bottom-12 xl:-right-12 w-80 aspect-4/3 rounded-2xl overflow-hidden hidden sm:block"
+              className="absolute -bottom-3/12 -right-10 lg:-bottom-8/12 lg:-right-12 xl:-bottom-12 xl:-right-12 w-80 aspect-4/3 overflow-hidden hidden sm:block"
             >
               <Image
                 src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/myself/myself_2.webp"
@@ -65,7 +65,7 @@ export function About() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: false }}
               transition={{ delay: 0.2 }}
-              className="text-primary font-medium mb-4 block"
+              className="text-yellow-400 font-bold uppercase tracking-widest text-sm mb-4 block"
             >
               {t("about.title")}
             </motion.span>
@@ -75,9 +75,21 @@ export function About() {
               viewport={{ once: false }}
               transition={{ delay: 0.3 }}
             >
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2">
-                {t("about.name")}{" "}
-                <span className="text-primary">{t("global.name")}</span>
+              <h2
+                className="text-4xl sm:text-5xl lg:text-6xl font-black mb-2"
+                style={{
+                  fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+                }}
+              >
+                <span
+                  style={{
+                    WebkitTextStroke: "2px #facc15",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  {t("about.name")}
+                </span>{" "}
+                <span className="text-foreground">{t("global.name")}</span>
               </h2>
 
               <RotatingText

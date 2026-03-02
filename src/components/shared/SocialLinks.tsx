@@ -4,7 +4,7 @@ import { socialLinks } from "@/lib/data/socialLinks";
 import Link from "next/link";
 
 export function SocialLinks() {
-  const linkStyles = "size-9 rounded-full border border-foreground/40 flex items-center justify-center text-foreground/60 hover:border-foreground hover:text-foreground transition-colors";
+  const linkStyles = "size-9 border border-foreground/40 flex items-center justify-center text-foreground/60 hover:border-foreground hover:text-foreground transition-colors";
 
   return (
     <div className="flex justify-start gap-4 mt-6">

@@ -25,6 +25,17 @@ const englishTranslations = {
   "home.title": "Hello, I'm",
   "home.contact": "Contact Me",
   "home.about": "About Me",
+  "home.button.project": "Start a Project",
+  "home.button.resume": "Read Resume",
+  "home.description": "Crafting digital experiences that merge brutalist aesthetics with seamless interaction. Specialized in building accessible, high-performance web interfaces.",
+  "home.badge.status": "Status",
+  "home.badge.status.text": "Open to new projects",
+  "home.badge.years": "Years Exp.",
+  // Marquee Band
+  "marquee.frontend": "FRONTEND DEVELOPER",
+  "marquee.uiux": "UI/UX ENTHUSIAST",
+  "marquee.creative": "CREATIVE",
+  "marquee.react": "REACT SPECIALIST",
 
   // About Section
   "about.title": "About Me",
@@ -78,8 +89,11 @@ const englishTranslations = {
   "contact.email": "Email",
   // Contact Form
   "contact.form.name": "Name",
+  "contact.form.name.placeholder": "Your name",
   "contact.form.email": "Email",
+  "contact.form.email.placeholder": "your@email.com",
   "contact.form.message": "Message",
+  "contact.form.message.placeholder": "Write your message here...",
   "contact.form.button": "Send Message",
   "contact.form.button.loading": "Sending...",
   // Form validations

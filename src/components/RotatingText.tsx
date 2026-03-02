@@ -28,12 +28,23 @@ const RotatingText = ({ titles = [], className }: Props) => {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 20 }}
           transition={{ duration: 0.5 }}
-          className="text-3xl sm:text-3xl md:text-4xl lg:text-4xl font-bold mb-8"
+          className="text-3xl sm:text-3xl md:text-4xl lg:text-4xl font-black mb-8"
+          style={{
+            fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+          }}
         >
           {titles[index].split(" ").map((word, i) => (
             <span
               key={i}
-              className={i === 0 ? "text-white" : "text-yellow-400"}
+              style={
+                i === 0
+                  ? {
+                      WebkitTextStroke: "1.5px #facc15",
+                      WebkitTextFillColor: "transparent",
+                    }
+                  : undefined
+              }
+              className={i === 0 ? "" : "text-yellow-400"}
             >
               {word}{" "}
             </span>
