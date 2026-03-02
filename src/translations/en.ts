@@ -25,17 +25,18 @@ const englishTranslations = {
   "home.title": "Hello, I'm",
   "home.contact": "Contact Me",
   "home.about": "About Me",
-  "home.button.project": "Start a Project",
+  "home.button.project": "Let's Talk!",
   "home.button.resume": "Read Resume",
-  "home.description": "Crafting digital experiences that merge brutalist aesthetics with seamless interaction. Specialized in building accessible, high-performance web interfaces.",
+  "home.description": "Software developer with 6+ years of experience building scalable, user-centered web solutions.",
   "home.badge.status": "Status",
-  "home.badge.status.text": "Open to new projects",
+  "home.badge.status.text": "Available",
   "home.badge.years": "Years Exp.",
   // Marquee Band
+  "marquee.engineer": "SYSTEMS ENGINEER",
   "marquee.frontend": "FRONTEND DEVELOPER",
+  "marquee.backend": "BACKEND DEVELOPER",
   "marquee.uiux": "UI/UX ENTHUSIAST",
   "marquee.creative": "CREATIVE",
-  "marquee.react": "REACT SPECIALIST",
 
   // About Section
   "about.title": "About Me",

@@ -10,7 +10,7 @@ import { Button } from "./ui/button";
 import { Category } from "@/types/skills";
 
 // Definición de tipos
-type CategoryId = "all" | "frontend" | "backend" | "devops" | "cloud";
+type CategoryId = "all" | "frontend" | "backend" | "devops" | "cloud" | "ai";
 
 export function Skills() {
   const { t } = useLanguage();
@@ -22,6 +22,7 @@ export function Skills() {
     { id: "backend", name: "Backend" },
     { id: "devops", name: "DevOps & Testing" },
     { id: "cloud", name: "Cloud" },
+    { id: "ai", name: "AI & ML" },
   ];
 
   const skills = getSkills(activeCategory);

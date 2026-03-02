@@ -25,17 +25,18 @@ const spanishTranslations = {
   "home.title": "Hola, soy",
   "home.contact": "Contáctame",
   "home.about": "Sobre Mí",
-  "home.button.project": "Iniciar un Proyecto",
+  "home.button.project": "¡Hablemos!",
   "home.button.resume": "Ver Resumen",
-  "home.description": "Creando experiencias digitales que fusionan estética brutalista con interacción fluida. Especializado en construir interfaces web accesibles y de alto rendimiento.",
+  "home.description": "Desarrollador de software con +6 años de experiencia creando soluciones web escalables y centradas en el usuario.",
   "home.badge.status": "Estado",
-  "home.badge.status.text": "Disponible para proyectos",
+  "home.badge.status.text": "Disponible",
   "home.badge.years": "Años Exp.",
   // Banda Marquee
+  "marquee.engineer": "INGENIERO DE SISTEMAS",
   "marquee.frontend": "DESARROLLADOR FRONTEND",
+  "marquee.backend": "DESARROLLADOR BACKEND",
   "marquee.uiux": "ENTUSIASTA UI/UX",
   "marquee.creative": "CREATIVO",
-  "marquee.react": "ESPECIALISTA EN REACT",
 
   // Sección About
   "about.title": "Sobre Mí",
