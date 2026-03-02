@@ -9,8 +9,8 @@ const spanishTranslations = {
   "global.name": "Sebastián",
   "global.surname": "Mosquera Valencia",
   "global.phone": "+57 311 612 38 19",
-  "global.email1": "sebas19957@hotmail.com",
-  "global.email2": "sebasmval@gmail.com",
+  "global.email1": "sebasmval@gmail.com",
+  "global.email2": "sebas19957@hotmail.com",
 
   // Navegación
   "nav.home": "Inicio",
