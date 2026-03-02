@@ -1,25 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import redis from "@/lib/redis";
+import { generateContactEmailTemplate } from "@/lib/email-templates/contact-notification";
 
-// Almacenamiento local para intentos de contacto
-interface AttemptRecord {
-  count: number;
-  timestamp: number;
-}
-
-const contactAttempts = new Map<string, AttemptRecord>();
 const ATTEMPT_LIMIT = 3;
-const TIME_WINDOW = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
-
-// Limpiar registros antiguos periódicamente
-function cleanOldAttempts() {
-  const now = Date.now();
-  for (const [ip, record] of contactAttempts.entries()) {
-    if (now - record.timestamp > TIME_WINDOW) {
-      contactAttempts.delete(ip);
-    }
-  }
-}
+const TIME_WINDOW_SECONDS = 24 * 60 * 60; // 24 horas en segundos
 
 export async function POST(req: NextRequest) {
   try {
@@ -30,25 +15,23 @@ export async function POST(req: NextRequest) {
       req.headers.get("x-forwarded-for")?.split(",")[0] ||
       req.headers.get("cf-connecting-ip") ||
       req.headers.get("x-real-ip") ||
-      "Desconocida";
+      "unknown";
 
-    // Limpiar intentos antiguos
-    cleanOldAttempts();
+    const redisKey = `contact_attempts:${ip}`;
 
-    // Verificar intentos locales
-    const now = Date.now();
-    const attemptRecord = contactAttempts.get(ip);
+    // Verificar intentos en Redis
+    const currentAttempts = await redis.get(redisKey);
+    const attemptCount = currentAttempts ? parseInt(currentAttempts, 10) : 0;
 
-    if (attemptRecord) {
-      // Si han pasado más de 24 horas, resetear el contador
-      if (now - attemptRecord.timestamp > TIME_WINDOW) {
-        contactAttempts.delete(ip);
-      } else if (attemptRecord.count >= ATTEMPT_LIMIT) {
-        return NextResponse.json(
-          { error: "Has alcanzado el límite de envíos. Intenta en 24 horas." },
-          { status: 429 }
-        );
-      }
+    if (attemptCount >= ATTEMPT_LIMIT) {
+      const ttl = await redis.ttl(redisKey);
+      const hoursRemaining = Math.ceil(ttl / 3600);
+      return NextResponse.json(
+        { 
+          error: `Has alcanzado el límite de envíos. Intenta en ${hoursRemaining} hora${hoursRemaining > 1 ? 's' : ''}.` 
+        },
+        { status: 429 }
+      );
     }
 
     // Configurar Nodemailer
@@ -60,30 +43,28 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    const htmlContent = generateContactEmailTemplate({
+      name,
+      email,
+      message,
+      ip,
+    });
+
     const mailOptions = {
       from: process.env.NEXT_PUBLIC_EMAIL_USER,
       to: process.env.NEXT_PUBLIC_EMAIL_RECEIVER,
-      subject: `Nuevo mensaje de ${name}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd;">
-            <h2 style="color: #333;">Nuevo mensaje de contacto</h2>
-            <p><strong>Nombre:</strong> ${name}</p>
-            <p><strong>Correo:</strong> ${email}</p>
-            <p><strong>Mensaje:</strong></p>
-            <p style="background-color: #f4f4f4; padding: 10px; border-radius: 5px;">${message}</p>
-            <hr/>
-            <p style="color: red;"><strong>IP del usuario:</strong> ${ip}</p>
-        </div>
-      `,
+      subject: `📬 Nuevo mensaje de ${name} - Portfolio SMV`,
+      html: htmlContent,
     };
 
     await transporter.sendMail(mailOptions);
 
-    // Incrementar intentos locales
-    if (attemptRecord) {
-      attemptRecord.count += 1;
-    } else {
-      contactAttempts.set(ip, { count: 1, timestamp: now });
+    // Incrementar intentos en Redis
+    const newCount = await redis.incr(redisKey);
+    
+    // Si es el primer intento, establecer el TTL de 24 horas
+    if (newCount === 1) {
+      await redis.expire(redisKey, TIME_WINDOW_SECONDS);
     }
 
     return NextResponse.json(
