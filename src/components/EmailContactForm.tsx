@@ -2,10 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Send, Loader2 } from "lucide-react";
+import { Send, Loader2, User, Mail, MessageSquare } from "lucide-react";
 
 import { useLanguage } from "@/contexts/LanguageContext";
 import NotificationAlert from "./shared/NotificationAlert";
@@ -19,6 +17,7 @@ export default function EmailForm() {
     message: string;
     error: boolean;
   } | null>(null);
+  const [focused, setFocused] = useState<string | null>(null);
 
   const validateField = (name: string, value: string) => {
     let error = "";
@@ -78,7 +77,6 @@ export default function EmailForm() {
       const data = await res.json();
       
       if (!res.ok) {
-        // Determinar el mensaje de error apropiado
         let errorMessage = `${t("contact.error")}`;
         if (res.status === 429) {
           errorMessage = `${t("contact.error.ratelimit")}`;
@@ -107,67 +105,176 @@ export default function EmailForm() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: false }}
       transition={{ delay: 0.6 }}
-      className="bg-card p-2 md:p-8 rounded-2xl"
+      className="relative"
     >
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <Input
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            placeholder={`${t("contact.form.name")}`}
-            className="bg-background"
-            required
-          />
-          {errors.name && (
-            <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-          )}
-        </div>
-        <div>
-          <Input
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            placeholder={`${t("contact.form.email")}`}
-            className="bg-background"
-            required
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-          )}
-        </div>
-        <div>
-          <Textarea
-            name="message"
-            value={form.message}
-            onChange={handleChange}
-            placeholder={`${t("contact.form.message")}`}
-            className="min-h-[200px] bg-background"
-            required
-          />
-          {errors.message && (
-            <p className="text-red-500 text-sm mt-1">{errors.message}</p>
-          )}
-        </div>
-        <Button
-          type="submit"
-          size="lg"
-          className="w-full"
-          disabled={loading || !isFormValid()}
+      {/* Badge flotante */}
+      <div
+        className="absolute -top-5 left-4 z-10"
+        style={{ transform: "rotate(-2deg)" }}
+      >
+        <span
+          className="inline-block px-5 py-2 font-black text-sm uppercase shadow-lg"
+          style={{
+            fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+            backgroundColor: "#f5c518",
+            color: "#000",
+          }}
         >
-          {loading ? (
-            <>
-              {t("contact.form.button.loading")}{" "}
-              <Loader2 className="w-4 h-4 ml-2 animate-spin" />
-            </>
-          ) : (
-            <>
-              {t("contact.form.button")} <Send className="w-4 h-4 ml-2" />
-            </>
-          )}
-        </Button>
-      </form>
+          {t("contact.title") || "Get in Touch"}
+        </span>
+      </div>
+
+      {/* Formulario con estilo brutalista */}
+      <div
+        className="p-8 pt-12 shadow-2xl bg-zinc-900"
+        style={{
+          transform: "rotate(0.5deg)",
+        }}
+      >
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Campo Nombre */}
+          <div className="relative">
+            <label
+              className="text-xs font-black text-yellow-400 uppercase tracking-wider mb-2 block"
+              style={{
+                fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+              }}
+            >
+              {t("contact.form.name")}
+            </label>
+            <div className={`relative flex items-center border-2 transition-all duration-300 ${
+              focused === "name" ? "border-yellow-400" : errors.name ? "border-red-500" : "border-zinc-700"
+            }`}>
+              <div className="px-4 py-3 bg-black/30 border-r-2 border-zinc-700">
+                <User className={`w-5 h-5 ${focused === "name" ? "text-yellow-400" : "text-gray-500"}`} />
+              </div>
+              <input
+                type="text"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                onFocus={() => setFocused("name")}
+                onBlur={() => setFocused(null)}
+                placeholder={`${t("contact.form.name.placeholder") || "Your name"}`}
+                className="flex-1 px-4 py-3 bg-transparent text-white placeholder-gray-500 focus:outline-none text-sm"
+                style={{
+                  fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+                }}
+                required
+              />
+            </div>
+            {errors.name && (
+              <p className="text-red-400 text-xs mt-2 flex items-center gap-1">
+                <span className="inline-block w-1 h-1 bg-red-400 rounded-full"></span>
+                {errors.name}
+              </p>
+            )}
+          </div>
+
+          {/* Campo Email */}
+          <div className="relative">
+            <label
+              className="text-xs font-black text-yellow-400 uppercase tracking-wider mb-2 block"
+              style={{
+                fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+              }}
+            >
+              {t("contact.form.email")}
+            </label>
+            <div className={`relative flex items-center border-2 transition-all duration-300 ${
+              focused === "email" ? "border-yellow-400" : errors.email ? "border-red-500" : "border-zinc-700"
+            }`}>
+              <div className="px-4 py-3 bg-black/30 border-r-2 border-zinc-700">
+                <Mail className={`w-5 h-5 ${focused === "email" ? "text-yellow-400" : "text-gray-500"}`} />
+              </div>
+              <input
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                onFocus={() => setFocused("email")}
+                onBlur={() => setFocused(null)}
+                placeholder={`${t("contact.form.email.placeholder") || "your@email.com"}`}
+                className="flex-1 px-4 py-3 bg-transparent text-white placeholder-gray-500 focus:outline-none text-sm"
+                style={{
+                  fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+                }}
+                required
+              />
+            </div>
+            {errors.email && (
+              <p className="text-red-400 text-xs mt-2 flex items-center gap-1">
+                <span className="inline-block w-1 h-1 bg-red-400 rounded-full"></span>
+                {errors.email}
+              </p>
+            )}
+          </div>
+
+          {/* Campo Mensaje */}
+          <div className="relative">
+            <label
+              className="text-xs font-black text-yellow-400 uppercase tracking-wider mb-2 block"
+              style={{
+                fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+              }}
+            >
+              {t("contact.form.message")}
+            </label>
+            <div className={`relative border-2 transition-all duration-300 ${
+              focused === "message" ? "border-yellow-400" : errors.message ? "border-red-500" : "border-zinc-700"
+            }`}>
+              <div className="flex items-start">
+                <div className="px-4 py-3 bg-black/30 border-r-2 border-zinc-700 self-stretch flex items-center justify-center min-h-[150px]">
+                  <MessageSquare className={`w-5 h-5 ${focused === "message" ? "text-yellow-400" : "text-gray-500"}`} />
+                </div>
+                <textarea
+                  name="message"
+                  value={form.message}
+                  onChange={handleChange}
+                  onFocus={() => setFocused("message")}
+                  onBlur={() => setFocused(null)}
+                  placeholder={`${t("contact.form.message.placeholder") || "Write your message here..."}`}
+                  className="flex-1 px-4 py-3 bg-transparent text-white placeholder-gray-500 focus:outline-none text-sm min-h-[150px] resize-none"
+                  style={{
+                    fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+                  }}
+                  required
+                />
+              </div>
+            </div>
+            {errors.message && (
+              <p className="text-red-400 text-xs mt-2 flex items-center gap-1">
+                <span className="inline-block w-1 h-1 bg-red-400 rounded-full"></span>
+                {errors.message}
+              </p>
+            )}
+          </div>
+
+          {/* Botón de envío */}
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-black uppercase tracking-wider py-6 text-lg transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100"
+            style={{
+              fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+            }}
+            disabled={loading || !isFormValid()}
+          >
+            {loading ? (
+              <span className="flex items-center justify-center gap-3">
+                {t("contact.form.button.loading")}
+                <Loader2 className="w-5 h-5 animate-spin" />
+              </span>
+            ) : (
+              <span className="flex items-center justify-center gap-3">
+                {t("contact.form.button")}
+                <Send className="w-5 h-5" />
+              </span>
+            )}
+          </Button>
+        </form>
+      </div>
+
       {status &&
         (status.error ? (
           <NotificationAlert
