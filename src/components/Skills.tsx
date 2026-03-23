@@ -10,7 +10,7 @@ import { Button } from "./ui/button";
 import { Category } from "@/types/skills";
 
 // Definición de tipos
-type CategoryId = "all" | "frontend" | "backend" | "devops" | "cloud";
+type CategoryId = "all" | "frontend" | "backend" | "devops" | "cloud" | "ai";
 
 export function Skills() {
   const { t } = useLanguage();
@@ -22,6 +22,7 @@ export function Skills() {
     { id: "backend", name: "Backend" },
     { id: "devops", name: "DevOps & Testing" },
     { id: "cloud", name: "Cloud" },
+    { id: "ai", name: "AI & ML" },
   ];
 
   const skills = getSkills(activeCategory);
@@ -46,7 +47,7 @@ export function Skills() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: false }}
               transition={{ delay: 0.1 }}
-              className="text-2xl mb-2 font-bold"
+              className="text-xl mb-2 font-bold uppercase tracking-widest"
             >
               {t("skills.title")}
             </motion.span>
@@ -55,9 +56,28 @@ export function Skills() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false }}
               transition={{ delay: 0.2 }}
-              className="text-4xl sm:text-5xl mb-4 font-bold"
+              className="text-4xl sm:text-5xl mb-4 font-black"
+              style={{
+                fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+              }}
             >
-              {t("skills.subtitle")}
+              {(() => {
+                const words = String(t("skills.subtitle")).split(" ");
+                const mid = Math.ceil(words.length / 2);
+                return (
+                  <>
+                    <span
+                      style={{
+                        WebkitTextStroke: "2px #000",
+                        WebkitTextFillColor: "transparent",
+                      }}
+                    >
+                      {words.slice(0, mid).join(" ")}
+                    </span>{" "}
+                    <span className="text-black">{words.slice(mid).join(" ")}</span>
+                  </>
+                );
+              })()}
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -106,7 +126,7 @@ export function Skills() {
             <Button
               key={category.id}
               onClick={() => setActiveCategory(category.id)}
-              className={`px-4 py-2 rounded-full transition-all text-sm hover:bg-white/30 ${
+              className={`px-4 py-2 transition-all text-sm hover:bg-white/30 ${
                 activeCategory === category.id
                   ? "bg-white shadow-lg text-black"
                   : "bg-white/20 hover:bg-white/50"

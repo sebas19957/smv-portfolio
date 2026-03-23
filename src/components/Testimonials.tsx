@@ -46,7 +46,7 @@ export function Testimonials() {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: false }}
-              className="text-lg block"
+              className="text-sm font-bold uppercase tracking-widest block mb-2"
             >
               {t("testimonials.title")}
             </motion.span>
@@ -55,9 +55,28 @@ export function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false }}
               transition={{ delay: 0.2 }}
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold"
+              className="text-3xl sm:text-4xl lg:text-5xl font-black"
+              style={{
+                fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+              }}
             >
-              {t("testimonials.subtitle")}
+              {(() => {
+                const words = String(t("testimonials.subtitle")).split(" ");
+                const mid = Math.ceil(words.length / 2);
+                return (
+                  <>
+                    <span
+                      style={{
+                        WebkitTextStroke: "2px #000",
+                        WebkitTextFillColor: "transparent",
+                      }}
+                    >
+                      {words.slice(0, mid).join(" ")}
+                    </span>{" "}
+                    <span className="text-black">{words.slice(mid).join(" ")}</span>
+                  </>
+                );
+              })()}
             </motion.h2>
             <div className="relative">
               <Quote className="absolute -left-6 -top-6 w-12 h-12 opacity-20" />
@@ -87,7 +106,7 @@ export function Testimonials() {
               <div className="flex justify-center gap-3 mt-6">
                 <Button
                   onClick={handlePrevious}
-                  className="p-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors"
+                  className="p-2 bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors"
                   aria-label="Previous testimonial"
                   size="icon"
                 >
@@ -95,7 +114,7 @@ export function Testimonials() {
                 </Button>
                 <Button
                   onClick={handleNext}
-                  className="p-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors"
+                  className="p-2 bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors"
                   aria-label="Next testimonial"
                   size="icon"
                 >
@@ -112,6 +131,19 @@ export function Testimonials() {
             viewport={{ once: false }}
             className="w-full max-w-md xl:max-w-lg xl:w-[450px] xl:h-[450px] xl:mr-0 xl:ml-4 mt-8 xl:mt-0"
           >
+            {/* Precargar todas las imágenes */}
+            <div className="hidden">
+              {testimonials.map((testimonial, index) => (
+                <Image
+                  key={`preload-${index}`}
+                  src={testimonial.image || "/placeholder.svg"}
+                  alt=""
+                  width={450}
+                  height={450}
+                  priority
+                />
+              ))}
+            </div>
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentIndex}
@@ -119,15 +151,14 @@ export function Testimonials() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
-                className="relative h-full rounded-2xl overflow-hidden"
+                className="relative h-full overflow-hidden"
               >
                 <Image
                   src={testimonials[currentIndex].image || "/placeholder.svg"}
                   alt={testimonials[currentIndex].author}
-                  priority={currentIndex === 0}
-                  placeholder="blur"
-                  blurDataURL="/placeholder.svg"
-                  className="object-cover object-center rounded-2xl w-full h-full"
+                  priority
+                  loading="eager"
+                  className="object-cover object-center w-full h-full"
                   width={450}
                   height={450}
                 />
