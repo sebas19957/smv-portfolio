@@ -27,7 +27,8 @@ const spanishTranslations = {
   "home.about": "Sobre Mí",
   "home.button.project": "¡Hablemos!",
   "home.button.resume": "Ver Resumen",
-  "home.description": "Desarrollador de software con +6 años de experiencia creando soluciones web escalables y centradas en el usuario.",
+  "home.description":
+    "Desarrollador de software con +6 años de experiencia creando soluciones web escalables y centradas en el usuario.",
   "home.badge.status": "Estado",
   "home.badge.status.text": "Disponible",
   "home.badge.years": "Años Exp.",
@@ -52,7 +53,7 @@ const spanishTranslations = {
 
   // Habilidades
   "skills.title": "Mis Habilidades",
-  "skills.subtitle": "Más de 5 años de experiencia",
+  "skills.subtitle": "Más de 6 años de experiencia",
   "skills.description":
     "Desarrollador Frontend con amplia experiencia en tecnologías web modernas y una sólida formación en desarrollo backend y prácticas DevOps.",
   "skills.button": "Todas las Habilidades",
@@ -104,7 +105,8 @@ const spanishTranslations = {
   // Mensajes de éxito y error
   "contact.success": "¡Mensaje enviado con éxito!",
   "contact.error": "Error al enviar el mensaje. Por favor intenta de nuevo.",
-  "contact.error.ratelimit": "Has alcanzado el límite de envíos. Intenta en 24 horas.",
+  "contact.error.ratelimit":
+    "Has alcanzado el límite de envíos. Intenta en 24 horas.",
   // Titulo notificación
   "contact.notificacion.success": "Operación exitosa",
   "contact.notificacion.error": "Error",

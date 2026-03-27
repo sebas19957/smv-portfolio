@@ -1,15 +1,18 @@
 "use client";
 
+import { useLanguage } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
 import { Star, Zap } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 interface MarqueeBandProps {
   className?: string;
   variant?: "yellow" | "black";
 }
 
-export function MarqueeBand({ className = "", variant = "yellow" }: MarqueeBandProps) {
+export function MarqueeBand({
+  className = "",
+  variant = "yellow",
+}: MarqueeBandProps) {
   const { t } = useLanguage();
   const isYellow = variant === "yellow";
 
@@ -20,7 +23,7 @@ export function MarqueeBand({ className = "", variant = "yellow" }: MarqueeBandP
     { text: t("marquee.uiux"), icon: "zap" },
     { text: t("marquee.creative"), icon: "star" },
   ];
-  
+
   const renderIcon = (icon: string) => {
     const iconClass = `w-6 h-6 md:w-10 md:h-10 ${isYellow ? "text-black fill-black" : "text-yellow-400 fill-yellow-400"}`;
     if (icon === "star") return <Star className={iconClass} />;
@@ -30,15 +33,10 @@ export function MarqueeBand({ className = "", variant = "yellow" }: MarqueeBandP
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30, rotate: -3 }}
-      animate={{ opacity: 1, y: 0, rotate: -3 }}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.3 }}
-      className={`w-screen -mx-4 sm:-mx-6 lg:-mx-8 overflow-hidden ${className}`}
-      style={{
-        marginLeft: "calc(-50vw + 50%)",
-        marginRight: "calc(-50vw + 50%)",
-        width: "100vw",
-      }}
+      className={`w-full overflow-hidden ${className}`}
     >
       {/* Borde superior blanco */}
       <div className="h-1 bg-white w-full" />
@@ -47,17 +45,21 @@ export function MarqueeBand({ className = "", variant = "yellow" }: MarqueeBandP
       >
         <div className="flex animate-marquee-infinite">
           {[...Array(2)].map((_, setIndex) => (
-            <div key={setIndex} className="flex items-center whitespace-nowrap shrink-0">
+            <div
+              key={setIndex}
+              className="flex items-center whitespace-nowrap shrink-0"
+            >
               {items.map((item, index) => (
                 <div
                   key={`${setIndex}-${index}`}
                   className="flex items-center gap-6 md:gap-8 mx-6 md:mx-10"
                 >
                   {renderIcon(item.icon)}
-                  <span 
+                  <span
                     className={`font-black text-2xl md:text-4xl lg:text-5xl tracking-wide uppercase ${isYellow ? "text-black" : "text-yellow-400"}`}
                     style={{
-                      fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+                      fontFamily:
+                        "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
                     }}
                   >
                     {item.text}

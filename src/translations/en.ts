@@ -27,7 +27,8 @@ const englishTranslations = {
   "home.about": "About Me",
   "home.button.project": "Let's Talk!",
   "home.button.resume": "Read Resume",
-  "home.description": "Software developer with 6+ years of experience building scalable, user-centered web solutions.",
+  "home.description":
+    "Software developer with 6+ years of experience building scalable, user-centered web solutions.",
   "home.badge.status": "Status",
   "home.badge.status.text": "Available",
   "home.badge.years": "Years Exp.",
@@ -52,7 +53,7 @@ const englishTranslations = {
 
   // Skills
   "skills.title": "My Skills",
-  "skills.subtitle": "Over 5 years of experience.",
+  "skills.subtitle": "Over 6 years of experience.",
   "skills.description":
     "Frontend Developer with extensive experience in modern web technologies and a strong background in backend development and DevOps practices.",
   "skills.button": "All Skills",
@@ -105,7 +106,8 @@ const englishTranslations = {
   // Success and error messages
   "contact.success": "Message sent successfully!",
   "contact.error": "Error sending message. Please try again.",
-  "contact.error.ratelimit": "You have reached the submission limit. Try again in 24 hours.",
+  "contact.error.ratelimit":
+    "You have reached the submission limit. Try again in 24 hours.",
   // Notification title
   "contact.notificacion.success": "Successful operation.",
   "contact.notificacion.error": "Error",

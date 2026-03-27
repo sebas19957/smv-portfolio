@@ -1,22 +1,24 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
 import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { smoothScroll } from "@/lib/helpers/smoothScroll";
 
-import MouseAnimation from "./shared/MouseAnimation";
-import { SocialLinks } from "./shared/SocialLinks";
 import { MarqueeBand } from "./shared/MarqueeBand";
+import { SocialLinks } from "./shared/SocialLinks";
 
 export function Home() {
   const { t } = useLanguage();
 
   return (
-    <section id="home" className="h-screen relative overflow-hidden bg-background flex flex-col">
+    <section
+      id="home"
+      className="lg:min-h-screen relative bg-background flex flex-col overflow-x-hidden"
+    >
       {/* Nombre grande con efecto outline + Imagen */}
       <div className="container mx-auto px-2 sm:px-4 lg:px-8 pt-16 md:pt-32 lg:pt-28">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-around">
@@ -29,30 +31,33 @@ export function Home() {
           >
             {/* SEBASTIÁN - Outline amarillo */}
             <h1
-              className="text-[5rem] sm:text-[5.5rem] md:text-[9rem] lg:text-[8rem] xl:text-[10rem] font-black leading-[0.8] tracking-tight"
+              className="text-[5rem] md:text-[7rem] lg:text-[8rem] xl:text-[9rem] font-black leading-[0.8] tracking-tight"
               style={{
                 WebkitTextStroke: "2px #facc15",
                 WebkitTextFillColor: "transparent",
-                fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+                fontFamily:
+                  "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
               }}
             >
               SEBASTIÁN
             </h1>
             {/* MOSQUERA - Sólido */}
             <h1
-              className="text-[5rem] sm:text-[5.5rem] md:text-[9rem] lg:text-[8rem] xl:text-[10rem] font-black leading-[0.8] tracking-tight text-foreground lg:ml-[18%] -mt-4 sm:-mt-6 md:-mt-8 lg:-mt-10"
+              className="text-[5rem] md:text-[7rem] lg:text-[8rem] xl:text-[9rem] font-black leading-[0.8] tracking-tight text-foreground lg:ml-[18%] -mt-4 sm:-mt-6 md:-mt-8 lg:-mt-10"
               style={{
-                fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+                fontFamily:
+                  "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
               }}
             >
               MOSQUERA
             </h1>
             <h1
-              className="text-[5rem] sm:text-[5.5rem] md:text-[9rem] lg:text-[8rem] xl:text-[10rem] font-black leading-[0.8] tracking-tight -mt-1 sm:-mt-2 md:-mt-4 text-[#facc15]"
+              className="text-[5rem] md:text-[7rem] lg:text-[8rem] xl:text-[9rem] font-black leading-[0.8] tracking-tight -mt-1 sm:-mt-2 md:-mt-4 text-[#facc15]"
               style={{
                 // WebkitTextStroke: "2px #facc15",
                 // WebkitTextFillColor: "transparent",
-                fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+                fontFamily:
+                  "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
               }}
             >
               VALENCIA
@@ -79,28 +84,34 @@ export function Home() {
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 bg-green-500" />
                   <div>
-                    <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">{t("home.badge.status")}</p>
-                    <p className="text-xs text-gray-900 font-semibold">{t("home.badge.status.text")}</p>
+                    <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">
+                      {t("home.badge.status")}
+                    </p>
+                    <p className="text-xs text-gray-900 font-semibold">
+                      {t("home.badge.status.text")}
+                    </p>
                   </div>
                 </div>
               </div>
               {/* Badge YEARS EXP */}
               <div className="absolute bottom-4 right-4 bg-yellow-400 px-4 py-3 shadow-lg">
                 <p className="text-2xl font-black text-black">6+</p>
-                <p className="text-[10px] text-black font-bold uppercase tracking-wider">{t("home.badge.years")}</p>
+                <p className="text-[10px] text-black font-bold uppercase tracking-wider">
+                  {t("home.badge.years")}
+                </p>
               </div>
             </div>
           </motion.div>
         </div>
       </div>
 
-      {/* Banda marquee diagonal - amarilla con bordes blancos */}
-      <div className="mt-auto mb-auto py-2">
+      {/* Banda marquee - amarilla con bordes blancos */}
+      <div className="py-4 md:py-6">
         <MarqueeBand variant="yellow" />
       </div>
 
       {/* Contenido debajo de la banda */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-24 md:pb-64 lg:pb-24">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-8 md:py-8">
         <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-8">
           {/* Columna izquierda - Descripción con borde e iconos */}
           <motion.div
@@ -129,7 +140,10 @@ export function Home() {
               size="lg"
               className="px-8 py-5 text-sm font-bold uppercase tracking-wider"
             >
-              <Link href="#contact" onClick={(e) => smoothScroll(e, "#contact")}>
+              <Link
+                href="#contact"
+                onClick={(e) => smoothScroll(e, "#contact")}
+              >
                 {t("home.button.project")}
               </Link>
             </Button>
@@ -145,11 +159,6 @@ export function Home() {
             </Button>
           </motion.div>
         </div>
-      </div>
-
-      {/* Mouse animation */}
-      <div className="absolute bottom-8 left-8">
-        <MouseAnimation />
       </div>
     </section>
   );

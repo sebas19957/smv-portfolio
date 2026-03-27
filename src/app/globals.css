@@ -152,10 +152,16 @@
   height: 6px;
   z-index: 100;
   background-color: #facc15;
-  -webkit-transition: width 0.3s ease-in-out, height 0.3s ease-in-out,
-    margin 0.3s ease-in-out, opacity 0.3s ease-in-out;
-  transition: width 0.3s ease-in-out, height 0.3s ease-in-out,
-    margin 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  -webkit-transition:
+    width 0.3s ease-in-out,
+    height 0.3s ease-in-out,
+    margin 0.3s ease-in-out,
+    opacity 0.3s ease-in-out;
+  transition:
+    width 0.3s ease-in-out,
+    height 0.3s ease-in-out,
+    margin 0.3s ease-in-out,
+    opacity 0.3s ease-in-out;
 }
 .cursor-inner.cursor-hover {
   margin-left: -40px;
@@ -227,5 +233,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .animate-marquee-infinite {
-  animation: marquee-infinite 25s linear infinite;
+  width: max-content;
+  animation: marquee-infinite 50s linear infinite;
+  will-change: transform;
 }
