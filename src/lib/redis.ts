@@ -1,10 +1,10 @@
 import Redis from "ioredis";
 
 const getRedisUrl = () => {
-  if (process.env.NEXT_PUBLIC_REDIS_URL) {
-    return process.env.NEXT_PUBLIC_REDIS_URL;
+  if (process.env.REDIS_URL) {
+    return process.env.REDIS_URL;
   }
-  throw new Error("NEXT_PUBLIC_REDIS_URL no está definida en las variables de entorno");
+  throw new Error("REDIS_URL no está definida en las variables de entorno");
 };
 
 const redis = new Redis(getRedisUrl(), {
