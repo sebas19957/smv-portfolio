@@ -78,16 +78,16 @@ cp .env.template .env.development   # for development
 cp .env.template .env.production    # for production
 ```
 
-| Variable         | Description                                      |
-| ---------------- | ------------------------------------------------ |
-| `EMAIL_HOST`     | SMTP host (e.g. `smtp.gmail.com`)                |
-| `EMAIL_PORT`     | SMTP port (e.g. `465`)                           |
-| `EMAIL_USER`     | SMTP / sender account                            |
-| `EMAIL_PASS`     | SMTP password or app password                    |
-| `EMAIL_FROM`     | "From" address for outgoing mail                 |
-| `EMAIL_RECEIVER` | Inbox that receives contact-form messages        |
-| `REDIS_URL`      | Redis connection string (rate limiting)          |
+| Variable         | Description                                          |
+| ---------------- | ---------------------------------------------------- |
+| `EMAIL_USER`     | Gmail account used to send and as the "from" address |
+| `EMAIL_PASS`     | Gmail app password                                   |
+| `EMAIL_RECEIVER` | Inbox that receives contact-form messages            |
+| `REDIS_URL`      | Redis connection string (rate limiting)              |
 
+> Email is delivered through Gmail (Nodemailer `service: "gmail"`), so only the
+> account, its app password and the receiver are needed.
+>
 > These are **server-side only** and are never exposed to the browser.
 
 ### Run
@@ -110,11 +110,8 @@ Run the container (pass secrets at runtime — never bake them into the image):
 
 ```bash
 docker run -p 3000:3000 \
-  -e EMAIL_HOST=smtp.gmail.com \
-  -e EMAIL_PORT=465 \
-  -e EMAIL_USER=you@example.com \
+  -e EMAIL_USER=you@gmail.com \
   -e EMAIL_PASS=your_app_password \
-  -e EMAIL_FROM=you@example.com \
   -e EMAIL_RECEIVER=inbox@example.com \
   -e REDIS_URL=redis://default:password@host:6379 \
   smv-portfolio
