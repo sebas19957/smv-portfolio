@@ -1,7 +1,7 @@
 import { Skill } from "@/types/skills";
 import { Bot, BrainCircuit, Cloud, Code, Database, Server, Sparkles } from "lucide-react";
+import { FaAws } from "react-icons/fa6";
 import {
-  SiAmazonwebservices,
   SiAngular,
   SiDocker,
   SiGithub,
@@ -121,7 +121,7 @@ export const getSkills = (activeCategory: CategoryId): SkillWithCategory[] => {
     cloud: [
       {
         name: "AWS",
-        icon: <SiAmazonwebservices className="text-[#232F3E]" />,
+        icon: <FaAws className="text-[#232F3E]" />,
         level: 50,
       },
       {
