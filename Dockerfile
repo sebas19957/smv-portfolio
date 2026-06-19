@@ -18,11 +18,6 @@ FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-# Dummy build-time env vars so api/send-email route module-level code doesn't throw
-ENV REDIS_URL="redis://localhost:6379"
-ENV EMAIL_USER="build@example.com"
-ENV EMAIL_PASS="build"
-ENV EMAIL_RECEIVER="build@example.com"
 RUN pnpm build
 
 # ---- Runner ----
