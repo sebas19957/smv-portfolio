@@ -16,13 +16,13 @@ export function Testimonials() {
 
   const handlePrevious = () => {
     setCurrentIndex((prev) =>
-      prev === 0 ? testimonials.length - 1 : prev - 1
+      prev === 0 ? testimonials.length - 1 : prev - 1,
     );
   };
 
   const handleNext = () => {
     setCurrentIndex((prev) =>
-      prev === testimonials.length - 1 ? 0 : prev + 1
+      prev === testimonials.length - 1 ? 0 : prev + 1,
     );
   };
 
@@ -38,10 +38,10 @@ export function Testimonials() {
         backgroundAttachment: "fixed",
       }}
     >
-      <div className="container mx-auto px-4 sm:px-6 xl:px-20">
-        <div className="flex flex-col items-center xl:flex-row xl:items-center xl:justify-between xl:space-x-12">
+      <div className="container mx-auto max-w-6xl px-4 sm:px-6 xl:px-20">
+        <div className="flex flex-col items-center xl:flex-row xl:items-center xl:justify-center xl:gap-16">
           {/* Contenido del testimonio */}
-          <div className="w-full max-w-xl mx-auto text-center xl:text-left space-y-4">
+          <div className="w-full max-w-xl mx-auto text-center xl:text-left xl:flex-1 space-y-4">
             <motion.span
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -57,7 +57,8 @@ export function Testimonials() {
               transition={{ delay: 0.2 }}
               className="text-3xl sm:text-4xl lg:text-5xl font-black"
               style={{
-                fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+                fontFamily:
+                  "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
               }}
             >
               {(() => {
@@ -73,7 +74,9 @@ export function Testimonials() {
                     >
                       {words.slice(0, mid).join(" ")}
                     </span>{" "}
-                    <span className="text-black">{words.slice(mid).join(" ")}</span>
+                    <span className="text-black">
+                      {words.slice(mid).join(" ")}
+                    </span>
                   </>
                 );
               })()}
@@ -129,7 +132,7 @@ export function Testimonials() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: false }}
-            className="w-full max-w-md xl:max-w-lg xl:w-[450px] xl:h-[450px] xl:mr-0 xl:ml-4 mt-8 xl:mt-0"
+            className="w-full max-w-md xl:max-w-lg xl:w-[450px] xl:shrink-0 mt-8 xl:mt-0"
           >
             {/* Precargar todas las imágenes */}
             <div className="hidden">
@@ -151,14 +154,14 @@ export function Testimonials() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
-                className="relative h-full overflow-hidden"
+                className="relative w-full"
               >
                 <Image
                   src={testimonials[currentIndex].image || "/placeholder.svg"}
                   alt={testimonials[currentIndex].author}
                   priority
                   loading="eager"
-                  className="object-cover object-center w-full h-full"
+                  className="object-contain object-center w-full h-auto"
                   width={450}
                   height={450}
                 />
