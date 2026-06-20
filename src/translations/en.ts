@@ -9,8 +9,8 @@ const englishTranslations = {
   "global.name": "Sebastián",
   "global.surname": "Mosquera Valencia",
   "global.phone": "+57 311 612 38 19",
-  "global.email1": "sebas19957@hotmail.com",
-  "global.email2": "sebasmval@gmail.com",
+  "global.email1": "sebasmval@gmail.com",
+  "global.email2": "sebas19957@hotmail.com",
 
   // Navigation
   "nav.home": "Home",
@@ -25,6 +25,19 @@ const englishTranslations = {
   "home.title": "Hello, I'm",
   "home.contact": "Contact Me",
   "home.about": "About Me",
+  "home.button.project": "Let's Talk!",
+  "home.button.resume": "Read Resume",
+  "home.description":
+    "Software developer with 6+ years of experience building scalable, user-centered web solutions.",
+  "home.badge.status": "Status",
+  "home.badge.status.text": "Available",
+  "home.badge.years": "Years Exp.",
+  // Marquee Band
+  "marquee.engineer": "SYSTEMS ENGINEER",
+  "marquee.frontend": "FRONTEND DEVELOPER",
+  "marquee.backend": "BACKEND DEVELOPER",
+  "marquee.uiux": "UI/UX ENTHUSIAST",
+  "marquee.creative": "CREATIVE",
 
   // About Section
   "about.title": "About Me",
@@ -40,7 +53,7 @@ const englishTranslations = {
 
   // Skills
   "skills.title": "My Skills",
-  "skills.subtitle": "Over 5 years of experience.",
+  "skills.subtitle": "Over 6 years of experience.",
   "skills.description":
     "Frontend Developer with extensive experience in modern web technologies and a strong background in backend development and DevOps practices.",
   "skills.button": "All Skills",
@@ -78,8 +91,11 @@ const englishTranslations = {
   "contact.email": "Email",
   // Contact Form
   "contact.form.name": "Name",
+  "contact.form.name.placeholder": "Your name",
   "contact.form.email": "Email",
+  "contact.form.email.placeholder": "your@email.com",
   "contact.form.message": "Message",
+  "contact.form.message.placeholder": "Write your message here...",
   "contact.form.button": "Send Message",
   "contact.form.button.loading": "Sending...",
   // Form validations
@@ -90,7 +106,8 @@ const englishTranslations = {
   // Success and error messages
   "contact.success": "Message sent successfully!",
   "contact.error": "Error sending message. Please try again.",
-  "contact.error.ratelimit": "You have reached the submission limit. Try again in 24 hours.",
+  "contact.error.ratelimit":
+    "You have reached the submission limit. Try again in 24 hours.",
   // Notification title
   "contact.notificacion.success": "Successful operation.",
   "contact.notificacion.error": "Error",

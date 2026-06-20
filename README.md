@@ -1,48 +1,162 @@
-# Portafolio SMV (Sebastián Mosquera Valencia)
-
 <p align="center">
-  <a href="#" target="blank"><img src="https://personal-smv-assets.s3.sa-east-1.amazonaws.com/imgs/logo.png" width="400" alt="Nest Logo" /></a>
+  <img src="https://personal-assets-smv.s3.us-east-2.amazonaws.com/myself-img_3.jpg" width="160" height="160" style="border-radius:50%" alt="Sebastián Mosquera Valencia" />
 </p>
 
-## Descripción
+<h1 align="center">Sebastián Mosquera Valencia — Portfolio</h1>
 
-Este es mi portafolio personal, una landing page que muestra mi trayectoria profesional y académica como Ingeniero de Sistemas y desarrollador Front-end. El sitio está diseñado para resaltar mis habilidades, experiencia laboral, proyectos destacados y testimonios de colegas. Incluye secciones como Sobre Mí, Habilidades, Resumen, Proyectos, Testimonios y Contacto, ofreciendo una visión completa de mi perfil profesional.
+<p align="center">
+  Systems Engineer & Front-end Developer — personal portfolio.
+</p>
 
-## 🛠️ Tecnologías utilizadas
+<p align="center">
+  <a href="https://www.sebastianmv.dev/"><strong>🌐 Live Demo »</strong></a>
+</p>
 
-- **Frontend:**
-  - Framework: [Next.js](https://nextjs.org/) (React) con TypeScript.
-  - Estilos: [Tailwind CSS](https://tailwindcss.com/) y [Shadcn](https://ui.shadcn.com/).
-- **Estado y datos:**
-  - Consumo de API: [Redis](https://console.upstash.com/).
-- **Almacenamiento de recursos:** Integración con [AWS S3](https://aws.amazon.com/s3/) para la carga y gestión de archivos multimedia.
-- **Optimización:** Implementación de carga diferida de imágenes y uso de `srcset` para mejorar el rendimiento.
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-15-black?logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/React-19-149ECA?logo=react" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white" alt="Docker" />
+</p>
 
-## Instalación Dependencias
+---
 
-Ejecuta el siguiente comando en la terminal ubicado en la carpeta del proyecto.
+## Overview
+
+This is my personal portfolio: a landing page showcasing my professional and
+academic background as a Systems Engineer and Front-end Developer. It highlights
+my skills, work experience, featured projects and testimonials, with sections
+for About, Skills, Summary, Projects, Testimonials and Contact.
+
+The contact form is rate-limited per IP using Redis and delivers messages via
+email (Nodemailer). Media assets are served from AWS S3.
+
+## Tech Stack
+
+| Area            | Technology                                              |
+| --------------- | ------------------------------------------------------- |
+| Framework       | [Next.js 15](https://nextjs.org/) (App Router) + React 19 |
+| Language        | [TypeScript](https://www.typescriptlang.org/)           |
+| Styling         | [Tailwind CSS](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/) |
+| Animation       | [Framer Motion](https://www.framer.com/motion/)         |
+| Rate limiting   | [Redis](https://redis.io/) (`ioredis`)                  |
+| Email           | [Nodemailer](https://nodemailer.com/)                   |
+| Asset storage   | [AWS S3](https://aws.amazon.com/s3/)                    |
+| Package manager | [pnpm](https://pnpm.io/)                                |
+| Container       | [Docker](https://www.docker.com/) (standalone output)   |
+| CI/CD           | [GitHub Actions](https://github.com/features/actions) → [GHCR](https://ghcr.io) |
+
+## Features
+
+- ⚡ Next.js App Router with standalone build for tiny container images.
+- 🎨 Responsive UI with Tailwind CSS, shadcn/ui and Framer Motion animations.
+- 📨 Contact form with IP-based rate limiting (3 attempts / 24h) backed by Redis.
+- ☁️ Media delivered from AWS S3 with optimized image loading.
+- 🐳 Production-ready multi-stage Dockerfile.
+- 🤖 Automated CI (lint + build) and image publishing to GHCR.
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) **>= 22**
+- [pnpm](https://pnpm.io/) **>= 11** (`corepack enable` recommended)
+
+### Installation
 
 ```bash
-$ yarn install
+pnpm install
 ```
 
-## Configuración
+### Environment variables
 
-Se debe renombrar el archivo `.env.template` a `.env.development` para desarrollo y `.env.production` para producccion, y llenar las variables de entorno que están vacías en el archivo, para el correcto funcionamiento de este proyecto.
-
-## Compilar y ejecutar el proyecto
+Copy the template and fill in the values:
 
 ```bash
-# Desarrollo
-$ yarn dev
+cp .env.template .env.development   # for development
+cp .env.template .env.production    # for production
 ```
 
-```bash
-# Crear Build para producción
-$ yarn build
-```
+| Variable         | Description                                          |
+| ---------------- | ---------------------------------------------------- |
+| `EMAIL_USER`     | Gmail account used to send and as the "from" address |
+| `EMAIL_PASS`     | Gmail app password                                   |
+| `EMAIL_RECEIVER` | Inbox that receives contact-form messages            |
+| `REDIS_URL`      | Redis connection string (rate limiting)              |
+
+> Email is delivered through Gmail (Nodemailer `service: "gmail"`), so only the
+> account, its app password and the receiver are needed.
+>
+> These are **server-side only** and are never exposed to the browser.
+
+### Run
 
 ```bash
-# Producción
-$ yarn start
+pnpm dev      # development (http://localhost:3000)
+pnpm build    # production build
+pnpm start    # serve the production build
 ```
+
+## Running with Docker
+
+Build the image:
+
+```bash
+docker build -t smv-portfolio .
+```
+
+Run the container (pass secrets at runtime — never bake them into the image):
+
+```bash
+docker run -p 3000:3000 \
+  -e EMAIL_USER=you@gmail.com \
+  -e EMAIL_PASS=your_app_password \
+  -e EMAIL_RECEIVER=inbox@example.com \
+  -e REDIS_URL=redis://default:password@host:6379 \
+  smv-portfolio
+```
+
+The app is now available at http://localhost:3000.
+
+## Pulling from GHCR
+
+Published images are available on the GitHub Container Registry:
+
+```bash
+docker pull ghcr.io/sebas19957/smv-portfolio:latest
+```
+
+Available tags:
+
+- `latest` — most recent build from `main`.
+- `sha-<commit>` — specific commit from `main`.
+- `X.Y.Z` — released version (from a `vX.Y.Z` git tag).
+
+## Project Structure
+
+```
+.
+├── .github/workflows/   # CI (lint + build) and Docker publish to GHCR
+├── docs/                # Design specs and implementation plans
+├── public/ (none)       # Assets are served from AWS S3
+├── src/
+│   ├── app/             # Next.js App Router (pages + API routes)
+│   ├── components/      # UI components
+│   └── lib/             # Redis client, email templates, helpers
+├── Dockerfile           # Multi-stage build (standalone output)
+├── next.config.ts       # Next.js config (standalone, images, svgr)
+└── pnpm-lock.yaml       # pnpm lockfile
+```
+
+## CI/CD
+
+| Workflow                | Trigger                          | What it does                          |
+| ----------------------- | -------------------------------- | ------------------------------------- |
+| `ci.yml`                | PR / push to `dev` or `main`     | Install, lint and build               |
+| `docker-publish.yml`    | Push to `main` or `v*.*.*` tag   | Verify, then build & push to GHCR     |
+
+## Author
+
+**Sebastián Mosquera Valencia** — Systems Engineer & Front-end Developer
+[Portfolio](https://www.sebastianmv.dev/)

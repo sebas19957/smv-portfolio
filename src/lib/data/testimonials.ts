@@ -15,7 +15,7 @@ export const testimonialsES: Testimonial[] = [
     author: "Diego Fernando Piedrahita Arango",
     role: "Desarrollador backend / Automatizador de procesos",
     image:
-      "https://personal-smv-assets.s3.sa-east-1.amazonaws.com/avatars/elegant/me-group.webp",
+      "https://personal-smv-assets.s3.sa-east-1.amazonaws.com/avatars/me-group-a.png",
   },
   {
     id: 3,
