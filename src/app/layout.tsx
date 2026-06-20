@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import type React from "react"; // Import React
 
@@ -7,6 +7,12 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import Cursor from "@/components/shared/Cursor";
 
 const inter = Inter({ subsets: ["latin"] });
+
+const barlowCondensed = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-barlow-condensed",
+});
 
 export const metadata: Metadata = {
   title: "Mi Portafolio - Desarrollador Web",
@@ -44,7 +50,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.className} bg-background text-foreground`}>
+      <body className={`${inter.className} ${barlowCondensed.variable} bg-background text-foreground`}>
         <LanguageProvider>
           <main className="p-4 sm:p-0">{children}</main>
           <div className="hidden md:block">

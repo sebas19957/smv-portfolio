@@ -8,14 +8,14 @@ import { Button } from "@/components/ui/button";
 export function DownloadCVButton() {
   const handleDownloadEN = () => {
     const fileUrl =
-      "https://personal-smv-assets.s3.sa-east-1.amazonaws.com/pdfs/Sebasti%C3%A1n_Mosquera_cv_en.pdf";
+      "https://personal-smv-assets.s3.sa-east-1.amazonaws.com/pdfs/Sebastian_Mosquera_cv_up_en.pdf";
 
     window.open(fileUrl, "_blank");
   };
 
   const handleDownloadES = () => {
     const fileUrl =
-      "https://personal-smv-assets.s3.sa-east-1.amazonaws.com/pdfs/Sebasti%C3%A1n_Mosquera_cv_es.pdf";
+      "https://personal-smv-assets.s3.sa-east-1.amazonaws.com/pdfs/Sebastian_Mosquera_cv_up_es.pdf";
 
     window.open(fileUrl, "_blank");
   };

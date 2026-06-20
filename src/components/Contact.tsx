@@ -17,7 +17,7 @@ export function Contact() {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: false }}
-              className="text-primary font-medium mb-4 block"
+              className="text-yellow-400 font-bold uppercase tracking-widest text-sm mb-4 block"
             >
               {t("contact.title")}
             </motion.span>
@@ -26,9 +26,28 @@ export function Contact() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false }}
               transition={{ delay: 0.2 }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6"
+              className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6"
+              style={{
+                fontFamily: "var(--font-barlow-condensed), 'Barlow Condensed', sans-serif",
+              }}
             >
-              {t("contact.subtitle")}
+              {(() => {
+                const words = String(t("contact.subtitle")).split(" ");
+                const mid = Math.ceil(words.length / 2);
+                return (
+                  <>
+                    <span
+                      style={{
+                        WebkitTextStroke: "2px #facc15",
+                        WebkitTextFillColor: "transparent",
+                      }}
+                    >
+                      {words.slice(0, mid).join(" ")}
+                    </span>{" "}
+                    <span className="text-foreground">{words.slice(mid).join(" ")}</span>
+                  </>
+                );
+              })()}
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -47,7 +66,7 @@ export function Contact() {
                 transition={{ delay: 0.4 }}
                 className="flex items-center gap-4"
               >
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <div className="w-12 h-12 bg-primary/10 flex items-center justify-center">
                   <Phone className="w-6 h-6 text-primary" />
                 </div>
                 <div>
@@ -66,7 +85,7 @@ export function Contact() {
                 transition={{ delay: 0.5 }}
                 className="flex items-center gap-4"
               >
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <div className="w-12 h-12 bg-primary/10 flex items-center justify-center">
                   <Mail className="w-6 h-6 text-primary" />
                 </div>
                 <div>
@@ -74,13 +93,6 @@ export function Contact() {
                     {t("contact.email")}
                   </p>
                   <p className="text-lg font-medium text-primary">
-                    <a
-                      href="mailto:sebas19957@hotmail.com"
-                      className="hover:underline"
-                    >
-                      sebas19957@hotmail.com
-                    </a>
-                    <span className="mx-1">-</span>
                     <a
                       href="mailto:sebasmval@gmail.com"
                       className="hover:underline"

@@ -1,24 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import redis from "@/lib/redis";
+import { generateContactEmailTemplate } from "@/lib/email-templates/contact-notification";
 
-// Almacenamiento local para intentos de contacto
-interface AttemptRecord {
-  count: number;
-  timestamp: number;
-}
-
-const contactAttempts = new Map<string, AttemptRecord>();
 const ATTEMPT_LIMIT = 3;
-const TIME_WINDOW = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+const TIME_WINDOW_SECONDS = 24 * 60 * 60; // 24 horas en segundos
 
-// Limpiar registros antiguos periódicamente
-function cleanOldAttempts() {
-  const now = Date.now();
-  for (const [ip, record] of contactAttempts.entries()) {
-    if (now - record.timestamp > TIME_WINDOW) {
-      contactAttempts.delete(ip);
-    }
+/**
+ * Extrae la IP pública real del cliente.
+ *
+ * El sitio está detrás de Cloudflare, que reescribe `x-forwarded-for` con SUS
+ * propias IPs de edge (rangos 104.x / 172.6x), por eso no sirve para identificar
+ * al usuario. La IP real del visitante la pone Cloudflare en `cf-connecting-ip`,
+ * que se usa con máxima prioridad. El resto son fallbacks por si en algún entorno
+ * (local, sin Cloudflare) esa cabecera no existe.
+ */
+function getClientIp(req: NextRequest): string {
+  const cfIp = req.headers.get("cf-connecting-ip");
+  if (cfIp) return cfIp.trim();
+
+  const trueClientIp = req.headers.get("true-client-ip");
+  if (trueClientIp) return trueClientIp.trim();
+
+  const isPrivate = (ip: string) =>
+    /^(10\.|127\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|::1|fc|fd)/.test(ip);
+
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const candidates = forwarded.split(",").map((p) => p.trim()).filter(Boolean);
+    const publicIp = candidates.find((ip) => !isPrivate(ip));
+    if (publicIp) return publicIp;
+    if (candidates[0]) return candidates[0];
   }
+
+  return req.headers.get("x-real-ip") || "unknown";
 }
 
 export async function POST(req: NextRequest) {
@@ -26,64 +41,70 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { name, email, message } = body;
 
-    const ip =
-      req.headers.get("x-forwarded-for")?.split(",")[0] ||
-      req.headers.get("cf-connecting-ip") ||
-      req.headers.get("x-real-ip") ||
-      "Desconocida";
+    const ip = getClientIp(req);
 
-    // Limpiar intentos antiguos
-    cleanOldAttempts();
+    // Log temporal para diagnosticar qué IP/cabeceras llegan detrás del proxy.
+    // Revisa los logs del contenedor y elimínalo cuando confirmes que la IP es la real.
+    console.log("[send-email] IP detectada:", ip, {
+      "x-forwarded-for": req.headers.get("x-forwarded-for"),
+      "x-real-ip": req.headers.get("x-real-ip"),
+      "cf-connecting-ip": req.headers.get("cf-connecting-ip"),
+    });
 
-    // Verificar intentos locales
-    const now = Date.now();
-    const attemptRecord = contactAttempts.get(ip);
+    const redisKey = `contact_attempts:${ip}`;
 
-    if (attemptRecord) {
-      // Si han pasado más de 24 horas, resetear el contador
-      if (now - attemptRecord.timestamp > TIME_WINDOW) {
-        contactAttempts.delete(ip);
-      } else if (attemptRecord.count >= ATTEMPT_LIMIT) {
-        return NextResponse.json(
-          { error: "Has alcanzado el límite de envíos. Intenta en 24 horas." },
-          { status: 429 }
-        );
-      }
+    // Verificar intentos en Redis
+    const currentAttempts = await redis.get(redisKey);
+    const attemptCount = currentAttempts ? parseInt(currentAttempts, 10) : 0;
+
+    if (attemptCount >= ATTEMPT_LIMIT) {
+      const ttl = await redis.ttl(redisKey);
+      const hoursRemaining = Math.ceil(ttl / 3600);
+      return NextResponse.json(
+        { 
+          error: `Has alcanzado el límite de envíos. Intenta en ${hoursRemaining} hora${hoursRemaining > 1 ? 's' : ''}.` 
+        },
+        { status: 429 }
+      );
     }
 
     // Configurar Nodemailer
+    // Hetzner bloquea el puerto 465 (SSL) saliente por defecto, por eso se usa
+    // host/port explícitos con STARTTLS (587). secure=true solo para el 465.
+    const emailPort = Number(process.env.EMAIL_PORT) || 587;
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: process.env.EMAIL_HOST || "smtp.gmail.com",
+      port: emailPort,
+      secure: emailPort === 465, // true para 465 (SSL), false para 587 (STARTTLS)
+      requireTLS: emailPort !== 465,
       auth: {
-        user: process.env.NEXT_PUBLIC_EMAIL_USER,
-        pass: process.env.NEXT_PUBLIC_EMAIL_PASS,
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
+    const htmlContent = generateContactEmailTemplate({
+      name,
+      email,
+      message,
+      ip,
+    });
+
     const mailOptions = {
-      from: process.env.NEXT_PUBLIC_EMAIL_USER,
-      to: process.env.NEXT_PUBLIC_EMAIL_RECEIVER,
-      subject: `Nuevo mensaje de ${name}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd;">
-            <h2 style="color: #333;">Nuevo mensaje de contacto</h2>
-            <p><strong>Nombre:</strong> ${name}</p>
-            <p><strong>Correo:</strong> ${email}</p>
-            <p><strong>Mensaje:</strong></p>
-            <p style="background-color: #f4f4f4; padding: 10px; border-radius: 5px;">${message}</p>
-            <hr/>
-            <p style="color: red;"><strong>IP del usuario:</strong> ${ip}</p>
-        </div>
-      `,
+      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+      to: process.env.EMAIL_RECEIVER,
+      subject: `📬 Nuevo mensaje de ${name} - Portfolio SMV`,
+      html: htmlContent,
     };
 
     await transporter.sendMail(mailOptions);
 
-    // Incrementar intentos locales
-    if (attemptRecord) {
-      attemptRecord.count += 1;
-    } else {
-      contactAttempts.set(ip, { count: 1, timestamp: now });
+    // Incrementar intentos en Redis
+    const newCount = await redis.incr(redisKey);
+    
+    // Si es el primer intento, establecer el TTL de 24 horas
+    if (newCount === 1) {
+      await redis.expire(redisKey, TIME_WINDOW_SECONDS);
     }
 
     return NextResponse.json(
