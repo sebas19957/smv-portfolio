@@ -6,16 +6,50 @@ import { generateContactEmailTemplate } from "@/lib/email-templates/contact-noti
 const ATTEMPT_LIMIT = 3;
 const TIME_WINDOW_SECONDS = 24 * 60 * 60; // 24 horas en segundos
 
+/**
+ * Extrae la IP pública real del cliente.
+ *
+ * El sitio está detrás de Cloudflare, que reescribe `x-forwarded-for` con SUS
+ * propias IPs de edge (rangos 104.x / 172.6x), por eso no sirve para identificar
+ * al usuario. La IP real del visitante la pone Cloudflare en `cf-connecting-ip`,
+ * que se usa con máxima prioridad. El resto son fallbacks por si en algún entorno
+ * (local, sin Cloudflare) esa cabecera no existe.
+ */
+function getClientIp(req: NextRequest): string {
+  const cfIp = req.headers.get("cf-connecting-ip");
+  if (cfIp) return cfIp.trim();
+
+  const trueClientIp = req.headers.get("true-client-ip");
+  if (trueClientIp) return trueClientIp.trim();
+
+  const isPrivate = (ip: string) =>
+    /^(10\.|127\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|::1|fc|fd)/.test(ip);
+
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const candidates = forwarded.split(",").map((p) => p.trim()).filter(Boolean);
+    const publicIp = candidates.find((ip) => !isPrivate(ip));
+    if (publicIp) return publicIp;
+    if (candidates[0]) return candidates[0];
+  }
+
+  return req.headers.get("x-real-ip") || "unknown";
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { name, email, message } = body;
 
-    const ip =
-      req.headers.get("x-forwarded-for")?.split(",")[0] ||
-      req.headers.get("cf-connecting-ip") ||
-      req.headers.get("x-real-ip") ||
-      "unknown";
+    const ip = getClientIp(req);
+
+    // Log temporal para diagnosticar qué IP/cabeceras llegan detrás del proxy.
+    // Revisa los logs del contenedor y elimínalo cuando confirmes que la IP es la real.
+    console.log("[send-email] IP detectada:", ip, {
+      "x-forwarded-for": req.headers.get("x-forwarded-for"),
+      "x-real-ip": req.headers.get("x-real-ip"),
+      "cf-connecting-ip": req.headers.get("cf-connecting-ip"),
+    });
 
     const redisKey = `contact_attempts:${ip}`;
 
