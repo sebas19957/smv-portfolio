@@ -1,5 +1,5 @@
 import { SocialLink } from "@/types/socialLinks";
-import { Facebook, Instagram, Linkedin, Mail } from "lucide-react";
+import { Facebook, Github, Instagram, Linkedin, Mail } from "lucide-react";
 
 export const socialLinks: SocialLink[] = [
   {
@@ -18,6 +18,12 @@ export const socialLinks: SocialLink[] = [
     name: "Linkedin",
     icon: Linkedin,
     href: "https://www.linkedin.com/in/semosva/",
+    isEmail: false,
+  },
+  {
+    name: "GitHub",
+    icon: Github,
+    href: "https://github.com/sebas19957",
     isEmail: false,
   },
   {
