@@ -35,8 +35,14 @@ export async function POST(req: NextRequest) {
     }
 
     // Configurar Nodemailer
+    // Hetzner bloquea el puerto 465 (SSL) saliente por defecto, por eso se usa
+    // host/port explícitos con STARTTLS (587). secure=true solo para el 465.
+    const emailPort = Number(process.env.EMAIL_PORT) || 587;
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: process.env.EMAIL_HOST || "smtp.gmail.com",
+      port: emailPort,
+      secure: emailPort === 465, // true para 465 (SSL), false para 587 (STARTTLS)
+      requireTLS: emailPort !== 465,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -51,7 +57,7 @@ export async function POST(req: NextRequest) {
     });
 
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
       to: process.env.EMAIL_RECEIVER,
       subject: `📬 Nuevo mensaje de ${name} - Portfolio SMV`,
       html: htmlContent,
