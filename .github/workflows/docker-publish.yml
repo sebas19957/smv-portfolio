@@ -58,13 +58,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Read version from package.json
+        id: pkg
+        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
       - name: Extract metadata (tags, labels)
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          # La versión sale de package.json (no de git tags), por eso se usan
+          # tags raw en lugar de type=semver, que solo aplica en push de tags vX.Y.Z.
           tags: |
             type=raw,value=latest
+            type=raw,value=${{ steps.pkg.outputs.version }}
             type=sha,prefix=sha-,enable=${{ github.ref == 'refs/heads/main' }}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
