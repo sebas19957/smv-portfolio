@@ -1,0 +1,30 @@
+---
+import Button from '../../shared/ui/Button.astro';
+import SegmentedGroup from '../../shared/ui/SegmentedGroup.astro';
+
+export interface FilterOption {
+  value: string;
+  label: string;
+}
+
+interface Props {
+  /** Filter scope; matches `data-filter-scope` on the collection it controls. */
+  scope: string;
+  /** Accessible group label. */
+  label: string;
+  options: readonly FilterOption[];
+  class?: string;
+}
+
+const { scope, label, options, class: className } = Astro.props;
+---
+
+<SegmentedGroup class={className} role="group" aria-label={label} data-filter={scope}>
+  {
+    options.map((option, i) => (
+      <Button variant="ghost" size="cell" aria-pressed={i === 0 ? 'true' : 'false'} data-filter-value={option.value}>
+        {option.label}
+      </Button>
+    ))
+  }
+</SegmentedGroup>

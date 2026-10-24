@@ -1,0 +1,281 @@
+---
+import { SECTION_ORDER, type Locale, type UiCopy } from '../../i18n';
+import Icon from '../../shared/ui/Icon.astro';
+import ThemeToggle from '../theme/ThemeToggle.astro';
+import LanguageSwitch from './LanguageSwitch.astro';
+
+interface Props {
+  locale: Locale;
+  ui: UiCopy;
+  logo: string;
+  brand: string;
+  ctaLabel: string;
+}
+
+const { locale, ui, logo, brand, ctaLabel } = Astro.props;
+const links = SECTION_ORDER.map((id) => ({ id, label: ui.nav[id] }));
+---
+
+<nav id="site-nav" class="site-nav" aria-label={ui.navLabel} data-site-nav>
+  <div class="site-nav__bar">
+    <div class="site-nav__start" data-intro-item>
+      <a class="site-nav__logo" href="#home" aria-label={brand}>
+        <span class="font-display site-nav__mark" aria-hidden="true">{logo}</span>
+      </a>
+      <ul class="site-nav__links">
+        {
+          links.map((link) => (
+            <li>
+              <a class="hud-label nav-link" href={`#${link.id}`} data-nav-link={link.id}>
+                <span class="nav-link__pill">{link.label}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="site-nav__end" data-intro-item>
+      <div class="site-nav__wide">
+        <LanguageSwitch locale={locale} label={ui.languageLabel} names={ui.languageNames} variant="bar" />
+        <ThemeToggle label={ui.toggleTheme} />
+        <a class="site-nav__cta" href="#contact">{ctaLabel}</a>
+      </div>
+      <div class="site-nav__narrow">
+        <ThemeToggle label={ui.toggleTheme} />
+      </div>
+      <button
+        type="button"
+        class="site-nav__burger"
+        aria-label={ui.toggleMenu}
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-toggle
+      >
+        <Icon name="menu" size={20} class="site-nav__burger-open" />
+        <Icon name="x" size={20} class="site-nav__burger-close" />
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="mobile-menu" hidden data-mobile-menu>
+    <ul class="mobile-menu__links">
+      {
+        links.map((link) => (
+          <li>
+            <a class="hud-label mobile-menu__link" href={`#${link.id}`} data-nav-link={link.id} data-menu-close>
+              <span class="nav-link__pill">{link.label}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <a class="mobile-menu__cta" href="#contact" data-menu-close>{ctaLabel}</a>
+    <LanguageSwitch locale={locale} label={ui.languageLabel} names={ui.languageNames} variant="cells" />
+  </div>
+</nav>
+
+<style>
+  .site-nav {
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    width: 100%;
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 95%, transparent);
+    backdrop-filter: blur(8px);
+  }
+
+  .site-nav__bar {
+    display: flex;
+    height: 48px;
+    align-items: stretch;
+    justify-content: space-between;
+  }
+
+  .site-nav__start,
+  .site-nav__end,
+  .site-nav__wide,
+  .site-nav__narrow,
+  .site-nav__links {
+    display: flex;
+    min-width: 0;
+    align-items: stretch;
+  }
+
+  .site-nav__end {
+    flex-shrink: 0;
+  }
+
+  .site-nav__logo {
+    display: flex;
+    align-items: center;
+    padding-inline: 16px;
+    border-right: 1px solid var(--line);
+    color: var(--ink-strong);
+    transition: opacity 150ms var(--ease-standard);
+  }
+
+  .site-nav__logo:hover {
+    opacity: 0.7;
+  }
+
+  .site-nav__mark {
+    font-size: 20px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
+  }
+
+  .site-nav__links {
+    display: none;
+  }
+
+  /* Nav link: full-height HUD label; the inner pill inverts on hover (instantly) and when active. */
+  .nav-link {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    padding-inline: 6px;
+    white-space: nowrap;
+    color: var(--muted);
+  }
+
+  .nav-link:hover {
+    color: var(--ink);
+  }
+
+  .nav-link__pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 6px;
+  }
+
+  .nav-link:hover .nav-link__pill,
+  .mobile-menu__link:hover .nav-link__pill,
+  [data-active='true'] > .nav-link__pill {
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+  }
+
+  .site-nav__wide {
+    display: none;
+  }
+
+  .site-nav__cta {
+    display: inline-flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 20px;
+    border-left: 1px solid var(--line);
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: opacity 150ms var(--ease-standard);
+  }
+
+  .site-nav__cta:hover {
+    opacity: 0.8;
+  }
+
+  .site-nav__burger {
+    display: flex;
+    width: 48px;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid var(--line);
+    color: var(--muted);
+  }
+
+  .site-nav__burger:hover {
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+  }
+
+  .site-nav__burger :global(.site-nav__burger-close),
+  .site-nav__burger[aria-expanded='true'] :global(.site-nav__burger-open) {
+    display: none;
+  }
+
+  .site-nav__burger[aria-expanded='true'] :global(.site-nav__burger-close) {
+    display: block;
+  }
+
+  /* Mobile menu opens in flow under the bar: stacked HUD rows, full-width CTA, language cells. */
+  .mobile-menu {
+    border-top: 1px solid var(--line);
+  }
+
+  .mobile-menu[hidden] {
+    display: none;
+  }
+
+  .mobile-menu__links {
+    padding-block: 8px;
+  }
+
+  .mobile-menu__link {
+    display: flex;
+    padding: 10px 12px;
+    color: var(--muted);
+  }
+
+  .mobile-menu__link:hover {
+    color: var(--ink);
+  }
+
+  .mobile-menu__cta {
+    display: flex;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  @media (min-width: 40rem) {
+    .site-nav__logo {
+      padding-inline: 20px;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .site-nav__wide {
+      display: flex;
+    }
+
+    .site-nav__narrow {
+      display: none;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .site-nav__links {
+      display: flex;
+    }
+
+    .site-nav__burger,
+    .mobile-menu {
+      display: none;
+    }
+  }
+
+  @media (min-width: 80rem) {
+    .nav-link {
+      padding-inline: 10px;
+    }
+  }
+</style>

@@ -1,0 +1,53 @@
+---
+import Icon from '../../shared/ui/Icon.astro';
+
+interface Props {
+  label: string;
+  class?: string;
+}
+
+const { label, class: className } = Astro.props;
+---
+
+<button type="button" class:list={['theme-toggle', 'invert-block', className]} aria-label={label} data-theme-toggle>
+  <Icon name="moon" size={16} class="theme-toggle__moon" />
+  <Icon name="sun" size={16} class="theme-toggle__sun" />
+</button>
+
+<style>
+  .theme-toggle {
+    display: flex;
+    width: 48px;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid var(--line);
+    color: var(--muted);
+  }
+
+  .theme-toggle:hover {
+    color: var(--invert-fg);
+  }
+
+  /* Light shows the moon (switch to dark); dark shows the sun. */
+  .theme-toggle :global(.theme-toggle__sun) {
+    display: none;
+  }
+
+  :global(:root[data-theme='dark']) .theme-toggle :global(.theme-toggle__sun) {
+    display: block;
+  }
+
+  :global(:root[data-theme='dark']) .theme-toggle :global(.theme-toggle__moon) {
+    display: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .theme-toggle :global(.theme-toggle__sun) {
+      display: block;
+    }
+
+    :global(:root:not([data-theme='light'])) .theme-toggle :global(.theme-toggle__moon) {
+      display: none;
+    }
+  }
+</style>

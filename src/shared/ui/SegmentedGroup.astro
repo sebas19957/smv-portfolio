@@ -1,0 +1,37 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'div'> & {
+  /** Optional leading label cell ("Share" style), rendered in --faint. */
+  label?: string;
+};
+
+const { label, class: className, ...rest } = Astro.props;
+---
+
+<div class:list={['segmented', className]} {...rest}>
+  {label && <span class="hud-label segmented__label">{label}</span>}
+  <slot />
+</div>
+
+<style>
+  /* 1px-gap group over a --line background: cells read as one hairline-divided strip. */
+  .segmented {
+    display: flex;
+    flex-wrap: wrap;
+    width: fit-content;
+    max-width: 100%;
+    gap: 1px;
+    border: 1px solid var(--line);
+    background: var(--line);
+  }
+
+  .segmented__label {
+    display: flex;
+    align-items: center;
+    height: 36px;
+    padding-inline: 12px;
+    background: var(--bg);
+    color: var(--faint);
+  }
+</style>

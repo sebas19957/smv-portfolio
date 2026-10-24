@@ -1,0 +1,11 @@
+---
+// Blocking no-flash guard: flags the document before first paint so reveal targets start hidden
+// (see base.css). A 3s fail-safe shows everything if the client bundle never runs.
+---
+
+<script is:inline>
+  document.documentElement.classList.add('js-motion');
+  window.__motionFailsafe = window.setTimeout(function () {
+    document.documentElement.classList.add('motion-failsafe');
+  }, 3000);
+</script>

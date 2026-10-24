@@ -1,0 +1,260 @@
+/*
+ * Visual-language primitives shared by every section: type roles, HUD labels, line work,
+ * hairline grids, chips and inversion blocks. Unlayered on purpose so they win over defaults,
+ * exactly like the reference's custom sheet.
+ */
+
+/* ---------- Type ---------- */
+
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 620;
+  font-stretch: 118%;
+}
+
+.hud-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* Hero H1 / section H2: 36 → 48 (sm) → 60 (md), leading 1.02, tracking -0.035em. */
+.heading-xl {
+  max-width: 48rem;
+  font-family: var(--font-display);
+  font-weight: 620;
+  font-stretch: 118%;
+  font-size: 2.25rem;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  color: var(--ink-strong);
+}
+
+/* CTA H2: 48 → 60 → 72, leading .98, tracking -0.04em. */
+.heading-cta {
+  max-width: 56rem;
+  font-family: var(--font-display);
+  font-weight: 620;
+  font-stretch: 118%;
+  font-size: 3rem;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  color: var(--ink-strong);
+}
+
+@media (min-width: 40rem) {
+  .heading-xl { font-size: 3rem; }
+  .heading-cta { font-size: 3.75rem; }
+}
+
+@media (min-width: 48rem) {
+  .heading-xl { font-size: 3.75rem; }
+  .heading-cta { font-size: 4.5rem; }
+}
+
+/* Card title H3: 30px, leading-none box, tracking -0.03em. */
+.title-card {
+  font-family: var(--font-display);
+  font-weight: 620;
+  font-stretch: 118%;
+  font-size: 1.875rem;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--ink-strong);
+}
+
+/* Feature H3: 24/32, tracking -0.02em. */
+.title-feature {
+  font-family: var(--font-display);
+  font-weight: 620;
+  font-stretch: 118%;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  letter-spacing: -0.02em;
+  color: var(--ink-strong);
+}
+
+.accent-word {
+  color: var(--app-ink, var(--accent-ink));
+}
+
+/* Section titles: the vivid item fill (large display text, ≥3:1 on both themes). */
+.accent-word--fill {
+  color: var(--app);
+}
+
+/* Lead paragraph: Inter 18/29.25 muted, 576px measure. */
+.lead {
+  max-width: 36rem;
+  font-size: 1.125rem;
+  line-height: 1.625;
+  color: var(--muted);
+}
+
+.body-copy {
+  line-height: 1.625;
+  color: var(--muted);
+}
+
+.text-ink { color: var(--ink); }
+.text-ink-strong { color: var(--ink-strong); }
+.text-muted { color: var(--muted); }
+.text-faint { color: var(--faint); }
+.text-accent { color: var(--accent-ink); }
+
+.inline-link {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 4px;
+}
+
+.inline-link:hover {
+  text-decoration-color: currentColor;
+}
+
+/* ---------- Line work ---------- */
+
+/* T-shaped crosshair mark where a section rule meets the frame border. */
+.tick {
+  pointer-events: none;
+  width: 11px;
+  height: 11px;
+  position: absolute;
+  z-index: 31;
+}
+
+.tick::before,
+.tick::after {
+  content: "";
+  background: var(--line-strong);
+  position: absolute;
+}
+
+.tick::before {
+  width: 1px;
+  top: 0;
+  bottom: 0;
+  left: 5px;
+}
+
+.tick-half::before {
+  top: 5px;
+}
+
+.tick::after {
+  height: 1px;
+  top: 5px;
+  left: 0;
+  right: 0;
+}
+
+/* Hairline grid: 1px gaps over a --line background become perfect rules. */
+.hairline-grid {
+  display: grid;
+  gap: 1px;
+  background: var(--line);
+}
+
+.hairline-grid > * {
+  background: var(--bg);
+}
+
+/* ---------- Interactive blocks ---------- */
+
+.invert-block {
+  transition:
+    background-color 0.12s linear,
+    color 0.12s linear;
+}
+
+.invert-block:hover,
+.invert-block[data-active="true"] {
+  background: var(--invert-bg);
+  color: var(--invert-fg);
+}
+
+/* Chips: mono 10/15, uppercase, 1px line, sunken fill, no radius. */
+.chip {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px;
+  border: 1px solid var(--line);
+  background: var(--bg-sunken);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 15px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.chip[data-tone="status"] {
+  color: var(--app-ink, var(--accent-ink));
+}
+
+/* Solid index badge ("01") in the item color. */
+.num-badge {
+  padding: 4px 8px;
+  background: var(--app, var(--accent));
+  color: #000;
+  font-weight: 700;
+}
+
+/* 40x40 outlined icon cell. */
+.icon-box {
+  display: flex;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  color: var(--accent-ink);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Section inner padding: px-6 py-14 → md:px-10 md:py-20. */
+.section-pad {
+  padding: 56px 24px;
+}
+
+@media (min-width: 48rem) {
+  .section-pad {
+    padding: 80px 40px;
+  }
+}
+
+/* Grid cell padding: p-6 → md:p-8. */
+.cell-pad {
+  padding: 24px;
+}
+
+@media (min-width: 48rem) {
+  .cell-pad {
+    padding: 32px;
+  }
+}
+
+/* Icon / media drop shadow used by the reference for raised tiles. */
+.drop-tile {
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.28));
+}

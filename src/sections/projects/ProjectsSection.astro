@@ -1,0 +1,136 @@
+---
+import { PRODUCTS, PROJECTS, pad2, sectionIndex, type PortfolioContent, type ProjectEntry } from '../../i18n';
+import FilterBar from '../../features/collection-filter/FilterBar.astro';
+import RichText from '../../shared/ui/RichText.astro';
+import { SECTION_ACCENTS } from '../section-accents';
+import Section from '../../shared/ui/Section.astro';
+import ProjectCard from './ProjectCard.astro';
+import ProjectDetail from './ProjectDetail.astro';
+import { projectMedia } from './project-media';
+
+interface Props {
+  content: PortfolioContent;
+}
+
+const { content } = Astro.props;
+const { copy, locale } = content;
+const { projects, ui } = copy;
+
+const entries: readonly ProjectEntry[] = PROJECTS;
+const items = entries.map((entry, i) => {
+  const text = entry.copy[locale];
+  const related = entries.filter((other) => other.product === entry.product && other.slug !== entry.slug).map(
+    (other) => ({
+      slug: other.slug,
+      title: `${other.copy[locale].title.base}${other.copy[locale].title.accent}`,
+      part: projects.detail.parts[other.part],
+    }),
+  );
+  const ecosystem = PRODUCTS[entry.product]?.copy[locale];
+  const media = projectMedia(entry.slug, entry.cover);
+  const title = `${text.title.base}${text.title.accent}`.replaceAll('\u00ad', '');
+  const coverCaption = media.cover && entry.captions?.[media.cover.key]?.[locale];
+  const coverAlt = coverCaption ? `${title} — ${coverCaption}` : title;
+  return { entry, text, related, ecosystem, coverAlt, index: pad2(i + 1), media };
+});
+const filterOptions = [
+  { value: 'all', label: projects.filters.all },
+  { value: 'work', label: projects.filters.work },
+  { value: 'personal', label: projects.filters.personal },
+];
+---
+
+<Section
+  id="projects"
+  index={sectionIndex('projects')}
+  label={ui.nav.projects}
+  aside={`${pad2(items.length)} · ${projects.filters.work} · ${projects.filters.personal}`}
+>
+  <div class="section-pad">
+    <h2 class="heading-xl" data-reveal><RichText text={projects.heading} accent={SECTION_ACCENTS.projects} /></h2>
+    <p class="lead projects__lead" data-reveal>{projects.intro}</p>
+    <p class="body-copy projects__note" data-reveal>{projects.confidentiality}</p>
+    <div data-reveal>
+      <FilterBar scope="projects" label={projects.title} options={filterOptions} class="projects__filter" />
+    </div>
+  </div>
+  <div class="hairline-grid projects-grid" data-reveal-group data-filter-scope="projects">
+    {
+      items.map(({ entry, text, index, media, coverAlt }) => (
+        <ProjectCard
+          index={index}
+          entry={entry}
+          text={text}
+          media={media}
+          coverAlt={coverAlt}
+          labels={{
+            category: projects.categoryShort[entry.category],
+            part: projects.detail.parts[entry.part],
+            demo: projects.demoLabel,
+            site: projects.siteLabel,
+            code: projects.codeLabel,
+            technologies: projects.technologiesLabel,
+            team: entry.team && projects.detail.team[entry.team],
+            details: projects.detail.open,
+            imageSoon: projects.detail.imageSoon,
+            newTab: ui.opensInNewTab,
+          }}
+        />
+      ))
+    }
+  </div>
+  {
+    items.map(({ entry, text, index, media, related, ecosystem }) => (
+      <template data-project-detail={entry.slug}>
+        <ProjectDetail
+          index={index}
+          locale={locale}
+          entry={entry}
+          text={text}
+          media={media}
+          related={related}
+          ecosystem={ecosystem}
+          labels={{
+            ...projects.detail,
+            category: projects.categoryLabels[entry.category],
+            demo: projects.demoLabel,
+            site: projects.siteLabel,
+            code: projects.codeLabel,
+            newTab: ui.opensInNewTab,
+          }}
+        />
+      </template>
+    ))
+  }
+</Section>
+
+<style>
+  .projects__lead {
+    margin-top: 20px;
+  }
+
+  .projects__note {
+    max-width: 36rem;
+    margin-top: 16px;
+  }
+
+  .section-pad :global(.projects__filter) {
+    margin-top: 24px;
+  }
+
+  .projects-grid {
+    border-top: 1px solid var(--line);
+  }
+
+  @media (min-width: 40rem) {
+    .projects-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 80rem) {
+    .projects-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

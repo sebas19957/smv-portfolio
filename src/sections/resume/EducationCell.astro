@@ -1,0 +1,60 @@
+---
+import type { EducationCategory, EducationCopy } from '../../i18n';
+import Icon from '../../shared/ui/Icon.astro';
+import type { IconName } from '../../shared/ui/icons';
+
+interface Props {
+  index: string;
+  item: EducationCopy;
+  categoryLabel: string;
+}
+
+const { index, item, categoryLabel } = Astro.props;
+const ICON: Record<EducationCategory, IconName> = {
+  systems: 'graduation-cap',
+  health: 'heart-pulse',
+  diploma: 'award',
+};
+---
+
+<li class="education cell-pad" data-reveal>
+  <div class="education__top">
+    <span class="icon-box"><Icon name={ICON[item.category]} size={20} /></span>
+    <span class="hud-label text-faint">{index}</span>
+  </div>
+  <div class="education__chips">
+    <span class="chip" data-tone="status">{categoryLabel}</span>
+    <span class="chip">{item.period}</span>
+  </div>
+  <h4 class="title-feature education__title">{item.title}</h4>
+  <p class="hud-label education__institution text-muted">{item.institution}</p>
+  <p class="body-copy education__description">{item.description}</p>
+</li>
+
+<style>
+  .education__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .education__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 24px;
+  }
+
+  .education__title {
+    margin-top: 12px;
+  }
+
+  .education__institution {
+    margin-top: 8px;
+  }
+
+  .education__description {
+    margin-top: 12px;
+  }
+</style>

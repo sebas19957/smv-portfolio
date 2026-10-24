@@ -1,0 +1,168 @@
+---
+/**
+ * "Life philosophy": the personal closing of the page. Same shell, grid and type as every other
+ * section, on the regular page ground, with each trait on a different vivid fill.
+ */
+import { pad2, sectionIndex, type AccentKey, type PhilosophyCardId, type PortfolioContent } from '../../i18n';
+import Icon from '../../shared/ui/Icon.astro';
+import type { IconName } from '../../shared/ui/icons';
+import RichText from '../../shared/ui/RichText.astro';
+import Section from '../../shared/ui/Section.astro';
+import { SECTION_ACCENTS } from '../section-accents';
+import PhilosophyCard from './PhilosophyCard.astro';
+
+interface Props {
+  content: PortfolioContent;
+}
+
+interface TraitLook {
+  readonly icon: IconName;
+  /** Tile fill; only fills where black body text passes AA (≥4.5:1). */
+  readonly accent: AccentKey;
+  /** Desktop columns (4-column grid: 2+2 · 1+1+1+1 · 1+3, no orphan cells). */
+  readonly span: 1 | 2 | 3;
+}
+
+const TRAITS: Readonly<Record<PhilosophyCardId, TraitLook>> = {
+  football: { icon: 'ball-football', accent: 'green', span: 2 },
+  friends: { icon: 'mood-happy', accent: 'magenta', span: 2 },
+  newPlaces: { icon: 'messages', accent: 'sky', span: 1 },
+  travelMusic: { icon: 'plane-departure', accent: 'orange', span: 1 },
+  curiosity: { icon: 'globe', accent: 'blue', span: 1 },
+  beers: { icon: 'beer', accent: 'lime', span: 1 },
+  goals: { icon: 'barbell', accent: 'mint', span: 1 },
+  temper: { icon: 'flame', accent: 'vermilion', span: 3 },
+};
+
+const { content } = Astro.props;
+const { copy, profile } = content;
+const { philosophy, ui } = copy;
+---
+
+<Section
+  id="philosophy"
+  index={sectionIndex('philosophy')}
+  label={ui.nav.philosophy}
+  aside={philosophy.cards.map((card) => card.title).join(' · ')}
+  class="philosophy"
+>
+  <div class="section-pad philosophy__head">
+    <h2 class="heading-xl" data-reveal><RichText text={philosophy.heading} accent={SECTION_ACCENTS.philosophy} /></h2>
+    <p class="philosophy__intro" data-reveal>{philosophy.intro}</p>
+  </div>
+
+  <ol class="hairline-grid philosophy__grid" data-reveal-group>
+    {
+      philosophy.cards.map((card, i) => {
+        const look = TRAITS[card.id];
+        return <PhilosophyCard index={pad2(i + 1)} card={card} icon={look.icon} accent={look.accent} span={look.span} />;
+      })
+    }
+  </ol>
+
+  <figure class="philosophy__closing" data-reveal>
+    <span class="philosophy__heart" aria-hidden="true"><Icon name="heart" size={26} /></span>
+    <blockquote class="philosophy__quote font-display">
+      <p>{philosophy.closing}</p>
+    </blockquote>
+    <figcaption class="hud-label philosophy__signature">— {profile.fullName}</figcaption>
+  </figure>
+</Section>
+
+<style>
+  /* The page's own ground; only the closing quote inverts it so it reads as the last word. */
+  :global(.philosophy) {
+    --philo-quote-bg: var(--invert-bg);
+    --philo-quote-ink: var(--invert-fg);
+  }
+
+  .philosophy__head {
+    display: grid;
+    gap: 24px;
+  }
+
+  .philosophy__intro {
+    max-width: 40rem;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  .philosophy__grid {
+    border-top: 1px solid var(--line);
+  }
+
+  .philosophy__closing {
+    display: grid;
+    gap: 24px;
+    padding: 48px 24px;
+    border-top: 1px solid var(--line);
+    background: var(--philo-quote-bg);
+    color: var(--philo-quote-ink);
+  }
+
+  .philosophy__heart {
+    display: flex;
+    width: 52px;
+    height: 52px;
+    align-items: center;
+    justify-content: center;
+    background: var(--philo-quote-ink);
+    color: var(--philo-quote-bg);
+  }
+
+  .philosophy__quote {
+    max-width: 58rem;
+    font-size: 1.75rem;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  .philosophy__signature {
+    font-weight: 700;
+  }
+
+  @media (min-width: 40rem) {
+    .philosophy__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .philosophy__intro {
+      font-size: 1.5rem;
+    }
+
+    .philosophy__closing {
+      grid-template-columns: auto minmax(0, 1fr);
+      column-gap: 40px;
+      padding: 80px 40px;
+    }
+
+    .philosophy__quote {
+      font-size: 2.5rem;
+    }
+
+    .philosophy__signature {
+      grid-column: 2;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .philosophy__head {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: end;
+      column-gap: 40px;
+    }
+
+    .philosophy__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .philosophy__quote {
+      font-size: 3rem;
+    }
+  }
+</style>

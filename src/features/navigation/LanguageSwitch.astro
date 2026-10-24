@@ -1,0 +1,128 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { LOCALES, type Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+  label: string;
+  names: Readonly<Record<Locale, string>>;
+  /** `bar`: one nav cell with "EN / ES" pills. `cells`: two half-width cells (mobile menu). */
+  variant: 'bar' | 'cells';
+}
+
+const { locale, label, names, variant } = Astro.props;
+const links = LOCALES.map((code) => ({
+  code,
+  href: getRelativeLocaleUrl(code),
+  active: code === locale,
+  name: names[code],
+}));
+---
+
+{
+  variant === 'bar' ? (
+    <div class="lang-bar" role="group" aria-label={label}>
+      {links.map((link, i) => (
+        <>
+          {i > 0 && (
+            <span class="hud-label lang-bar__slash" aria-hidden="true">
+              /
+            </span>
+          )}
+          <a
+            class="hud-label lang-bar__link"
+            href={link.href}
+            hreflang={link.code}
+            lang={link.code}
+            aria-label={link.name}
+            aria-current={link.active ? 'true' : undefined}
+            data-locale-link
+          >
+            <span class="lang-bar__pill" data-active={String(link.active)}>
+              {link.code}
+            </span>
+          </a>
+        </>
+      ))}
+    </div>
+  ) : (
+    <div class="lang-cells" role="group" aria-label={label}>
+      {links.map((link) => (
+        <a
+          class="hud-label lang-cells__link"
+          href={link.href}
+          hreflang={link.code}
+          lang={link.code}
+          aria-label={link.name}
+          aria-current={link.active ? 'true' : undefined}
+          data-active={String(link.active)}
+          data-locale-link
+        >
+          {link.code}
+        </a>
+      ))}
+    </div>
+  )
+}
+
+<style>
+  .lang-bar {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-inline: 10px;
+    border-left: 1px solid var(--line);
+  }
+
+  .lang-bar__slash {
+    color: var(--faint);
+  }
+
+  .lang-bar__link {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-inline: 4px;
+    color: var(--muted);
+  }
+
+  .lang-bar__link:hover {
+    color: var(--ink);
+  }
+
+  .lang-bar__pill {
+    padding: 2px 6px;
+  }
+
+  .lang-bar__link:hover .lang-bar__pill,
+  .lang-bar__pill[data-active='true'] {
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+  }
+
+  .lang-cells {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border-top: 1px solid var(--line);
+  }
+
+  .lang-cells__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    background: var(--bg);
+    color: var(--muted);
+  }
+
+  .lang-cells__link[data-active='true'] {
+    color: var(--ink);
+  }
+
+  .lang-cells__link:hover {
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+  }
+</style>

@@ -1,0 +1,66 @@
+---
+import Eyebrow from './Eyebrow.astro';
+
+interface Props {
+  id: string;
+  /** Two-digit index shown in the sticky eyebrow ("02"). */
+  index: string;
+  /** Eyebrow label (also the accessible name of the section). */
+  label: string;
+  /** Right-hand eyebrow note, hidden below 640px. */
+  aside?: string;
+  class?: string;
+}
+
+const { id, index, label, aside, class: className } = Astro.props;
+const labelId = `${id}-label`;
+---
+
+<section
+  id={id}
+  class:list={['section', className]}
+  aria-labelledby={labelId}
+  data-choreo
+>
+  <span class="section-rule" aria-hidden="true" data-draw-rule></span>
+  <div class="frame">
+    <span class="tick tick-half tick--left" aria-hidden="true" data-draw-tick></span>
+    <span class="tick tick-half tick--right" aria-hidden="true" data-draw-tick></span>
+    <Eyebrow id={labelId} index={index} label={label} aside={aside} />
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section {
+    position: relative;
+  }
+
+  /* Full-bleed 1px rule, drawn from the left when the section enters. */
+  .section-rule {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 1px;
+    background: var(--line);
+    transform-origin: left center;
+  }
+
+  /* The 1280px blueprint column with hairline side borders. */
+  .frame {
+    position: relative;
+    max-width: var(--frame-max);
+    margin-inline: auto;
+    border-inline: 1px solid var(--line);
+  }
+
+  .tick--left {
+    top: -5px;
+    left: -6px;
+  }
+
+  .tick--right {
+    top: -5px;
+    right: -5px;
+  }
+</style>

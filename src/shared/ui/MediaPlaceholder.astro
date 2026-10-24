@@ -1,0 +1,102 @@
+---
+/**
+ * Line-work stand-in for a missing image: hairline frame, crossed diagonals, corner crosshairs,
+ * the slot index and a faint label. Sized by its parent (or `aspect`).
+ */
+interface Props {
+  label: string;
+  index?: string;
+  aspect?: string;
+  class?: string;
+}
+
+const { label, index, aspect, class: className } = Astro.props;
+---
+
+<div class:list={['placeholder', className]} style={aspect ? `aspect-ratio: ${aspect};` : undefined} role="img" aria-label={label}>
+  <svg class="placeholder__lines" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 100 100">
+    <line x1="0" y1="0" x2="100" y2="100" vector-effect="non-scaling-stroke"></line>
+    <line x1="100" y1="0" x2="0" y2="100" vector-effect="non-scaling-stroke"></line>
+  </svg>
+  <span class="placeholder__mark placeholder__mark--tl" aria-hidden="true"></span>
+  <span class="placeholder__mark placeholder__mark--br" aria-hidden="true"></span>
+  {index && <span class="hud-label placeholder__index" aria-hidden="true">{index}</span>}
+  <span class="hud-label placeholder__label" aria-hidden="true">{label}</span>
+</div>
+
+<style>
+  .placeholder {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background:
+      repeating-linear-gradient(to bottom, var(--scanline) 0 1px, transparent 1px 3px),
+      var(--bg-sunken);
+  }
+
+  .placeholder__lines {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+
+  .placeholder__label {
+    position: relative;
+    padding: 4px 8px;
+    background: var(--bg-sunken);
+    color: var(--faint);
+    text-align: center;
+  }
+
+  .placeholder__index {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    color: var(--faint);
+  }
+
+  .placeholder__mark {
+    position: absolute;
+    width: 11px;
+    height: 11px;
+  }
+
+  .placeholder__mark::before,
+  .placeholder__mark::after {
+    content: '';
+    position: absolute;
+    background: var(--line-strong);
+  }
+
+  .placeholder__mark::before {
+    left: 5px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+  }
+
+  .placeholder__mark::after {
+    top: 5px;
+    left: 0;
+    right: 0;
+    height: 1px;
+  }
+
+  .placeholder__mark--tl {
+    top: 6px;
+    right: 6px;
+  }
+
+  .placeholder__mark--br {
+    bottom: 6px;
+    left: 6px;
+  }
+</style>

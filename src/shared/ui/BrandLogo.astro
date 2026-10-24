@@ -1,0 +1,88 @@
+---
+/**
+ * Inline official logo with optical sizing: every mark gets the same visual area (a 1em square)
+ * whatever its aspect ratio, times its optical correction, capped so neither side exceeds the
+ * 1.36em slot. Size it by setting `font-size` on the component (or a parent).
+ */
+import type { ResolvedIcon } from './brand-icons';
+
+interface Props {
+  icon: ResolvedIcon;
+  class?: string;
+}
+
+const { icon, class: className } = Astro.props;
+const SLOT = 1.36;
+const root = Math.sqrt(icon.aspect);
+const fit = Math.min(icon.optical, SLOT / Math.max(root, 1 / root));
+const style = `--iw: ${(root * fit).toFixed(3)}; --ih: ${(fit / root).toFixed(3)};`;
+---
+
+<span class:list={['brand-logo', className]} aria-hidden="true">
+  <svg
+    class:list={['brand-logo__svg', icon.invertOnDark && 'brand-logo__svg--invert', icon.tint && 'brand-logo__svg--tint']}
+    style={style}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox={icon.viewBox}
+    focusable="false"
+    set:html={icon.body}
+  />
+</span>
+
+<style>
+  .brand-logo {
+    display: inline-flex;
+    flex-shrink: 0;
+    width: 1.36em;
+    height: 1.36em;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .brand-logo__svg {
+    width: calc(var(--iw) * 1em);
+    height: calc(var(--ih) * 1em);
+    overflow: visible;
+    /* Single-colour official marks (currentColor) are drawn in ink; coloured logos ignore it. */
+    color: var(--ink-strong);
+  }
+
+  /* Pictograms for things without a logo take the item colour (or the current ink). */
+  .brand-logo__svg--tint {
+    color: var(--app, currentColor);
+  }
+
+  /* Official light variants on dark: black marks invert, dark wordmark parts turn white. */
+  :global(:root[data-theme='dark']) .brand-logo__svg--invert {
+    filter: invert(1);
+  }
+
+  :global(:root[data-theme='dark']) .brand-logo__svg {
+    --logo-ink: #fff;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .brand-logo__svg--invert {
+      filter: invert(1);
+    }
+
+    :global(:root:not([data-theme='light'])) .brand-logo__svg {
+      --logo-ink: #fff;
+    }
+  }
+
+  /* On surfaces that invert on hover, black marks flip with the background. */
+  :global([data-inverting]:hover) .brand-logo__svg--invert {
+    filter: invert(1);
+  }
+
+  :global(:root[data-theme='dark'] [data-inverting]:hover) .brand-logo__svg--invert {
+    filter: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light']) [data-inverting]:hover) .brand-logo__svg--invert {
+      filter: none;
+    }
+  }
+</style>

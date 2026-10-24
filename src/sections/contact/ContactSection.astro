@@ -1,0 +1,209 @@
+---
+import { sectionIndex, type PortfolioContent } from '../../i18n';
+import ContactForm from '../../features/contact-form/ContactForm.astro';
+import Icon from '../../shared/ui/Icon.astro';
+import BrandLogo from '../../shared/ui/BrandLogo.astro';
+import { resolveBrandIcon } from '../../shared/ui/brand-icons';
+import RichText from '../../shared/ui/RichText.astro';
+import { SECTION_ACCENTS } from '../section-accents';
+import Section from '../../shared/ui/Section.astro';
+
+interface Props {
+  content: PortfolioContent;
+}
+
+const { content } = Astro.props;
+const { copy, profile } = content;
+const { contact, ui } = copy;
+
+const channels = [
+  { icon: 'mail', label: contact.emailLabel, value: profile.contactEmail, href: `mailto:${profile.contactEmail}` },
+] as const;
+---
+
+<Section
+  id="contact"
+  index={sectionIndex('contact')}
+  label={ui.nav.contact}
+  aside={profile.location}
+>
+  <div class="contact-cta">
+    <p class="hud-label text-faint">{contact.subtitle}</p>
+    <h2 class="heading-cta contact-cta__heading" data-reveal><RichText text={contact.heading} accent={SECTION_ACCENTS.contact} /></h2>
+    <p class="lead contact-cta__lead">{contact.text}</p>
+  </div>
+
+  <div class="hairline-grid contact-grid">
+    <div class="contact-grid__channels">
+      {
+        channels.map((channel) => (
+          <a class="contact-channel cell-pad" href={channel.href}>
+            <span class="icon-box">
+              <Icon name={channel.icon} size={20} />
+            </span>
+            <span class="contact-channel__text">
+              <span class="hud-label text-faint">{channel.label}</span>
+              <span class="contact-channel__value">{channel.value}</span>
+            </span>
+            <Icon name="arrow-up-right" size={16} class="contact-channel__arrow" />
+          </a>
+        ))
+      }
+      <div class="contact-follow cell-pad">
+        <p class="hud-label text-faint">{copy.footer.followHeading}</p>
+        <ul class="contact-follow__list">
+          {
+            profile.socials.map((social) => (
+              <li>
+                <a
+                  class="contact-follow__link"
+                  href={social.href}
+                  aria-label={social.label}
+                  target={social.id === 'email' ? undefined : '_blank'}
+                  rel={social.id === 'email' ? undefined : 'noopener noreferrer'}
+                  data-inverting
+                >
+                  <BrandLogo icon={resolveBrandIcon(social.icon)} class="contact-follow__logo" />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+    <div class="contact-grid__form cell-pad">
+      <ContactForm form={contact.form} />
+    </div>
+  </div>
+</Section>
+
+<style>
+  /* Centered CTA block (py-20 → md:py-28), the reference's closing statement. */
+  .contact-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 80px 24px;
+    text-align: center;
+  }
+
+  .contact-cta__heading {
+    margin-top: 24px;
+  }
+
+  .contact-cta__lead {
+    margin-top: 24px;
+  }
+
+  .contact-grid {
+    border-top: 1px solid var(--line);
+  }
+
+  .contact-grid__channels {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--line);
+  }
+
+  .contact-channel {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--bg);
+  }
+
+  a.contact-channel {
+    transition:
+      background-color 0.12s linear,
+      color 0.12s linear;
+  }
+
+  a.contact-channel:hover {
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+  }
+
+  a.contact-channel:hover .icon-box,
+  a.contact-channel:hover .text-faint {
+    color: inherit;
+    border-color: color-mix(in srgb, var(--invert-fg) 30%, transparent);
+  }
+
+  .contact-follow {
+    flex: 1;
+    background: var(--bg);
+  }
+
+  .contact-follow__list {
+    display: flex;
+    flex-wrap: wrap;
+    width: fit-content;
+    gap: 1px;
+    margin-top: 16px;
+    border: 1px solid var(--line);
+    background: var(--line);
+  }
+
+  .contact-follow__link {
+    display: flex;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    color: var(--muted);
+    transition:
+      background-color 0.12s linear,
+      color 0.12s linear;
+  }
+
+  .contact-follow__link:hover {
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+  }
+
+  .contact-follow__link :global(.contact-follow__logo) {
+    font-size: 17px;
+  }
+
+  .contact-channel__text {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .contact-channel__value {
+    font-family: var(--font-display);
+    font-weight: 620;
+    font-stretch: 118%;
+    font-size: 1.25rem;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
+  }
+
+  .contact-channel :global(.contact-channel__arrow) {
+    color: var(--faint);
+    transition: transform 150ms var(--ease-standard);
+  }
+
+  a.contact-channel:hover :global(.contact-channel__arrow) {
+    color: inherit;
+    transform: translate(2px, -2px);
+  }
+
+  @media (min-width: 48rem) {
+    .contact-cta {
+      padding-block: 112px;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .contact-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    }
+  }
+</style>

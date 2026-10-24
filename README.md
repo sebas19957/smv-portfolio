@@ -5,7 +5,7 @@
 <h1 align="center">Sebastián Mosquera Valencia — Portfolio</h1>
 
 <p align="center">
-  Systems Engineer & Front-end Developer — personal portfolio.
+  Systems Engineer & Front-end Developer — personal portfolio (v3).
 </p>
 
 <p align="center">
@@ -13,11 +13,13 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Next.js-15-black?logo=next.js" alt="Next.js" />
-  <img src="https://img.shields.io/badge/React-19-149ECA?logo=react" alt="React" />
-  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
-  <img src="https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white" alt="Docker" />
+  <img src="https://img.shields.io/badge/Astro-7-BC52EE?logo=astro&logoColor=white" alt="Astro" />
+  <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/GSAP-3-88CE02?logo=greensock&logoColor=black" alt="GSAP" />
+  <img src="https://img.shields.io/badge/Lenis-1-000000" alt="Lenis" />
+  <img src="https://img.shields.io/badge/pnpm-12-F69220?logo=pnpm&logoColor=white" alt="pnpm" />
+  <img src="https://img.shields.io/badge/Vitest-5-6E9F18?logo=vitest&logoColor=white" alt="Vitest" />
+  <img src="https://img.shields.io/badge/Docker-GHCR-2496ED?logo=docker&logoColor=white" alt="Docker" />
 </p>
 
 ---
@@ -27,41 +29,51 @@
 This is my personal portfolio: a landing page showcasing my professional and
 academic background as a Systems Engineer and Front-end Developer. It highlights
 my skills, work experience, featured projects and testimonials, with sections
-for About, Skills, Summary, Projects, Testimonials and Contact.
+for Home, About, Skills, Resume, Projects, Testimonials and Contact.
 
-The contact form is rate-limited per IP using Redis and delivers messages via
-email (Nodemailer). Media assets are served from AWS S3.
+The site is bilingual (English at `/`, Spanish at `/es/`), supports light and
+dark themes, and uses GSAP + Lenis motion with a fixed scroll "rail" that turns
+the section names into a live table of contents.
 
 ## Tech Stack
 
-| Area            | Technology                                              |
-| --------------- | ------------------------------------------------------- |
-| Framework       | [Next.js 15](https://nextjs.org/) (App Router) + React 19 |
-| Language        | [TypeScript](https://www.typescriptlang.org/)           |
-| Styling         | [Tailwind CSS](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/) |
-| Animation       | [Framer Motion](https://www.framer.com/motion/)         |
-| Rate limiting   | [Redis](https://redis.io/) (`ioredis`)                  |
-| Email           | [Nodemailer](https://nodemailer.com/)                   |
-| Asset storage   | [AWS S3](https://aws.amazon.com/s3/)                    |
-| Package manager | [pnpm](https://pnpm.io/)                                |
-| Container       | [Docker](https://www.docker.com/) (standalone output)   |
-| CI/CD           | [GitHub Actions](https://github.com/features/actions) → [GHCR](https://ghcr.io) |
+| Area            | Technology                                                        |
+| --------------- | ----------------------------------------------------------------- |
+| Framework       | [Astro 7](https://astro.build/) (prerendered pages)               |
+| Server          | [`@astrojs/node`](https://docs.astro.build/en/guides/integrations-guide/node/) standalone (contact API route only) |
+| Language        | [TypeScript](https://www.typescriptlang.org/)                     |
+| Styling         | Plain CSS with design tokens (no CSS framework)                   |
+| Animation       | [GSAP](https://gsap.com/) + [Lenis](https://lenis.darkroom.engineering/) smooth scroll |
+| i18n            | Astro i18n routing + typed EN/ES content model                    |
+| Icons           | [Iconify](https://iconify.design/) JSON sets, inlined at build time |
+| Fonts           | [Fontsource](https://fontsource.org/) (Archivo, Inter, Geist Mono) |
+| Images          | `astro:assets` (optimized at build time)                          |
+| Email           | [Nodemailer](https://nodemailer.com/) over SMTP                   |
+| Rate limiting   | [Redis](https://redis.io/) via [ioredis](https://github.com/redis/ioredis) |
+| Testing         | [Vitest](https://vitest.dev/) + [happy-dom](https://github.com/capricorn86/happy-dom), `astro check` |
+| Container       | [Docker](https://www.docker.com/) (multi-stage, non-root, Node 22 Alpine) |
+| CI/CD           | [GitHub Actions](https://github.com/features/actions) → [GHCR](https://ghcr.io/) |
+| Package manager | [pnpm](https://pnpm.io/)                                          |
 
 ## Features
 
-- ⚡ Next.js App Router with standalone build for tiny container images.
-- 🎨 Responsive UI with Tailwind CSS, shadcn/ui and Framer Motion animations.
-- 📨 Contact form with IP-based rate limiting (3 attempts / 24h) backed by Redis.
-- ☁️ Media delivered from AWS S3 with optimized image loading.
-- 🐳 Production-ready multi-stage Dockerfile.
-- 🤖 Automated CI (lint + build) and image publishing to GHCR.
+- ⚡ Every page prerendered with zero framework runtime shipped to the browser; only the
+  contact API runs on the Node server.
+- 🌍 Bilingual EN/ES with localized routes and a typed content model.
+- 🌗 Animated light/dark theme switch without flash on load.
+- 🎞️ GSAP scroll reveals, intro sequence and Lenis smooth scrolling.
+- 🧭 Scroll rail with ruler, needle and progress readout as a live table of contents.
+- 🗂️ Segmented filters for skills and projects, plus a project detail sheet.
+- ♿ Reduced-motion guard and accessible, keyboard-friendly navigation.
+- 📨 Contact form that emails me via SMTP, with validation shared by browser and server and a
+  Redis rate limit of 3 messages per IP every 24h (Cloudflare-aware client IP).
 
 ## Getting Started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) **>= 22**
-- [pnpm](https://pnpm.io/) **>= 11** (`corepack enable` recommended)
+- [Node.js](https://nodejs.org/) **>= 22.23.4**
+- [pnpm](https://pnpm.io/) **>= 12** (`corepack enable` recommended)
 
 ### Installation
 
@@ -74,28 +86,41 @@ pnpm install
 Copy the template and fill in the values:
 
 ```bash
-cp .env.template .env.development   # for development
-cp .env.template .env.production    # for production
+cp .env.template .env.development   # used by `pnpm dev`
+cp .env.template .env.production    # used with Docker (`--env-file`)
 ```
 
-| Variable         | Description                                          |
-| ---------------- | ---------------------------------------------------- |
-| `EMAIL_USER`     | Gmail account used to send and as the "from" address |
-| `EMAIL_PASS`     | Gmail app password                                   |
-| `EMAIL_RECEIVER` | Inbox that receives contact-form messages            |
-| `REDIS_URL`      | Redis connection string (rate limiting)              |
+| Variable         | Description                                                   |
+| ---------------- | ------------------------------------------------------------- |
+| `EMAIL_HOST`     | SMTP host (default `smtp.gmail.com`)                          |
+| `EMAIL_PORT`     | SMTP port (default `587` with STARTTLS; `465` uses implicit TLS) |
+| `EMAIL_USER`     | SMTP account user                                             |
+| `EMAIL_PASS`     | SMTP password (for Gmail, an app password)                    |
+| `EMAIL_FROM`     | Sender address (optional, defaults to `EMAIL_USER`)           |
+| `EMAIL_RECEIVER` | Inbox that receives contact-form messages                     |
+| `REDIS_URL`      | Redis connection string (rate limiting)                       |
 
-> Email is delivered through Gmail (Nodemailer `service: "gmail"`), so only the
-> account, its app password and the receiver are needed.
->
-> These are **server-side only** and are never exposed to the browser.
+> These are **server-side only** (`astro:env` secrets) and are **read at runtime** by the
+> Node server: they are never inlined into the build, shipped to the browser or baked into the
+> Docker image. If Redis is unset or unreachable the form still sends (the error is logged).
 
 ### Run
 
+| Command           | Action                                                  |
+| :---------------- | :------------------------------------------------------ |
+| `pnpm dev`        | Start the dev server at `localhost:4321`                |
+| `pnpm build`      | Build prerendered pages + the Node server into `./dist/` |
+| `pnpm preview`    | Preview the production build locally                    |
+| `pnpm check`      | Type-check the project (`astro check`)                  |
+| `pnpm test`       | Run the test suite once (Vitest)                        |
+| `pnpm test:watch` | Run the tests in watch mode                             |
+
+The Redis rate-limiter scripts also have an integration test, skipped unless `REDIS_TEST_URL`
+points at a disposable Redis (never the shared production one):
+
 ```bash
-pnpm dev      # development (http://localhost:3000)
-pnpm build    # production build
-pnpm start    # serve the production build
+docker run --rm -d --name redis-test -p 6390:6379 redis:7-alpine
+REDIS_TEST_URL=redis://127.0.0.1:6390 pnpm test
 ```
 
 ## Running with Docker
@@ -106,55 +131,100 @@ Build the image:
 docker build -t smv-portfolio .
 ```
 
-Run the container (pass secrets at runtime — never bake them into the image):
+Run the container, passing secrets at runtime (never bake them into the image):
 
 ```bash
+docker run -p 3000:3000 --env-file .env.production smv-portfolio
+
+# or inline (placeholder values)
 docker run -p 3000:3000 \
-  -e EMAIL_USER=you@gmail.com \
+  -e EMAIL_USER=you@example.com \
   -e EMAIL_PASS=your_app_password \
   -e EMAIL_RECEIVER=inbox@example.com \
   -e REDIS_URL=redis://default:password@host:6379 \
   smv-portfolio
 ```
 
-The app is now available at http://localhost:3000.
+The site is now available at http://localhost:3000 (the server runs `node ./dist/server/entry.mjs`
+under `tini`, so `docker stop` shuts it down promptly). A `HEALTHCHECK` polls the home page.
+
+> **Client IP trust:** the rate limit keys on the `cf-connecting-ip` header, which any client can
+> forge when it reaches the origin directly. In production, firewall the origin so it only accepts
+> traffic from [Cloudflare's IP ranges](https://www.cloudflare.com/ips/), or enable Cloudflare
+> [Authenticated Origin Pulls](https://developers.cloudflare.com/ssl/origin-configuration/authenticated-origin-pull/).
 
 ## Pulling from GHCR
 
 Published images are available on the GitHub Container Registry:
 
 ```bash
-docker pull ghcr.io/sebas19957/smv-portfolio:latest
+docker pull ghcr.io/sebas19957/smv-portfolio:portfolio-v3
 ```
 
 Available tags:
 
-- `latest` — most recent build from `main`.
-- `sha-<commit>` — specific commit from `main`.
-- `X.Y.Z` — released version (from a `vX.Y.Z` git tag).
+| Tag            | Published on                    | Source of the value                                    |
+| -------------- | ------------------------------- | ------------------------------------------------------ |
+| `latest`       | Push to `main`                  | Fixed (production pulls this one)                      |
+| `X.Y.Z`        | Push to `main`                  | `version` field of `package.json`                      |
+| `portfolio-v3` | Push to `portfolio-v3`          | Fixed (moving branch tag)                              |
+| `sha-<commit>` | Push to `main` / `portfolio-v3` | Short commit SHA                                       |
+| `X.Y.Z`, `X.Y` | Push of a `vX.Y.Z` git tag      | The git tag, without the `v` (does not touch `latest`) |
+
+The two `X.Y.Z` rows are separate triggers: a push to `main` tags the image with whatever
+`package.json` says, while pushing a `vX.Y.Z` git tag tags it from the git tag name. Keep them in
+sync (bump `package.json` before tagging) so the same `X.Y.Z` never points at two different builds.
 
 ## Project Structure
 
-```
+```text
 .
-├── .github/workflows/   # CI (lint + build) and Docker publish to GHCR
-├── docs/                # Design specs and implementation plans
-├── public/ (none)       # Assets are served from AWS S3
+├── .github/workflows/  # CI (check, test, build) and Docker publish to GHCR
+├── public/             # Favicons
 ├── src/
-│   ├── app/             # Next.js App Router (pages + API routes)
-│   ├── components/      # UI components
-│   └── lib/             # Redis client, email templates, helpers
-├── Dockerfile           # Multi-stage build (standalone output)
-├── next.config.ts       # Next.js config (standalone, images, svgr)
-└── pnpm-lock.yaml       # pnpm lockfile
+│   ├── app/            # Page container, base layout and the client entry (boots every feature)
+│   ├── assets/         # Profile and project images, optimized through astro:assets
+│   ├── features/       # Behaviour with its own markup + typed controller
+│   │   ├── scroll-rail/        # Ruler, needle, % readout and the section-word flip
+│   │   ├── smooth-scroll/      # Lenis on the GSAP ticker
+│   │   ├── reveal/             # Scroll reveals + no-flash guard
+│   │   ├── intro/              # Load-in clock (nav stagger, rail tick cascade)
+│   │   ├── navigation/         # Site nav, mobile menu, language switch, scroll spy
+│   │   ├── theme/              # Animated light/dark switch
+│   │   ├── collection-filter/  # Segmented filters (skills, projects)
+│   │   ├── project-sheet/      # Project detail sheet
+│   │   └── contact-form/       # Contact form + shared validation rules
+│   │       └── server/         # API logic: client IP, rate limiter, mailer, email template, use case
+│   ├── i18n/           # Typed content model, EN/ES copy and locale helpers
+│   ├── pages/          # Localized routes (`/` and `/es/`) and `api/send-email.ts` (on-demand)
+│   ├── sections/       # One folder per page section
+│   ├── shared/         # UI atoms (buttons, chips, section frame, icons) and small libs
+│   └── styles/         # Design tokens, base reset and visual-language primitives
+├── astro.config.mjs    # Astro config (site URL, i18n routing, Node adapter, env schema)
+├── Dockerfile          # Multi-stage build (prod deps only, non-root runner)
+├── .env.template       # Environment variable names
+├── vitest.config.ts    # Test runner config
+└── pnpm-lock.yaml      # pnpm lockfile
 ```
+
+Copy lives only in `src/i18n/content/` (`en.ts`, `es.ts`, and language-neutral
+facts in `profile.ts`).
 
 ## CI/CD
 
-| Workflow                | Trigger                          | What it does                          |
-| ----------------------- | -------------------------------- | ------------------------------------- |
-| `ci.yml`                | PR / push to `dev` or `main`     | Install, lint and build               |
-| `docker-publish.yml`    | Push to `main` or `v*.*.*` tag   | Verify, then build & push to GHCR     |
+| Workflow             | Trigger                                                      | What it does                                   |
+| -------------------- | ------------------------------------------------------------ | ---------------------------------------------- |
+| `ci.yml`             | Push to `develop`, PR to `develop` / `main`                  | Install, `pnpm check`, `pnpm test`, `pnpm build` |
+| `docker-publish.yml` | Push to `main` / `portfolio-v3`, `v*.*.*` tag                | Run `ci.yml` (reused), then build & push the image to GHCR |
+
+Every third-party action is pinned to a full commit SHA (with the release in a trailing comment).
+
+## Icon Credits
+
+Skill and social logos are inlined at build time from Iconify JSON sets:
+[gilbarbara/logos](https://github.com/gilbarbara/logos) (CC0), [Devicon](https://github.com/devicons/devicon) (MIT),
+[Tabler Icons](https://github.com/tabler/tabler-icons) (MIT) and [selfh.st/icons](https://github.com/selfhst/icons)
+(CC BY 4.0 — Odoo and Instagram marks). Brand marks remain trademarks of their respective owners.
 
 ## Author
 

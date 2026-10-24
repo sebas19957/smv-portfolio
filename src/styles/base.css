@@ -1,0 +1,149 @@
+/* Minimal preflight (mirrors the Tailwind v4 reset the reference relies on). */
+*,
+::before,
+::after,
+::backdrop {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+
+html {
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  tab-size: 4;
+  background: var(--bg);
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+}
+
+img,
+svg,
+video,
+canvas,
+picture {
+  display: block;
+  vertical-align: middle;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  border-radius: 0;
+  background-color: transparent;
+  opacity: 1;
+}
+
+button {
+  cursor: pointer;
+}
+
+[hidden]:where(:not([hidden='until-found'])) {
+  display: none !important;
+}
+
+textarea {
+  resize: vertical;
+}
+
+::placeholder {
+  opacity: 1;
+  color: var(--faint);
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 2px;
+}
+
+/* In-page anchors land below the sticky 48px nav (Lenis honours scroll-margin-top too). */
+section[id] {
+  scroll-margin-top: var(--nav-h);
+}
+
+/* The project sheet scrolls on its own; the page underneath stays put. */
+html.sheet-open {
+  overflow: hidden;
+}
+
+/* The rail replaces the native scrollbar while the full ruler is active. */
+html[data-ruler="on"] {
+  scrollbar-width: none;
+}
+
+html[data-ruler="on"]::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/*
+ * No-flash motion guard: elements that will be revealed by GSAP stay hidden from the first paint
+ * until the reveal controller has applied its own start state ("motion-ready"). A fail-safe class
+ * added after 3s shows everything if scripts never run.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html.js-motion:not(.motion-ready):not(.motion-failsafe) [data-reveal],
+  html.js-motion:not(.motion-ready):not(.motion-failsafe) [data-draw-eyebrow],
+  html.js-motion:not(.motion-ready):not(.motion-failsafe) [data-draw-tick],
+  html.js-motion:not(.motion-ready):not(.motion-failsafe) [data-draw-rule],
+  html.js-motion:not(.motion-ready):not(.motion-failsafe) [data-intro-item] {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

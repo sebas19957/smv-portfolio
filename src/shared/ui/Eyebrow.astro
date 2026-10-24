@@ -1,0 +1,76 @@
+---
+interface Props {
+  id?: string;
+  index: string;
+  label: string;
+  aside?: string;
+}
+
+const { id, index, label, aside } = Astro.props;
+---
+
+<div class="eyebrow" data-draw-eyebrow>
+  <div class="eyebrow__row">
+    <p id={id} class="hud-label text-muted">
+      <span class="text-faint">{index}</span><span class="eyebrow__slash text-faint" aria-hidden="true">/</span>{label}
+    </p>
+    {aside && <p class="hud-label eyebrow__aside text-faint">{aside}</p>}
+  </div>
+</div>
+
+<style>
+  /* Numbered section header that sticks under the 48px nav and stacks section after section. */
+  .eyebrow {
+    position: sticky;
+    top: var(--nav-h);
+    z-index: 30;
+    border-block: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 60%, transparent);
+    backdrop-filter: blur(12px);
+  }
+
+  .eyebrow__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 24px;
+  }
+
+  /* Eyebrow lines in the true bold of Geist Mono variable (same size and tracking). */
+  .eyebrow__row .hud-label {
+    font-weight: 700;
+  }
+
+  .eyebrow__slash {
+    margin-inline: 8px;
+  }
+
+  .eyebrow__aside {
+    display: none;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (min-width: 40rem) {
+    .eyebrow__aside {
+      display: block;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .eyebrow__row {
+      padding-inline: 40px;
+    }
+  }
+
+  /*
+   * With the scroll rail on, the top-right corner belongs to the heading stack and its frosted
+   * pool: the aside ends before the pool (whose width the rail publishes) so it stays readable.
+   */
+  :global(html[data-ruler='on']) .eyebrow__row {
+    padding-right: max(40px, calc(var(--rail-pool-w, 0px) - (100vw - 100%) / 2));
+  }
+</style>
