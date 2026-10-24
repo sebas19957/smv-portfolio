@@ -59,9 +59,12 @@ export function detailShots(media: ProjectMedia, kind: ProjectKind): ProjectShot
   return [cover, ...gallery.filter((shot) => shot !== cover)];
 }
 
-/** Minimum slots per template: missing images become placeholders (web: hero + three). */
+/**
+ * Minimum slots per template: missing images become placeholders (web: hero + three). Backend
+ * details never pad: their stack showcase fills the media block.
+ */
 export const PLACEHOLDER_SLOTS: Readonly<Record<ProjectKind, number>> = {
   web: 4,
   mobile: 4,
-  backend: 1,
+  backend: 0,
 };

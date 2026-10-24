@@ -6,7 +6,8 @@ import MediaPlaceholder from '../../shared/ui/MediaPlaceholder.astro';
 import TechChip from '../../shared/ui/TechChip.astro';
 import type { IconName } from '../../shared/ui/icons';
 import type { ProjectMedia } from './project-media';
-import { cardChips } from './project-stack';
+import { cardChips, stackLogos } from './project-stack';
+import ProjectStackCover from './ProjectStackCover.astro';
 
 interface Props {
   index: string;
@@ -52,7 +53,9 @@ const primaryUrl = entry.links?.live ?? entry.links?.site ?? entry.links?.repo;
  * browser never upscales at DPR 1 or 2. Sources too small to cover the widest cell (≈640px in
  * the 1–2 column layouts) at DPR 2 are framed with `contain`, capped at half their pixel size.
  */
-const source = media.cover?.image;
+/** Backend entries (APIs, workers) show the logos of their stack instead of any image. */
+const stackCover = entry.kind === 'backend';
+const source = stackCover ? undefined : media.cover?.image;
 /** Phone screens sit in a small device frame instead of being cropped to the 16:10 cell. */
 const phone = entry.kind === 'mobile' && Boolean(source);
 const MEDIA_RATIO = 16 / 10;
@@ -81,7 +84,9 @@ const mediaStyle =
   </div>
   <div class:list={['project__media', fit && 'project__media--fit', phone && 'project__media--phone']} style={mediaStyle}>
     {
-      source && phone ? (
+      stackCover ? (
+        <ProjectStackCover techs={stackLogos(entry)} />
+      ) : source && phone ? (
         <span class="project__phone">
           <Picture
             src={source}
