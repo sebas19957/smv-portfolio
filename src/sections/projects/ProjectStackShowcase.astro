@@ -1,0 +1,186 @@
+---
+/**
+ * Media block of backend details: the stack by group, each item with its official logo in a
+ * hairline tile (a neutral mark for libraries without one) on the scanline surface. Replaces the
+ * detail's side stack list, so the labels stay readable to assistive tech.
+ */
+import { pad2, TECH, type TechChip } from '../../i18n';
+import BrandLogo from '../../shared/ui/BrandLogo.astro';
+import { resolveBrandIcon } from '../../shared/ui/brand-icons';
+
+interface Props {
+  heading: string;
+  groups: readonly { label: string; items: readonly TechChip[] }[];
+}
+
+const { heading, groups } = Astro.props;
+const resolved = groups.map((group) => ({
+  ...group,
+  items: group.items.map((item) => ({ label: item.label, icon: item.tech && resolveBrandIcon(TECH[item.tech].icon) })),
+}));
+---
+
+<div class="showcase">
+  <h3 class="hud-label showcase__heading">{heading}</h3>
+  <div class="hairline-grid showcase__grid">
+    {
+      resolved.map((group, g) => (
+        <div class="showcase__group">
+          <p class="hud-label showcase__label">
+            <span class="showcase__index" aria-hidden="true">
+              {pad2(g + 1)}
+            </span>
+            {group.label}
+          </p>
+          <ul class="showcase__items">
+            {group.items.map((item) => (
+              <li class="showcase__item">
+                <span class="showcase__mark" aria-hidden="true">
+                  {item.icon ? <BrandLogo icon={item.icon} class="showcase__logo" /> : <span class="showcase__dot" />}
+                </span>
+                <span class="showcase__name">{item.label}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .showcase {
+    border: 1px solid var(--line);
+  }
+
+  .showcase__heading {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--faint);
+    font-weight: 700;
+  }
+
+  /* One row per group: label on top, then (from 48rem) in a column beside its items. */
+  .showcase__group {
+    padding: 20px 16px;
+  }
+
+  /* Scanline surface of the image placeholders (the hairline grid needs opaque cells). */
+  .hairline-grid > .showcase__group {
+    background:
+      repeating-linear-gradient(to bottom, var(--scanline) 0 1px, transparent 1px 3px),
+      var(--bg-sunken);
+  }
+
+  .showcase__label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  .showcase__index {
+    color: var(--app-ink, var(--faint));
+  }
+
+  /* Items flow into as many columns as fit, so long groups stay short. */
+  .showcase__items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 136px), 1fr));
+    gap: 10px 12px;
+    margin-top: 16px;
+  }
+
+  .showcase__item {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .showcase__mark {
+    display: flex;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    transition: border-color 200ms var(--ease-standard);
+  }
+
+  .showcase__mark :global(.showcase__logo) {
+    font-size: 16px;
+    transition: transform 300ms var(--ease-out);
+  }
+
+  /* Libraries without an official mark: a small item-coloured square. */
+  .showcase__dot {
+    width: 6px;
+    height: 6px;
+    background: var(--app);
+  }
+
+  .showcase__name {
+    min-width: 0;
+    overflow-wrap: break-word;
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    color: var(--ink);
+  }
+
+  .showcase__item:hover .showcase__mark {
+    border-color: var(--line-strong);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .showcase__item:hover :global(.showcase__logo) {
+      transform: scale(1.1);
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .showcase__heading {
+      padding-inline: 24px;
+    }
+
+    .showcase__group {
+      display: grid;
+      grid-template-columns: 12rem minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+      padding: 20px 24px;
+    }
+
+    /* Centred on the first row of 44px marks. */
+    .showcase__label {
+      margin-top: 14px;
+    }
+
+    .showcase__items {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px 16px;
+      margin-top: 0;
+    }
+
+    .showcase__item {
+      gap: 12px;
+    }
+
+    .showcase__mark {
+      width: 44px;
+      height: 44px;
+    }
+
+    .showcase__mark :global(.showcase__logo) {
+      font-size: 20px;
+    }
+
+    .showcase__name {
+      font-size: 0.9375rem;
+    }
+  }
+</style>

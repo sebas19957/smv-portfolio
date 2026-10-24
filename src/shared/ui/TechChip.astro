@@ -1,0 +1,43 @@
+---
+/** Chip with the technology's official logo (same optical sizing as the skills grid). */
+import { TECH, type TechId } from '../../i18n';
+import BrandLogo from './BrandLogo.astro';
+import { resolveBrandIcon } from './brand-icons';
+
+interface Props {
+  label: string;
+  tech?: TechId;
+  /** `md` is the larger chip used in the project detail view. */
+  size?: 'sm' | 'md';
+  tone?: 'muted' | 'status';
+}
+
+const { label, tech, size = 'sm', tone = 'muted' } = Astro.props;
+const icon = tech ? resolveBrandIcon(TECH[tech].icon) : null;
+---
+
+<span class:list={['chip', 'tech-chip', `tech-chip--${size}`]} data-tone={tone}>
+  {icon && <BrandLogo icon={icon} class="tech-chip__logo" />}
+  {label}
+</span>
+
+<style>
+  .tech-chip {
+    gap: 5px;
+  }
+
+  .tech-chip :global(.tech-chip__logo) {
+    font-size: 9.5px;
+  }
+
+  .tech-chip--md {
+    gap: 7px;
+    padding: 4px 9px;
+    font-size: 11px;
+    line-height: 16px;
+  }
+
+  .tech-chip--md :global(.tech-chip__logo) {
+    font-size: 12px;
+  }
+</style>

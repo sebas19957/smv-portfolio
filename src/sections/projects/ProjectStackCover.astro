@@ -1,0 +1,127 @@
+---
+/**
+ * Card media of backend entries: the official logos of the stack as a hairline grid of tiles on
+ * the scanline surface of `MediaPlaceholder` (no diagonals, no label). Purely decorative: the
+ * chips below the media already list the stack. Fills its positioned parent.
+ */
+import { TECH, type TechId } from '../../i18n';
+import BrandLogo from '../../shared/ui/BrandLogo.astro';
+import { resolveBrandIcon } from '../../shared/ui/brand-icons';
+
+interface Props {
+  techs: readonly TechId[];
+}
+
+const { techs } = Astro.props;
+const logos = techs.map((id) => resolveBrandIcon(TECH[id].icon));
+// One row up to four logos, then two rows (an odd count centres its shorter second row).
+const columns = logos.length <= 4 ? logos.length : Math.ceil(logos.length / 2);
+---
+
+<div class="stack-cover" aria-hidden="true">
+  <span class="stack-cover__mark stack-cover__mark--tl"></span>
+  <span class="stack-cover__mark stack-cover__mark--br"></span>
+  <div class="stack-cover__grid" style={`--cols: ${columns};`}>
+    {
+      logos.map((icon, i) => (
+        <span class="stack-cover__tile" style={`--i: ${i};`}>
+          <BrandLogo icon={icon} class="stack-cover__logo" />
+        </span>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .stack-cover {
+    position: absolute;
+    inset: 0;
+    container-type: size;
+    background:
+      repeating-linear-gradient(to bottom, var(--scanline) 0 1px, transparent 1px 3px),
+      var(--bg-sunken);
+  }
+
+  /*
+   * The grid centres in the area above the card's 72px tile, which straddles the bottom edge by
+   * 36px (+4px when lifted on hover). Tiles scale with the cell: a 4 × 2 grid always fits.
+   */
+  .stack-cover__grid {
+    --tile: min(20cqi, 31cqh, 104px);
+    position: absolute;
+    inset: 14px 0 44px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: calc(var(--cols) * (var(--tile) - 1px) + 1px);
+    margin-inline: auto;
+  }
+
+  /* Hairline tiles: neighbours overlap by 1px so every shared edge is a single line. */
+  .stack-cover__tile {
+    display: flex;
+    width: var(--tile);
+    height: var(--tile);
+    margin: 0 -1px -1px 0;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg-raised) 72%, transparent);
+    transition: border-color 300ms var(--ease-standard);
+  }
+
+  .stack-cover__tile :global(.stack-cover__logo) {
+    font-size: calc(var(--tile) * 0.36);
+    transition: transform 400ms var(--ease-out);
+    transition-delay: calc(var(--i) * 30ms);
+  }
+
+  :global(.project:hover) .stack-cover__tile {
+    border-color: var(--line-strong);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.project:hover) .stack-cover__tile :global(.stack-cover__logo) {
+      transform: translateY(-3px) scale(1.06);
+    }
+  }
+
+  /* Corner crosshairs, as on the image placeholder. */
+  .stack-cover__mark {
+    position: absolute;
+    width: 11px;
+    height: 11px;
+  }
+
+  .stack-cover__mark::before,
+  .stack-cover__mark::after {
+    content: '';
+    position: absolute;
+    background: var(--line-strong);
+  }
+
+  .stack-cover__mark::before {
+    left: 5px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+  }
+
+  .stack-cover__mark::after {
+    top: 5px;
+    left: 0;
+    right: 0;
+    height: 1px;
+  }
+
+  .stack-cover__mark--tl {
+    top: 6px;
+    right: 6px;
+  }
+
+  .stack-cover__mark--br {
+    bottom: 6px;
+    left: 6px;
+  }
+</style>

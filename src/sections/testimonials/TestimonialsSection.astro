@@ -1,0 +1,46 @@
+---
+import { pad2, sectionIndex, type PortfolioContent } from '../../i18n';
+import RichText from '../../shared/ui/RichText.astro';
+import { SECTION_ACCENTS } from '../section-accents';
+import Section from '../../shared/ui/Section.astro';
+import TestimonialCell from './TestimonialCell.astro';
+
+interface Props {
+  content: PortfolioContent;
+}
+
+const { content } = Astro.props;
+const { copy, profile } = content;
+const { testimonials, ui } = copy;
+
+const items = profile.testimonials.flatMap((fact) => {
+  const entry = testimonials.items.find((item) => item.id === fact.id);
+  return entry ? [{ fact, entry }] : [];
+});
+---
+
+<Section
+  id="testimonials"
+  index={sectionIndex('testimonials')}
+  label={ui.nav.testimonials}
+  aside={items.map(({ fact }) => fact.givenName).join(' · ')}
+>
+  <div class="section-pad">
+    <h2 class="heading-xl" data-reveal><RichText text={testimonials.heading} accent={SECTION_ACCENTS.testimonials} /></h2>
+  </div>
+  <ol class="hairline-grid testimonials-grid" data-reveal-group>
+    {items.map(({ fact, entry }, i) => <TestimonialCell index={pad2(i + 1)} fact={fact} entry={entry} />)}
+  </ol>
+</Section>
+
+<style>
+  .testimonials-grid {
+    border-top: 1px solid var(--line);
+  }
+
+  @media (min-width: 64rem) {
+    .testimonials-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

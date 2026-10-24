@@ -1,0 +1,433 @@
+---
+import { Picture } from 'astro:assets';
+import type { ProjectEntry, ProjectKind, ProjectText } from '../../i18n';
+import Icon from '../../shared/ui/Icon.astro';
+import MediaPlaceholder from '../../shared/ui/MediaPlaceholder.astro';
+import TechChip from '../../shared/ui/TechChip.astro';
+import type { IconName } from '../../shared/ui/icons';
+import type { ProjectMedia } from './project-media';
+import { cardChips, stackLogos } from './project-stack';
+import ProjectStackCover from './ProjectStackCover.astro';
+
+interface Props {
+  index: string;
+  entry: ProjectEntry;
+  text: ProjectText;
+  media: ProjectMedia;
+  /** Card image description (title + caption). */
+  coverAlt: string;
+  labels: {
+    category: string;
+    part: string;
+    demo: string;
+    site: string;
+    code: string;
+    technologies: string;
+    /** Set for co-authored projects. */
+    team?: string;
+    details: string;
+    imageSoon: string;
+    newTab: string;
+  };
+}
+
+const { index, entry, text, media, coverAlt, labels } = Astro.props;
+
+const KIND_ICON: Record<ProjectKind, IconName> = {
+  web: 'globe',
+  mobile: 'smartphone',
+  backend: 'server',
+};
+const chips = cardChips(entry);
+const links = [
+  entry.links?.live && { href: entry.links.live, label: labels.demo },
+  entry.links?.site && { href: entry.links.site, label: labels.site },
+  entry.links?.repo && { href: entry.links.repo, label: labels.code },
+].filter((link): link is { href: string; label: string } => Boolean(link));
+/** Whole-card link target (reference pattern): live app, then product site, then repository. */
+const primaryUrl = entry.links?.live ?? entry.links?.site ?? entry.links?.repo;
+
+/*
+ * Media framing. The cell is 16:10 with object-fit: cover, so a wider source (e.g. ~2.1:1
+ * screenshots) renders wider than the cell: the srcset is sized for that rendered width so the
+ * browser never upscales at DPR 1 or 2. Sources too small to cover the widest cell (≈640px in
+ * the 1–2 column layouts) at DPR 2 are framed with `contain`, capped at half their pixel size.
+ */
+/** Backend entries (APIs, workers) show the logos of their stack instead of any image. */
+const stackCover = entry.kind === 'backend';
+const source = stackCover ? undefined : media.cover?.image;
+/** Phone screens sit in a small device frame instead of being cropped to the 16:10 cell. */
+const phone = entry.kind === 'mobile' && Boolean(source);
+const MEDIA_RATIO = 16 / 10;
+const WIDEST_CELL = 640;
+const coverScale = source ? Math.max(1, source.width / source.height / MEDIA_RATIO) : 1;
+const fit = source && !phone ? source.width < Math.ceil(2 * WIDEST_CELL * coverScale) : false;
+const scale = coverScale.toFixed(3);
+const half = source ? Math.floor(source.width / 2) : 0;
+const mediaSizes = fit
+  ? `(min-width: 1280px) 320px, (min-width: 640px) min(50vw, ${half}px), min(100vw, ${half}px)`
+  : `(min-width: 1280px) ${Math.ceil(320 * coverScale)}px, (min-width: 640px) calc(50vw * ${scale}), calc(100vw * ${scale})`;
+const mediaWidths = source
+  ? [...new Set([320, 480, 640, 840, 1120, 1400, 1680].filter((w) => w < source.width).concat(source.width))]
+  : [];
+const mediaStyle =
+  source && fit
+    ? `--fit-w: ${half}px; --fit-h: ${Math.floor(source.height / 2)}px; --media-backdrop: ${entry.coverBackdrop ?? 'var(--bg-sunken)'};`
+    : undefined;
+---
+
+<article class:list={['project', `accent-${entry.accent}`]} data-reveal data-filter-tags={entry.category}>
+  <span class="project__bar" aria-hidden="true"></span>
+  <div class="project__head">
+    <span class="hud-label num-badge">{index}</span>
+    <p class="hud-label project__category text-faint">{labels.part} · {labels.category}</p>
+  </div>
+  <div class:list={['project__media', fit && 'project__media--fit', phone && 'project__media--phone']} style={mediaStyle}>
+    {
+      stackCover ? (
+        <ProjectStackCover techs={stackLogos(entry)} />
+      ) : source && phone ? (
+        <span class="project__phone">
+          <Picture
+            src={source}
+            alt={coverAlt}
+            widths={[240, 360, 480, 720].filter((w) => w < source.width)}
+            sizes="(min-width: 1280px) 112px, (min-width: 640px) 18vw, 36vw"
+            formats={['avif', 'webp']}
+            fallbackFormat="webp"
+            quality={80}
+            loading="lazy"
+            decoding="async"
+            class="project__img"
+          />
+        </span>
+      ) : source ? (
+        <Picture
+          src={source}
+          alt={coverAlt}
+          widths={mediaWidths}
+          width={source.width}
+          sizes={mediaSizes}
+          formats={['avif', 'webp']}
+          fallbackFormat="webp"
+          quality={78}
+          loading="lazy"
+          decoding="async"
+          class="project__img"
+        />
+      ) : (
+        <MediaPlaceholder label={labels.imageSoon} />
+      )
+    }
+  </div>
+  <div class="project__body">
+    <span class="project__tile drop-tile" aria-hidden="true">
+      <Icon name={KIND_ICON[entry.kind]} size={30} strokeWidth={1.75} />
+    </span>
+    <h3 class="title-card project__title">
+      {
+        primaryUrl ? (
+          <a class="project__stretched" href={primaryUrl} target="_blank" rel="noopener noreferrer">
+            {text.title.base}
+            <span class="accent-word">{text.title.accent}</span>
+            <span class="sr-only">{labels.newTab}</span>
+          </a>
+        ) : (
+          <>
+            {text.title.base}
+            <span class="accent-word">{text.title.accent}</span>
+          </>
+        )
+      }
+    </h3>
+    <p class="body-copy project__description">{text.summary}</p>
+    {
+      labels.team && (
+        <p class="hud-label project__team">
+          <Icon name="users" size={14} />
+          {labels.team}
+        </p>
+      )
+    }
+    <p class="hud-label project__tech-label text-faint">{labels.technologies}</p>
+    <ul class="project__chips">
+      {
+        chips.map((chip) => (
+          <li>
+            <TechChip label={chip.label} tech={chip.tech} />
+          </li>
+        ))
+      }
+    </ul>
+    <div class="project__links">
+      <button type="button" class="hud-label project__details" data-project-open={entry.slug} aria-haspopup="dialog">
+        {labels.details}
+        <Icon name="arrow-up-right" size={14} class="project__arrow" />
+      </button>
+      {links.map((link) => (
+        <a class="hud-label project__link" href={link.href} target="_blank" rel="noopener noreferrer">
+          {link.label}
+          <Icon name="arrow-up-right" size={14} class="project__arrow" />
+          <span class="sr-only">{labels.newTab}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</article>
+
+<style>
+  .project {
+    position: relative;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+  }
+
+  /* Stretched link: the title link's overlay covers the whole card (no nested anchors). */
+  .project__stretched::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .project__stretched:focus-visible {
+    outline: none;
+  }
+
+  .project__stretched:focus-visible::after {
+    outline: 2px solid var(--accent-ink);
+    outline-offset: -2px;
+  }
+
+  /* 2px item-colored bar draws in from the left on hover. */
+  .project__bar {
+    pointer-events: none;
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    z-index: 10;
+    height: 2px;
+    background: var(--app);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 300ms var(--ease-standard);
+  }
+
+  .project:hover .project__bar {
+    transform: scaleX(1);
+  }
+
+  .project__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .project__category {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .project__media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg-sunken);
+  }
+
+  .project__media :global(picture) {
+    position: absolute;
+    inset: 0;
+  }
+
+  .project__media :global(.project__img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 500ms var(--ease-out);
+  }
+
+  .project__media--fit {
+    background: var(--media-backdrop);
+  }
+
+  .project__media--fit :global(picture) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .project__media--fit :global(.project__img) {
+    width: auto;
+    height: auto;
+    max-width: min(100%, var(--fit-w));
+    max-height: min(100%, var(--fit-h));
+    object-fit: contain;
+  }
+
+  .project:hover .project__media :global(.project__img) {
+    transform: scale(1.03);
+  }
+
+  /* Mobile covers: a hairline phone rising from the bottom edge on a tinted field. */
+  .project__media--phone {
+    background: color-mix(in srgb, var(--app) 16%, var(--bg-sunken));
+  }
+
+  .project__phone {
+    position: absolute;
+    left: 50%;
+    top: 11%;
+    width: 36%;
+    aspect-ratio: 9 / 19.5;
+    border: 1px solid var(--line-strong);
+    border-radius: 20px;
+    background: var(--bg);
+    box-shadow: 0 18px 40px -24px rgb(0 0 0 / 0.5);
+    transform: translateX(-50%);
+    transition: transform 500ms var(--ease-out);
+  }
+
+  .project__phone :global(picture) {
+    inset: 4px;
+    overflow: hidden;
+    border-radius: 15px;
+  }
+
+  .project:hover .project__phone {
+    transform: translate(-50%, -6px);
+  }
+
+  .project:hover .project__media--phone :global(.project__img) {
+    transform: none;
+  }
+
+  .project__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 0 24px 24px;
+  }
+
+  /* 72px item-colored tile straddling the media edge (stands in for an app icon). */
+  .project__tile {
+    position: relative;
+    display: flex;
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    margin-top: -36px;
+    background: var(--app);
+    color: #000;
+    transition: transform 300ms var(--ease-out);
+  }
+
+  .project:hover .project__tile {
+    transform: translateY(-4px);
+  }
+
+  .project__title {
+    margin-top: 16px;
+    overflow-wrap: break-word;
+  }
+
+  .project__description {
+    margin-top: 12px;
+  }
+
+  .project__team {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    color: var(--app-ink, var(--muted));
+    font-weight: 700;
+  }
+
+  .project__tech-label {
+    margin-top: 24px;
+  }
+
+  .project__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .project__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 24px;
+    margin-top: auto;
+    padding-top: 24px;
+  }
+
+  /* Primary detail action: a solid inverted pill in the reference's button idiom. */
+  .project__details {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+    font-weight: 700;
+    transition: opacity 150ms var(--ease-standard);
+  }
+
+  .project__details:hover {
+    opacity: 0.8;
+  }
+
+  .project__details:hover :global(.project__arrow) {
+    transform: translate(2px, -2px);
+  }
+
+  /* Secondary links sit above the stretched overlay. */
+  .project__link {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    transition: color 150ms var(--ease-standard);
+  }
+
+  .project__link :global(.project__arrow) {
+    transition: transform 150ms var(--ease-standard);
+  }
+
+  .project:hover .project__link {
+    color: var(--ink);
+  }
+
+  .project__link:hover :global(.project__arrow) {
+    transform: translate(2px, -2px);
+  }
+
+  @media (min-width: 48rem) {
+    .project__body {
+      padding: 0 32px 32px;
+    }
+  }
+
+  /* Four 319px columns: one notch smaller so the longest brand words fit on one line. */
+  @media (min-width: 80rem) {
+    .project__title {
+      font-size: 1.75rem;
+    }
+  }
+</style>

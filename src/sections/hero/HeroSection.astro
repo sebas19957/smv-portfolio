@@ -1,0 +1,147 @@
+---
+import { images } from '../../assets/images';
+import { sectionIndex, type PortfolioContent } from '../../i18n';
+import Button from '../../shared/ui/Button.astro';
+import BrandLogo from '../../shared/ui/BrandLogo.astro';
+import { resolveBrandIcon } from '../../shared/ui/brand-icons';
+import RichText from '../../shared/ui/RichText.astro';
+import SegmentedGroup from '../../shared/ui/SegmentedGroup.astro';
+import Section from '../../shared/ui/Section.astro';
+import HeroPortrait from './HeroPortrait.astro';
+
+interface Props {
+  content: PortfolioContent;
+}
+
+const { content } = Astro.props;
+const { copy, profile } = content;
+const { hero, ui, footer } = copy;
+---
+
+<Section
+  id="home"
+  index={sectionIndex('home')}
+  label={hero.greeting}
+  aside={hero.roles.join(' · ')}
+>
+  <div class="hero section-pad">
+    <div class="hero__copy">
+      <h1 class="heading-xl hero__name" data-reveal>
+        {profile.nameLines.map((line) => (
+          <span class="hero__line">
+            <RichText text={line} />
+          </span>
+        ))}
+      </h1>
+      <p class="lead hero__lead" data-reveal>{hero.tagline}</p>
+
+      <div class="hero__actions" data-reveal>
+        <Button href="#contact" variant="primary" size="lg" icon="message-circle">{hero.ctaPrimary}</Button>
+        <Button href="#resume" variant="secondary" size="lg" icon="file-text">{hero.ctaSecondary}</Button>
+      </div>
+
+      <p class="body-copy hero__note" data-reveal>
+        <span class="text-ink">{copy.contact.emailLabel}:</span>{' '}
+        <a class="inline-link" href={`mailto:${profile.contactEmail}`}>{profile.contactEmail}</a>
+      </p>
+
+      <SegmentedGroup label={footer.followHeading} class="hero__social" data-reveal>
+        {
+          profile.socials.map((social) => (
+            <Button
+              href={social.href}
+              variant="ghost"
+              size="cell"
+              external={social.id !== 'email'}
+              aria-label={social.id !== 'email' ? `${social.label} ${ui.opensInNewTab}` : undefined}
+            >
+              <BrandLogo slot="icon" icon={resolveBrandIcon(social.icon)} class="hero__social-logo" />
+              {social.label}
+            </Button>
+          ))
+        }
+      </SegmentedGroup>
+    </div>
+
+    <HeroPortrait
+      image={images.me}
+      alt={hero.portraitAlt}
+      statusLabel={hero.statusLabel}
+      statusValue={hero.statusValue}
+      experienceLabel={hero.experienceLabel}
+      experienceValue={profile.yearsOfExperience}
+    />
+  </div>
+</Section>
+
+<style>
+  /*
+   * The hero figure stands on the section's closing hairline, so the hero keeps no bottom padding
+   * under it (stacked) and clips the figure's reveal rise at that line.
+   */
+  .hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    overflow: clip;
+  }
+
+  .hero.section-pad {
+    padding-bottom: 0;
+  }
+
+  .hero__copy {
+    min-width: 0;
+  }
+
+  .hero__line {
+    display: block;
+  }
+
+  .hero__lead {
+    margin-top: 20px;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .hero__note {
+    max-width: 36rem;
+    margin-top: 16px;
+  }
+
+
+  .hero__social {
+    margin-top: 24px;
+  }
+
+  /* Logos at the label's optical size (cap height of the 11px mono label). */
+  .hero__social :global(.hero__social-logo) {
+    font-size: 12px;
+  }
+
+  /*
+   * From 1024px the figure is pinned to the bottom-right corner (out of flow), so the copy alone
+   * sets the hero height and the H1 keeps the reference position (y=172).
+   */
+  @media (min-width: 64rem) {
+    .hero.section-pad {
+      padding-bottom: 80px;
+    }
+
+    .hero__copy {
+      max-width: 48rem;
+    }
+
+    /* Keep the figure clear of the 60px scroll rail where the frame is full-bleed. */
+    .hero :global(.figure) {
+      right: max(40px, calc(68px - (100vw - 100%) / 2));
+    }
+  }
+</style>

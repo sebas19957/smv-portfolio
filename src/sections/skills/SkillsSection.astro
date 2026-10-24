@@ -1,0 +1,149 @@
+---
+import { pad2, sectionIndex, type PortfolioContent, type SkillCategory } from '../../i18n';
+import FilterBar from '../../features/collection-filter/FilterBar.astro';
+import RichText from '../../shared/ui/RichText.astro';
+import { SECTION_ACCENTS } from '../section-accents';
+import { resolveBrandIcon } from '../../shared/ui/brand-icons';
+import Section from '../../shared/ui/Section.astro';
+import SkillCell from './SkillCell.astro';
+
+interface Props {
+  content: PortfolioContent;
+}
+
+const { content } = Astro.props;
+const { copy, profile, locale } = content;
+const { skills, ui } = copy;
+
+const CATEGORY_ACCENT: Record<SkillCategory, string> = {
+  frontend: 'accent-blue',
+  backend: 'accent-vermilion',
+  mobile: 'accent-green',
+  devops: 'accent-amber',
+  cloud: 'accent-teal',
+  tools: 'accent-orange',
+  ai: 'accent-violet',
+};
+const categories = Object.keys(skills.categories) as SkillCategory[];
+const filterOptions = [
+  { value: 'all', label: skills.allLabel },
+  ...categories.map((category) => ({ value: category, label: skills.categories[category] })),
+];
+---
+
+<Section
+  id="skills"
+  index={sectionIndex('skills')}
+  label={ui.nav.skills}
+  aside={skills.subtitle}
+>
+  <div class="skills-intro section-pad">
+    <div class="skills-intro__copy">
+      <h2 class="heading-xl" data-reveal><RichText text={skills.heading} accent={SECTION_ACCENTS.skills} /></h2>
+      <p class="lead skills-intro__lead" data-reveal>{skills.description}</p>
+      <aside class:list={['skills-note', `accent-${SECTION_ACCENTS.skills}`]} aria-labelledby="skills-note-label" data-reveal>
+        <p id="skills-note-label" class="hud-label skills-note__label">{skills.note.label}</p>
+        <p class="skills-note__text">{skills.note.text}</p>
+      </aside>
+      <div data-reveal>
+        <FilterBar scope="skills" label={skills.title} options={filterOptions} class="skills-intro__filter" />
+      </div>
+    </div>
+  </div>
+  <ol class="hairline-grid skills-grid" data-reveal-group data-filter-scope="skills">
+    {
+      profile.skills.map((skill, i) => (
+        <SkillCell
+          index={pad2(i + 1)}
+          icon={resolveBrandIcon(skill.icon)}
+          name={typeof skill.name === "string" ? skill.name : skill.name[locale]}
+          level={skill.level}
+          category={skill.category}
+          categoryLabel={skills.categories[skill.category]}
+          accentClass={CATEGORY_ACCENT[skill.category]}
+        />
+      ))
+    }
+  </ol>
+</Section>
+
+<style>
+  /* Statement block in the reference's intro idiom: heading, lead and the category filter. */
+  .skills-intro__copy {
+    min-width: 0;
+  }
+
+  .skills-intro__lead {
+    margin-top: 20px;
+  }
+
+  .skills-intro :global(.skills-intro__filter) {
+    margin-top: 32px;
+  }
+
+  /* Editor's-note aside: hairline box with an accent spine, set apart from the lead copy. */
+  .skills-note {
+    max-width: 36rem;
+    margin-top: 28px;
+    padding: 18px 20px 20px;
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--app);
+    background: var(--bg-sunken);
+  }
+
+  .skills-note__label {
+    color: var(--app-ink);
+  }
+
+  .skills-note__text {
+    margin-top: 10px;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+
+  /* Wide screens: the note sits beside the heading and lead, bottom-aligned with the lead. */
+  @media (min-width: 64rem) {
+    .skills-intro__copy {
+      display: grid;
+      grid-template-columns: minmax(0, 36rem) minmax(0, 27rem);
+      /* The taller note takes the slack in the second row, so the lead stays under the heading. */
+      grid-template-rows: auto 1fr;
+      justify-content: space-between;
+      column-gap: 48px;
+    }
+
+    .skills-intro__copy > :global(*) {
+      grid-column: 1;
+    }
+
+    .skills-intro__copy > .skills-note {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      align-self: start;
+      margin-top: 0;
+    }
+
+    .skills-intro__copy > :last-child {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* Two columns from the smallest screens: the long skill list would otherwise run very tall on a phone. */
+  .skills-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+  }
+
+  @media (min-width: 64rem) {
+    .skills-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 80rem) {
+    .skills-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

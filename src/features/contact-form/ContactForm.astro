@@ -1,0 +1,186 @@
+---
+import type { ContactCopy } from '../../i18n';
+import Button from '../../shared/ui/Button.astro';
+import { MAX_LENGTH, MIN_LENGTH } from './contact-message';
+
+interface Props {
+  form: ContactCopy['form'];
+}
+
+const { form } = Astro.props;
+const fields = [
+  {
+    name: 'name',
+    type: 'text',
+    label: form.nameLabel,
+    placeholder: form.namePlaceholder,
+    error: form.errors.name,
+    autocomplete: 'name',
+    minlength: MIN_LENGTH.name,
+    maxlength: MAX_LENGTH.name,
+  },
+  {
+    name: 'email',
+    type: 'email',
+    label: form.emailLabel,
+    placeholder: form.emailPlaceholder,
+    error: form.errors.email,
+    autocomplete: 'email',
+    minlength: undefined,
+    maxlength: MAX_LENGTH.email,
+  },
+] as const;
+---
+
+<form class="contact-form" novalidate data-contact-form data-sending-label={form.sending}>
+  <div class="contact-form__row">
+    {
+      fields.map((field) => (
+        <label class="field">
+          <span class="hud-label field__label">{field.label}</span>
+          <input
+            class="field__control"
+            type={field.type}
+            name={field.name}
+            placeholder={field.placeholder}
+            autocomplete={field.autocomplete}
+            minlength={field.minlength}
+            maxlength={field.maxlength}
+            required
+            aria-describedby={`contact-${field.name}-error`}
+          />
+          <span id={`contact-${field.name}-error`} class="hud-label field__error" hidden data-field-error={field.name}>
+            {field.error}
+          </span>
+        </label>
+      ))
+    }
+  </div>
+  <label class="field">
+    <span class="hud-label field__label">{form.messageLabel}</span>
+    <textarea
+      class="field__control field__control--area"
+      name="message"
+      rows="6"
+      placeholder={form.messagePlaceholder}
+      minlength={MIN_LENGTH.message}
+      maxlength={MAX_LENGTH.message}
+      required
+      aria-describedby="contact-message-error"></textarea>
+    <span id="contact-message-error" class="hud-label field__error" hidden data-field-error="message">
+      {form.errors.message}
+    </span>
+  </label>
+  <div class="contact-form__actions">
+    <Button type="submit" variant="primary" size="lg" icon="send" data-contact-submit>{form.submit}</Button>
+    <p
+      class="hud-label contact-form__status"
+      aria-live="polite"
+      data-form-status
+      data-success={form.status.success}
+      data-rate-limited={form.status.rateLimited}
+      data-error={form.status.error}
+    ></p>
+  </div>
+</form>
+
+<style>
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .contact-form__row {
+    display: grid;
+    gap: 20px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .field__label {
+    color: var(--faint);
+  }
+
+  .field__control {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    background: var(--bg-raised);
+    color: var(--ink);
+    font-size: 1rem;
+    line-height: 1.5;
+    transition: border-color 120ms linear;
+  }
+
+  .field__control--area {
+    height: auto;
+    min-height: 168px;
+    padding-block: 12px;
+    line-height: 1.625;
+  }
+
+  .field__control:hover {
+    border-color: var(--line-strong);
+  }
+
+  .field__control:focus-visible {
+    border-color: var(--ink);
+    outline-offset: 0;
+  }
+
+  .field__control[aria-invalid='true'] {
+    border-color: var(--danger);
+  }
+
+  .field__error {
+    color: var(--danger);
+    letter-spacing: 0.08em;
+    text-transform: none;
+  }
+
+  .contact-form__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* Outcome readout: a hairline HUD tag, accent ink when sent, danger when refused or failed. */
+  .contact-form__actions :global([data-contact-submit]:disabled) {
+    cursor: progress;
+    opacity: 0.6;
+  }
+
+  .contact-form__status {
+    margin: 0;
+    padding: 6px 10px;
+    border: 1px solid currentColor;
+    border-left-width: 3px;
+    letter-spacing: 0.08em;
+    text-transform: none;
+  }
+
+  .contact-form__status:empty {
+    display: none;
+  }
+
+  .contact-form__status[data-state='success'] {
+    color: var(--accent-ink);
+  }
+
+  .contact-form__status[data-state='error'] {
+    color: var(--danger);
+  }
+
+  @media (min-width: 40rem) {
+    .contact-form__row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

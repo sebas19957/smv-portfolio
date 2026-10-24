@@ -1,0 +1,148 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import Icon from './Icon.astro';
+import type { IconName } from './icons';
+
+type Variant = 'primary' | 'secondary' | 'action' | 'ghost';
+type Size = 'sm' | 'md' | 'lg' | 'cell';
+
+type Props = Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'type'> & {
+  href?: string;
+  variant?: Variant;
+  size?: Size;
+  icon?: IconName;
+  trailingIcon?: IconName;
+  external?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+};
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  icon,
+  trailingIcon,
+  external = false,
+  type = 'button',
+  class: className,
+  ...rest
+} = Astro.props;
+
+const classes = ['btn', `btn--${variant}`, `btn--${size}`, variant === 'secondary' && 'invert-block', className];
+// Surfaces that invert on hover tell inline logos to flip their dark/light variant.
+const inverting = variant === 'ghost' || variant === 'secondary' ? '' : undefined;
+const iconSize = size === 'sm' || size === 'cell' ? 14 : 16;
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      class:list={classes}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noopener noreferrer' : undefined}
+      data-inverting={inverting}
+      {...rest}
+    >
+      {Astro.slots.has('icon') ? <slot name="icon" /> : icon && <Icon name={icon} size={iconSize} />}
+      <span class="btn__label">
+        <slot />
+      </span>
+      {trailingIcon && <Icon name={trailingIcon} size={iconSize} />}
+    </a>
+  ) : (
+    <button type={type} class:list={classes} data-inverting={inverting} {...rest}>
+      {Astro.slots.has('icon') ? <slot name="icon" /> : icon && <Icon name={icon} size={iconSize} />}
+      <span class="btn__label">
+        <slot />
+      </span>
+      {trailingIcon && <Icon name={trailingIcon} size={iconSize} />}
+    </button>
+  )
+}
+
+<style>
+  .btn {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.5;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition-duration: 150ms;
+    transition-timing-function: var(--ease-standard);
+  }
+
+  .btn--primary {
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+    transition-property: opacity;
+  }
+
+  .btn--primary:hover {
+    opacity: 0.8;
+  }
+
+  .btn--secondary {
+    border: 1px solid var(--line-strong);
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  .btn--secondary:hover {
+    border-color: transparent;
+  }
+
+  .btn--action {
+    border: 1px solid var(--line);
+    background: var(--bg-raised);
+    color: var(--ink);
+    transition-property: border-color;
+  }
+
+  .btn--action:hover {
+    border-color: var(--line-strong);
+  }
+
+  .btn--ghost {
+    color: var(--muted);
+    transition-property: color, background-color;
+  }
+
+  .btn--ghost:hover,
+  .btn--ghost[aria-pressed='true'] {
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+  }
+
+  .btn--sm {
+    padding: 6px 12px;
+  }
+
+  .btn--md {
+    padding: 8px 16px;
+  }
+
+  .btn--lg {
+    height: 48px;
+    padding: 0 24px;
+  }
+
+  .btn--cell {
+    height: 36px;
+    padding: 8px 12px;
+    background-color: var(--bg);
+  }
+
+  .btn--cell.btn--ghost:hover,
+  .btn--cell.btn--ghost[aria-pressed='true'] {
+    background: var(--invert-bg);
+  }
+</style>

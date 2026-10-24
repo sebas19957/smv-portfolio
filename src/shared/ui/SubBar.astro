@@ -1,0 +1,42 @@
+---
+/** Non-sticky secondary header row inside a section (same grammar as the eyebrow). */
+interface Props {
+  index: string;
+  label: string;
+  aside?: string;
+}
+
+const { index, label, aside } = Astro.props;
+---
+
+<div class="sub-bar">
+  <h3 class="hud-label text-muted">
+    <span class="text-faint">{index}</span><span class="sub-bar__slash text-faint" aria-hidden="true">/</span>{label}
+  </h3>
+  {aside && <p class="hud-label text-faint">{aside}</p>}
+</div>
+
+<style>
+  .sub-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 24px;
+    border-block: 1px solid var(--line);
+  }
+
+  .sub-bar .hud-label {
+    font-weight: 700;
+  }
+
+  .sub-bar__slash {
+    margin-inline: 8px;
+  }
+
+  @media (min-width: 48rem) {
+    .sub-bar {
+      padding-inline: 40px;
+    }
+  }
+</style>

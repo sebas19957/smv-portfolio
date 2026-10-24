@@ -1,0 +1,96 @@
+---
+import type { TestimonialCopy, TestimonialFact } from '../../i18n';
+import Icon from '../../shared/ui/Icon.astro';
+
+interface Props {
+  index: string;
+  fact: TestimonialFact;
+  entry: TestimonialCopy;
+}
+
+const { index, fact, entry } = Astro.props;
+---
+
+<li class="testimonial cell-pad" data-reveal>
+  <figure class="testimonial__figure">
+    <div class="testimonial__top">
+      <span class="icon-box" aria-hidden="true"><Icon name="quote" size={18} /></span>
+      <span class="hud-label text-faint">{index}</span>
+    </div>
+    <blockquote class="body-copy testimonial__quote">
+      <p>{entry.quote}</p>
+    </blockquote>
+    <figcaption class="testimonial__author">
+      <span class:list={['testimonial__monogram font-display', `accent-${fact.accent}`]} aria-hidden="true">
+        {fact.initials}
+      </span>
+      <span class="testimonial__who">
+        <span class="title-feature testimonial__name">
+          <span class="testimonial__given">{fact.givenName}</span>
+          <span class="testimonial__family">{fact.familyName}</span>
+        </span>
+        <span class="hud-label testimonial__role text-faint">{entry.role}</span>
+      </span>
+    </figcaption>
+  </figure>
+</li>
+
+<style>
+  .testimonial__figure {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+  }
+
+  .testimonial__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .testimonial__quote {
+    margin-top: 24px;
+  }
+
+  .testimonial__author {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-top: auto;
+    padding-top: 32px;
+  }
+
+  /* Initials monogram on the author's own vivid fill (black initials pass AA on every fill). */
+  .testimonial__monogram {
+    display: flex;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    background: var(--app);
+    color: #000;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+  }
+
+  .testimonial__who {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  /* Given names on the first line, family names on the second. */
+  .testimonial__name {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.25rem;
+    line-height: 1.2;
+  }
+
+  .testimonial__role {
+    line-height: 1.6;
+  }
+</style>

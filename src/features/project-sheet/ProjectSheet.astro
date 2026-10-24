@@ -1,0 +1,278 @@
+---
+/**
+ * Project detail sheet: one native <dialog> (modal: focus trap, ESC, inert page) that slides up
+ * almost to the top of the viewport. Its content is mounted from the per-project <template>s
+ * rendered by the projects section. Includes an image lightbox.
+ */
+import Icon from '../../shared/ui/Icon.astro';
+
+interface Props {
+  sectionIndex: string;
+  sectionLabel: string;
+  closeLabel: string;
+  previousLabel: string;
+  nextLabel: string;
+}
+
+const { sectionIndex, sectionLabel, closeLabel, previousLabel, nextLabel } = Astro.props;
+---
+
+<dialog class="sheet" data-project-sheet>
+  <div class="sheet__panel">
+    <div class="sheet__bar">
+      <p class="hud-label sheet__crumb">
+        <span class="text-faint">{sectionIndex}</span><span class="sheet__slash text-faint" aria-hidden="true">/</span>{
+          sectionLabel
+        }<span class="text-faint" data-sheet-crumb></span>
+      </p>
+      <button type="button" class="sheet__close" aria-label={closeLabel} data-sheet-close>
+        <Icon name="x" size={20} />
+      </button>
+    </div>
+    <div class="sheet__scroll" data-sheet-scroll data-lenis-prevent>
+      <div data-sheet-content></div>
+    </div>
+    <div class="sheet__lightbox" data-lightbox-root hidden>
+      <img class="sheet__lightbox-img" alt="" data-lightbox-img />
+      <button type="button" class="sheet__lb-btn sheet__lb-btn--prev" aria-label={previousLabel} data-lightbox-prev>
+        <Icon name="chevron-down" size={20} class="sheet__lb-chevron sheet__lb-chevron--prev" />
+      </button>
+      <button type="button" class="sheet__lb-btn sheet__lb-btn--next" aria-label={nextLabel} data-lightbox-next>
+        <Icon name="chevron-down" size={20} class="sheet__lb-chevron sheet__lb-chevron--next" />
+      </button>
+      <button type="button" class="sheet__lb-btn sheet__lb-btn--close" aria-label={closeLabel} data-lightbox-close>
+        <Icon name="x" size={20} />
+      </button>
+      <p class="hud-label sheet__lb-caption" data-lightbox-caption></p>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .sheet {
+    position: fixed;
+    inset: auto 0 0 0;
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0 auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    overflow: visible;
+  }
+
+  .sheet::backdrop {
+    background: rgb(10 10 12 / 0.45);
+    backdrop-filter: blur(6px);
+  }
+
+  .sheet[open] {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  /* The panel: the blueprint column itself, hairline-framed, rising from the bottom edge. */
+  .sheet__panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: var(--frame-max);
+    height: 100%;
+    border-inline: 1px solid var(--line);
+    border-top: 1px solid var(--line-strong);
+    background: var(--bg);
+    box-shadow: 0 -24px 60px -30px rgb(0 0 0 / 0.45);
+    animation: sheet-in 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .sheet.is-closing .sheet__panel {
+    animation: sheet-out 260ms cubic-bezier(0.4, 0, 1, 1) forwards;
+  }
+
+  .sheet.is-closing::backdrop {
+    opacity: 0;
+    transition: opacity 260ms linear;
+  }
+
+  @keyframes sheet-in {
+    from {
+      transform: translateY(48px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes sheet-out {
+    to {
+      transform: translateY(32px);
+      opacity: 0;
+    }
+  }
+
+  .sheet__bar {
+    display: flex;
+    flex-shrink: 0;
+    align-items: stretch;
+    justify-content: space-between;
+    height: 48px;
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+  }
+
+  .sheet__crumb {
+    display: flex;
+    align-items: center;
+    padding-inline: 24px;
+    font-weight: 700;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .sheet__slash {
+    margin-inline: 8px;
+  }
+
+  .sheet__close {
+    display: flex;
+    width: 48px;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid var(--line);
+    color: var(--muted);
+    transition:
+      background-color 0.12s linear,
+      color 0.12s linear;
+  }
+
+  .sheet__close:hover {
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+  }
+
+  .sheet__scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* ---------- Lightbox ---------- */
+  .sheet__lightbox {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 72px;
+    background: color-mix(in srgb, var(--bg) 94%, transparent);
+    backdrop-filter: blur(10px);
+  }
+
+  .sheet__lightbox[hidden] {
+    display: none;
+  }
+
+  .sheet__lightbox-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border: 1px solid var(--line);
+    background: var(--bg-sunken);
+  }
+
+  .sheet__lb-btn {
+    position: absolute;
+    display: flex;
+    width: 48px;
+    height: 48px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+    transition:
+      background-color 0.12s linear,
+      color 0.12s linear;
+  }
+
+  .sheet__lb-btn:hover {
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+  }
+
+  .sheet__lb-btn[hidden] {
+    display: none;
+  }
+
+  .sheet__lb-btn--prev {
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .sheet__lb-btn--next {
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .sheet__lb-btn--close {
+    top: 12px;
+    right: 12px;
+  }
+
+  .sheet__lb-btn :global(.sheet__lb-chevron--prev) {
+    transform: rotate(90deg);
+  }
+
+  .sheet__lb-btn :global(.sheet__lb-chevron--next) {
+    transform: rotate(-90deg);
+  }
+
+  .sheet__lb-caption {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    width: max-content;
+    max-width: calc(100% - 144px);
+    color: var(--muted);
+    text-align: center;
+    transform: translateX(-50%);
+  }
+
+  @media (min-width: 48rem) {
+    .sheet__panel {
+      height: calc(100dvh - 32px);
+    }
+
+    .sheet__crumb {
+      padding-inline: 40px;
+    }
+  }
+
+  @media (max-width: 47.999rem) {
+    .sheet__lightbox {
+      padding: 64px 12px;
+    }
+
+    .sheet__lb-btn--prev,
+    .sheet__lb-btn--next {
+      top: auto;
+      bottom: 12px;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sheet__panel,
+    .sheet.is-closing .sheet__panel {
+      animation: none;
+    }
+  }
+</style>
