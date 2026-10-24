@@ -257,6 +257,11 @@ export const es = {
       messagePlaceholder: 'Escribe tu mensaje aquí...',
       submit: 'Enviar Mensaje',
       sending: 'Enviando...',
+      status: {
+        success: 'Mensaje enviado. Gracias por escribir, te responderé pronto.',
+        rateLimited: 'Has alcanzado el límite de mensajes. Inténtalo de nuevo en {hours} h.',
+        error: 'No se pudo enviar el mensaje. Inténtalo más tarde o escríbeme por correo.',
+      },
       errors: {
         name: 'El nombre debe tener al menos 3 caracteres.',
         email: 'Ingrese un correo válido.',

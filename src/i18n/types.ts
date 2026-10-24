@@ -311,6 +311,12 @@ export interface ContactCopy {
     readonly messagePlaceholder: string;
     readonly submit: string;
     readonly sending: string;
+    /** Outcome announced after a submit; `{hours}` is replaced with the hours until the limit resets. */
+    readonly status: {
+      readonly success: string;
+      readonly rateLimited: string;
+      readonly error: string;
+    };
     readonly errors: {
       readonly name: string;
       readonly email: string;

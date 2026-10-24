@@ -1,6 +1,7 @@
 ---
 import type { ContactCopy } from '../../i18n';
 import Button from '../../shared/ui/Button.astro';
+import { MAX_LENGTH, MIN_LENGTH } from './contact-message';
 
 interface Props {
   form: ContactCopy['form'];
@@ -15,7 +16,8 @@ const fields = [
     placeholder: form.namePlaceholder,
     error: form.errors.name,
     autocomplete: 'name',
-    minlength: 3,
+    minlength: MIN_LENGTH.name,
+    maxlength: MAX_LENGTH.name,
   },
   {
     name: 'email',
@@ -25,11 +27,12 @@ const fields = [
     error: form.errors.email,
     autocomplete: 'email',
     minlength: undefined,
+    maxlength: MAX_LENGTH.email,
   },
 ] as const;
 ---
 
-<form class="contact-form" novalidate data-contact-form>
+<form class="contact-form" novalidate data-contact-form data-sending-label={form.sending}>
   <div class="contact-form__row">
     {
       fields.map((field) => (
@@ -42,6 +45,7 @@ const fields = [
             placeholder={field.placeholder}
             autocomplete={field.autocomplete}
             minlength={field.minlength}
+            maxlength={field.maxlength}
             required
             aria-describedby={`contact-${field.name}-error`}
           />
@@ -59,7 +63,8 @@ const fields = [
       name="message"
       rows="6"
       placeholder={form.messagePlaceholder}
-      minlength="10"
+      minlength={MIN_LENGTH.message}
+      maxlength={MAX_LENGTH.message}
       required
       aria-describedby="contact-message-error"></textarea>
     <span id="contact-message-error" class="hud-label field__error" hidden data-field-error="message">
@@ -67,7 +72,15 @@ const fields = [
     </span>
   </label>
   <div class="contact-form__actions">
-    <Button type="submit" variant="primary" size="lg" icon="send">{form.submit}</Button>
+    <Button type="submit" variant="primary" size="lg" icon="send" data-contact-submit>{form.submit}</Button>
+    <p
+      class="hud-label contact-form__status"
+      aria-live="polite"
+      data-form-status
+      data-success={form.status.success}
+      data-rate-limited={form.status.rateLimited}
+      data-error={form.status.error}
+    ></p>
   </div>
 </form>
 
@@ -136,6 +149,33 @@ const fields = [
     flex-wrap: wrap;
     align-items: center;
     gap: 16px;
+  }
+
+  /* Outcome readout: a hairline HUD tag, accent ink when sent, danger when refused or failed. */
+  .contact-form__actions :global([data-contact-submit]:disabled) {
+    cursor: progress;
+    opacity: 0.6;
+  }
+
+  .contact-form__status {
+    margin: 0;
+    padding: 6px 10px;
+    border: 1px solid currentColor;
+    border-left-width: 3px;
+    letter-spacing: 0.08em;
+    text-transform: none;
+  }
+
+  .contact-form__status:empty {
+    display: none;
+  }
+
+  .contact-form__status[data-state='success'] {
+    color: var(--accent-ink);
+  }
+
+  .contact-form__status[data-state='error'] {
+    color: var(--danger);
   }
 
   @media (min-width: 40rem) {

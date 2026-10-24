@@ -255,6 +255,11 @@ export const en = {
       messagePlaceholder: 'Write your message here...',
       submit: 'Send Message',
       sending: 'Sending...',
+      status: {
+        success: 'Message sent. Thanks for reaching out, I will get back to you soon.',
+        rateLimited: 'You have reached the message limit. Please try again in {hours} h.',
+        error: 'The message could not be sent. Please try again later or write to me by email.',
+      },
       errors: {
         name: 'The name must be at least 3 characters long.',
         email: 'Please enter a valid email.',
