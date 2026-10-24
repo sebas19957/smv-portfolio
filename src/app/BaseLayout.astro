@@ -1,0 +1,44 @@
+---
+import { getAbsoluteLocaleUrl } from 'astro:i18n';
+import '../styles/global.css';
+import MotionGuard from '../features/reveal/MotionGuard.astro';
+import ThemeScript from '../features/theme/ThemeScript.astro';
+import { LOCALES, LOCALE_TAGS, type Locale, type MetaCopy } from '../i18n';
+
+interface Props {
+  locale: Locale;
+  meta: MetaCopy;
+}
+
+const { locale, meta } = Astro.props;
+const canonical = getAbsoluteLocaleUrl(locale);
+---
+
+<!doctype html>
+<html lang={LOCALE_TAGS[locale].lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <ThemeScript />
+    <MotionGuard />
+    <title>{meta.title}</title>
+    <meta name="description" content={meta.description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonical} />
+    {LOCALES.map((code) => <link rel="alternate" hreflang={code} href={getAbsoluteLocaleUrl(code)} />)}
+    <link rel="alternate" hreflang="x-default" href={getAbsoluteLocaleUrl('en')} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <meta name="theme-color" content="#f2f1ee" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121316" media="(prefers-color-scheme: dark)" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={meta.ogTitle} />
+    <meta property="og:description" content={meta.ogDescription} />
+    <meta property="og:site_name" content={meta.siteName} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={LOCALE_TAGS[locale].og} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
