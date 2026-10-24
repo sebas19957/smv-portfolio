@@ -70,6 +70,11 @@ export const en = {
       tools: 'Tools',
       ai: 'AI & LLM',
     },
+    note: {
+      label: 'A personal note',
+      text:
+        'I believe that, with the arrival of AI, programming languages stopped being a barrier. I learned some of the technologies listed here before AI and others with its help, but I can work with all of them without it. To me, AI came to help us close our gaps and make better use of our time, not to do the work for us.',
+    },
   },
   resume: {
     title: 'My Resume',

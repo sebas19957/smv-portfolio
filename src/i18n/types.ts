@@ -214,6 +214,8 @@ export interface SkillsCopy {
   readonly description: string;
   readonly allLabel: string;
   readonly categories: Readonly<Record<SkillCategory, string>>;
+  /** Short first-person aside shown under the intro, before the grid. */
+  readonly note: { readonly label: string; readonly text: string };
 }
 
 export interface ExperienceCopy {

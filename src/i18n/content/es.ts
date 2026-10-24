@@ -70,6 +70,11 @@ export const es = {
       tools: 'Herramientas',
       ai: 'IA & LLM',
     },
+    note: {
+      label: 'Una nota personal',
+      text:
+        'Creo que, con la llegada de la inteligencia artificial, el lenguaje de programación dejó de ser una barrera. Algunas de las tecnologías que aparecen aquí las aprendí antes de la IA y otras con su apoyo, pero todas sé usarlas sin ella. Para mí, la IA llegó a ayudarnos a cubrir nuestras falencias y a optimizar el tiempo, no a hacer el trabajo por nosotros.',
+    },
   },
   resume: {
     title: 'Mi Experiencia',
