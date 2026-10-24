@@ -1,0 +1,10 @@
+---
+interface Props {
+  tone?: 'muted' | 'status';
+  class?: string;
+}
+
+const { tone = 'muted', class: className } = Astro.props;
+---
+
+<span class:list={['chip', className]} data-tone={tone}><slot /></span>

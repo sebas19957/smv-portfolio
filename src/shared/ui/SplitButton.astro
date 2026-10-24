@@ -1,0 +1,173 @@
+---
+import Icon from './Icon.astro';
+import type { IconName } from './icons';
+
+export interface SplitButtonOption {
+  label: string;
+  href: string;
+  /** Short code shown on the right of the menu row (e.g. "EN"). */
+  tag?: string;
+  lang?: string;
+}
+
+interface Props {
+  /** Stable id prefix for the menu (aria-controls). */
+  id: string;
+  label: string;
+  href: string;
+  icon?: IconName;
+  /** Accessible name of the chevron toggle. */
+  menuLabel: string;
+  options: readonly SplitButtonOption[];
+  /** One-line HUD helper under the button. */
+  helper?: string;
+  external?: boolean;
+}
+
+const { id, label, href, icon, menuLabel, options, helper, external = false } = Astro.props;
+const menuId = `${id}-menu`;
+const linkTarget = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+---
+
+<div class="split" data-split-button>
+  <div class="split__control">
+    <a class="split__main" href={href} {...linkTarget}>
+      {icon && <Icon name={icon} size={16} />}
+      <span>{label}</span>
+    </a>
+    <button
+      type="button"
+      class="split__toggle"
+      aria-haspopup="menu"
+      aria-expanded="false"
+      aria-controls={menuId}
+      aria-label={menuLabel}
+      data-split-toggle
+    >
+      <Icon name="chevron-down" size={16} class="split__chevron" />
+    </button>
+    <div id={menuId} class="split__menu" role="menu" hidden data-split-menu>
+      {
+        options.map((option) => (
+          <a class="hud-label split__item" role="menuitem" href={option.href} hreflang={option.lang} {...linkTarget}>
+            <span>{option.label}</span>
+            {option.tag && <span class="split__tag">{option.tag}</span>}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+  {helper && <span class="hud-label split__helper">{helper}</span>}
+</div>
+
+<style>
+  .split {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .split__control {
+    position: relative;
+    display: inline-flex;
+    align-items: stretch;
+    width: fit-content;
+  }
+
+  .split__main,
+  .split__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+    transition: opacity 150ms var(--ease-standard);
+  }
+
+  .split__main {
+    gap: 8px;
+    padding: 0 16px 0 24px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.5;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .split__toggle {
+    padding-inline: 14px;
+    border-left: 1px solid color-mix(in srgb, var(--invert-fg) 20%, transparent);
+  }
+
+  .split__main:hover,
+  .split__toggle:hover {
+    opacity: 0.8;
+  }
+
+  .split__toggle :global(.split__chevron) {
+    transition: transform 150ms var(--ease-standard);
+  }
+
+  .split__toggle[aria-expanded='true'] :global(.split__chevron) {
+    transform: rotate(180deg);
+  }
+
+  .split__menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 35;
+    display: flex;
+    flex-direction: column;
+    min-width: 100%;
+    border: 1px solid var(--line);
+    background: var(--bg-raised);
+    box-shadow:
+      0 10px 15px -3px rgb(0 0 0 / 0.1),
+      0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
+
+  .split__menu[hidden] {
+    display: none;
+  }
+
+  .split__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 10px 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .split__item + .split__item {
+    border-top: 1px solid var(--line);
+  }
+
+  .split__item:hover,
+  .split__item:focus-visible {
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+    outline-offset: -2px;
+  }
+
+  .split__tag {
+    color: var(--faint);
+  }
+
+  .split__item:hover .split__tag {
+    color: inherit;
+  }
+
+  .split__helper {
+    min-height: 16px;
+    width: 0;
+    min-width: 100%;
+    white-space: nowrap;
+    color: var(--faint);
+  }
+</style>

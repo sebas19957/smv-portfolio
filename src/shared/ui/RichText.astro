@@ -1,0 +1,20 @@
+---
+import type { AccentKey, RichText } from '../../i18n/types';
+
+interface Props {
+  text: RichText;
+  /**
+   * Palette key for the highlighted run, painted with the vivid fill (`--app`).
+   * Without it the run uses the global accent ink (the reference's single blue highlight).
+   */
+  accent?: AccentKey;
+}
+
+const { text, accent } = Astro.props;
+---
+
+{
+  text.map((part) =>
+    typeof part === 'string' ? part : <span class:list={['accent-word', accent && ['accent-word--fill', `accent-${accent}`]]}>{part.accent}</span>,
+  )
+}
