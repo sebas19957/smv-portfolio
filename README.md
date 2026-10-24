@@ -115,6 +115,14 @@ cp .env.template .env.production    # used with Docker (`--env-file`)
 | `pnpm test`       | Run the test suite once (Vitest)                        |
 | `pnpm test:watch` | Run the tests in watch mode                             |
 
+The Redis rate-limiter scripts also have an integration test, skipped unless `REDIS_TEST_URL`
+points at a disposable Redis (never the shared production one):
+
+```bash
+docker run --rm -d --name redis-test -p 6390:6379 redis:7-alpine
+REDIS_TEST_URL=redis://127.0.0.1:6390 pnpm test
+```
+
 ## Running with Docker
 
 Build the image:
@@ -137,7 +145,13 @@ docker run -p 3000:3000 \
   smv-portfolio
 ```
 
-The site is now available at http://localhost:3000 (the server runs `node ./dist/server/entry.mjs`).
+The site is now available at http://localhost:3000 (the server runs `node ./dist/server/entry.mjs`
+under `tini`, so `docker stop` shuts it down promptly). A `HEALTHCHECK` polls the home page.
+
+> **Client IP trust:** the rate limit keys on the `cf-connecting-ip` header, which any client can
+> forge when it reaches the origin directly. In production, firewall the origin so it only accepts
+> traffic from [Cloudflare's IP ranges](https://www.cloudflare.com/ips/), or enable Cloudflare
+> [Authenticated Origin Pulls](https://developers.cloudflare.com/ssl/origin-configuration/authenticated-origin-pull/).
 
 ## Pulling from GHCR
 
@@ -149,10 +163,17 @@ docker pull ghcr.io/sebas19957/smv-portfolio:portfolio-v3
 
 Available tags:
 
-- `latest` and `X.Y.Z` (from `package.json`): most recent build from `main` (production).
-- `portfolio-v3`: most recent build from the `portfolio-v3` branch.
-- `sha-<commit>`: a specific commit from `main` or `portfolio-v3`.
-- `X.Y.Z` / `X.Y`: released version from a `vX.Y.Z` git tag.
+| Tag            | Published on                    | Source of the value                                    |
+| -------------- | ------------------------------- | ------------------------------------------------------ |
+| `latest`       | Push to `main`                  | Fixed (production pulls this one)                      |
+| `X.Y.Z`        | Push to `main`                  | `version` field of `package.json`                      |
+| `portfolio-v3` | Push to `portfolio-v3`          | Fixed (moving branch tag)                              |
+| `sha-<commit>` | Push to `main` / `portfolio-v3` | Short commit SHA                                       |
+| `X.Y.Z`, `X.Y` | Push of a `vX.Y.Z` git tag      | The git tag, without the `v` (does not touch `latest`) |
+
+The two `X.Y.Z` rows are separate triggers: a push to `main` tags the image with whatever
+`package.json` says, while pushing a `vX.Y.Z` git tag tags it from the git tag name. Keep them in
+sync (bump `package.json` before tagging) so the same `X.Y.Z` never points at two different builds.
 
 ## Project Structure
 
@@ -193,8 +214,10 @@ facts in `profile.ts`).
 
 | Workflow             | Trigger                                                      | What it does                                   |
 | -------------------- | ------------------------------------------------------------ | ---------------------------------------------- |
-| `ci.yml`             | Push to `portfolio-v3` / `develop`, PR to `develop` / `main` | Install, `pnpm check`, `pnpm test`, `pnpm build` |
-| `docker-publish.yml` | Push to `main` / `portfolio-v3`, `v*.*.*` tag                | Run CI, then build & push the image to GHCR    |
+| `ci.yml`             | Push to `develop`, PR to `develop` / `main`                  | Install, `pnpm check`, `pnpm test`, `pnpm build` |
+| `docker-publish.yml` | Push to `main` / `portfolio-v3`, `v*.*.*` tag                | Run `ci.yml` (reused), then build & push the image to GHCR |
+
+Every third-party action is pinned to a full commit SHA (with the release in a trailing comment).
 
 ## Icon Credits
 
