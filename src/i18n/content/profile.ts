@@ -14,8 +14,8 @@ export const profile = {
   yearsOfExperience: '6+',
   siteUrl: 'https://www.sebastianmv.dev',
   cv: {
-    en: 'https://personal-smv-assets.s3.sa-east-1.amazonaws.com/pdfs/Sebastian_Mosquera_cv_up_en.pdf',
-    es: 'https://personal-smv-assets.s3.sa-east-1.amazonaws.com/pdfs/Sebastian_Mosquera_cv_up_es.pdf',
+    en: 'https://personal-smv-assets.s3.sa-east-1.amazonaws.com/pdfs/Sebastian_Mosquera_cv_ats_en.pdf',
+    es: 'https://personal-smv-assets.s3.sa-east-1.amazonaws.com/pdfs/Sebastian_Mosquera_cv_ats_es.pdf',
   },
   socials: [
     {
