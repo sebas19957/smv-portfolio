@@ -27,7 +27,13 @@ type TransportFactory = (options: {
   secure: boolean;
   requireTLS: boolean;
   auth: { user: string; pass: string };
+  connectionTimeout: number;
+  greetingTimeout: number;
+  socketTimeout: number;
 }) => SmtpTransport;
+
+/** Bounds every SMTP phase so a slow or tarpitted host fails the request in seconds, not minutes. */
+const TIMEOUTS = { connectionTimeout: 10_000, greetingTimeout: 10_000, socketTimeout: 20_000 } as const;
 
 /**
  * Nodemailer SMTP mailer. Hetzner blocks outbound 465 by default, so 587 with STARTTLS is the
@@ -49,6 +55,7 @@ export function createSmtpMailer(
       secure: port === 465,
       requireTLS: port !== 465,
       auth: { user, pass },
+      ...TIMEOUTS,
     });
     cached = { transport, from: from || user, to: receiver };
     return cached;

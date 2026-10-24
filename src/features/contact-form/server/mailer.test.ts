@@ -21,6 +21,9 @@ describe('createSmtpMailer', () => {
       secure: false,
       requireTLS: true,
       auth: { user: 'bot@test', pass: 'pw' },
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 20_000,
     });
     expect(sendMail).toHaveBeenCalledWith({ from: 'bot@test', to: 'owner@test', ...mail });
   });

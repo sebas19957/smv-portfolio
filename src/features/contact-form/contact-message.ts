@@ -13,9 +13,12 @@ export type ParseResult =
 /** JSON bodies returned by `POST /api/send-email`, shared by the route and the browser controller. */
 export type ContactApiResponse =
   | { readonly ok: true }
-  | { readonly error: 'invalid-body' | 'send-failed' }
+  | { readonly error: 'invalid-body' | 'payload-too-large' | 'send-failed' }
   | { readonly error: 'validation'; readonly fields: FieldName[] }
   | { readonly error: 'rate-limited'; readonly hoursRemaining: number };
+
+/** Messages allowed per client IP per window, enforced by the API; the window is also the form's fallback. */
+export const RATE_LIMIT = { messages: 3, windowHours: 24 } as const;
 
 export const FIELDS: ReadonlyArray<FieldName> = ['name', 'email', 'message'];
 

@@ -2,26 +2,63 @@ import { parseContactMessage, type ContactApiResponse } from '../contact-message
 import { getClientIp } from './client-ip';
 import { sendContactMessage, type SendContactDeps } from './send-contact-message';
 
-/** Bodies above this are rejected before parsing; a maxed-out valid message is ~5.5 KB. */
+/** Larger bodies get a 413; a maxed-out valid message is ~5.5 KB. */
 const MAX_BODY_BYTES = 16 * 1024;
 
 const json = (body: ContactApiResponse, status: number, headers: Record<string, string> = {}) =>
   Response.json(body, { status, headers });
 
-async function readJson(request: Request): Promise<{ ok: true; body: unknown } | { ok: false }> {
+type ReadResult = { ok: true; body: unknown } | { ok: false; error: 'invalid-body' | 'payload-too-large' };
+
+/**
+ * Streams the body, counting bytes as they arrive, so a chunked request without Content-Length
+ * is cut off at the limit instead of being buffered whole. Returns `null` when it is too large.
+ */
+async function readText(body: ReadableStream<Uint8Array> | null): Promise<string | null> {
+  if (!body) return '';
+  const reader = body.getReader();
+  const decoder = new TextDecoder();
+  let text = '';
+  let size = 0;
   try {
-    const text = await request.text();
-    if (new TextEncoder().encode(text).length > MAX_BODY_BYTES) return { ok: false };
+    for (let chunk = await reader.read(); !chunk.done; chunk = await reader.read()) {
+      size += chunk.value.byteLength;
+      if (size > MAX_BODY_BYTES) {
+        await reader.cancel().catch(() => {});
+        return null;
+      }
+      text += decoder.decode(chunk.value, { stream: true });
+    }
+  } catch {
+    // The Node adapter errors the stream once a body passes its own `bodySizeLimit`, and the
+    // runtime may read ahead of us, so that can happen before our count reaches the limit.
+    // (A client that disconnected mid-body never sees the response either way.)
+    return null;
+  }
+  return text + decoder.decode();
+}
+
+async function readJson(request: Request): Promise<ReadResult> {
+  const text = await readText(request.body);
+  if (text === null) return { ok: false, error: 'payload-too-large' };
+  try {
     return { ok: true, body: JSON.parse(text) };
   } catch {
-    return { ok: false };
+    return { ok: false, error: 'invalid-body' };
   }
 }
 
-/** HTTP mapping of the contact use case: 400 bad input, 429 limited, 500 send failure, 200 sent. */
+/**
+ * HTTP mapping of the contact use case: 413 too large, 400 bad input, 429 limited, 500 send
+ * failure, 200 sent. A declared Content-Length over the limit is refused before reading anything.
+ */
 export async function handleSendEmail(request: Request, deps: SendContactDeps): Promise<Response> {
+  if (Number(request.headers.get('content-length')) > MAX_BODY_BYTES) {
+    return json({ error: 'payload-too-large' }, 413);
+  }
+
   const read = await readJson(request);
-  if (!read.ok) return json({ error: 'invalid-body' }, 400);
+  if (!read.ok) return json({ error: read.error }, read.error === 'payload-too-large' ? 413 : 400);
 
   const parsed = parseContactMessage(read.body);
   if (!parsed.ok) return json({ error: 'validation', fields: parsed.fields }, 400);
