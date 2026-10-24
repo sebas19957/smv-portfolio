@@ -1,0 +1,152 @@
+---
+import type { ExperienceCopy, ExperienceFact } from '../../i18n';
+import TechChip from '../../shared/ui/TechChip.astro';
+
+interface Props {
+  index: string;
+  fact: ExperienceFact;
+  entry: ExperienceCopy;
+  tasksLabel: string;
+  achievementsLabel: string;
+  presentLabel: string;
+}
+
+const { index, fact, entry, tasksLabel, achievementsLabel, presentLabel } = Astro.props;
+const lists = [
+  { label: tasksLabel, items: entry.responsibilities },
+  { label: achievementsLabel, items: entry.achievements },
+];
+---
+
+<article class:list={['experience', `accent-${fact.accent}`]} data-reveal>
+  <span class="experience__bar" aria-hidden="true"></span>
+  <div class="experience__meta">
+    <div class="experience__head">
+      <span class="hud-label num-badge">{index}</span>
+      <p class="hud-label experience__period text-faint">{entry.period}</p>
+    </div>
+    <div class="cell-pad experience__body">
+      <h4 class="title-card">{entry.position}</h4>
+      <p class="hud-label experience__company">
+        {fact.company}<span class="text-faint"> · {fact.location}</span>
+      </p>
+      {entry.description && <p class="body-copy experience__description">{entry.description}</p>}
+      <div class="experience__chips">
+        {fact.current && <span class="chip" data-tone="status">{presentLabel}</span>}
+        {fact.tech.map((chip) => <TechChip label={chip.label} tech={chip.tech} />)}
+      </div>
+    </div>
+  </div>
+  {
+    lists.map((list) => (
+      <div class="cell-pad experience__list-cell">
+        <p class="hud-label text-faint">{list.label}</p>
+        <ul class="experience__list">
+          {list.items.map((item) => (
+            <li class="experience__item">{item}</li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+</article>
+
+<style>
+  /* A hairline table row: meta | tasks | achievements. */
+  .experience {
+    position: relative;
+    display: grid;
+    gap: 1px;
+    background: var(--line);
+  }
+
+  .experience > * {
+    background: var(--bg);
+  }
+
+  /* 2px item-colored bar that draws in on hover, like the reference cards. */
+  .experience .experience__bar {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    z-index: 2;
+    height: 2px;
+    background: var(--app);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 300ms var(--ease-standard);
+  }
+
+  .experience:hover .experience__bar {
+    transform: scaleX(1);
+  }
+
+  .experience__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .experience__period {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .experience__company {
+    margin-top: 14px;
+    color: var(--app-ink);
+  }
+
+  .experience__description {
+    margin-top: 12px;
+  }
+
+  .experience__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 24px;
+  }
+
+  .experience__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  /* Each line item hangs off a short hairline dash. */
+  .experience__item {
+    position: relative;
+    padding-left: 22px;
+    line-height: 1.625;
+    color: var(--muted);
+  }
+
+  .experience__item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.8125em;
+    width: 11px;
+    height: 1px;
+    background: var(--line-strong);
+  }
+
+  @media (min-width: 48rem) {
+    .experience__head {
+      padding-inline: 32px;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .experience {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr);
+    }
+  }
+</style>

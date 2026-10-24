@@ -1,0 +1,177 @@
+---
+import { SECTION_ORDER, type PortfolioContent } from '../../i18n';
+
+interface Props {
+  content: PortfolioContent;
+}
+
+const { content } = Astro.props;
+const { copy, profile } = content;
+const { footer, ui, about, contact } = copy;
+const year = String(new Date().getFullYear());
+
+const columns = [
+  {
+    heading: footer.linksHeading,
+    links: SECTION_ORDER.map((id) => ({ label: ui.nav[id], href: `#${id}`, external: false })),
+  },
+  {
+    heading: footer.followHeading,
+    links: profile.socials.map((social) => ({
+      label: social.label,
+      href: social.href,
+      external: social.id !== 'email',
+    })),
+  },
+  {
+    heading: ui.nav.contact,
+    links: [
+      { label: contact.emailLabel, href: `mailto:${profile.contactEmail}`, external: false },
+    ],
+  },
+  {
+    heading: ui.nav.resume,
+    links: (['en', 'es'] as const).map((code) => ({
+      label: about.cvButtons[code],
+      href: profile.cv[code],
+      external: true,
+    })),
+  },
+];
+---
+
+<footer class="site-footer">
+  <div class="site-footer__frame">
+    <div class="hairline-grid site-footer__grid">
+      <div class="site-footer__brand">
+        <span class="font-display site-footer__logo" aria-hidden="true">{profile.logo}</span>
+        <p class="body-copy site-footer__text">{footer.text}</p>
+        <a class="hud-label site-footer__email" href={`mailto:${profile.contactEmail}`}>{profile.contactEmail}</a>
+      </div>
+      {
+        columns.map((column) => (
+          <nav class="site-footer__column" aria-label={column.heading}>
+            <p class="hud-label text-faint">{column.heading}</p>
+            <ul class="site-footer__list">
+              {column.links.map((link) => (
+                <li>
+                  <a
+                    class="site-footer__link"
+                    href={link.href}
+                    target={link.external ? '_blank' : undefined}
+                    rel={link.external ? 'noopener noreferrer' : undefined}
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))
+      }
+    </div>
+    <div class="site-footer__bar">
+      <p class="hud-label text-faint">{footer.legal.replace('{year}', year)}</p>
+      <p class="hud-label text-faint">{contact.subtitle}</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+  }
+
+  .site-footer__frame {
+    max-width: var(--frame-max);
+    margin-inline: auto;
+    border-inline: 1px solid var(--line);
+  }
+
+  .site-footer__brand {
+    padding: 24px;
+  }
+
+  .site-footer__logo {
+    display: block;
+    font-size: 32px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--ink-strong);
+  }
+
+  .site-footer__text {
+    max-width: 20rem;
+    margin-top: 16px;
+  }
+
+  .site-footer__email {
+    display: inline-block;
+    margin-top: 24px;
+    color: var(--faint);
+  }
+
+  .site-footer__email:hover {
+    color: var(--ink);
+  }
+
+  .site-footer__column {
+    padding: 24px;
+  }
+
+  .site-footer__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .site-footer__link {
+    color: var(--muted);
+    overflow-wrap: anywhere;
+  }
+
+  .site-footer__link:hover {
+    color: var(--ink);
+  }
+
+  .site-footer__bar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 24px;
+    border-top: 1px solid var(--line);
+  }
+
+  @media (min-width: 48rem) {
+    .site-footer__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .site-footer__brand {
+      grid-column: span 4;
+      padding: 40px;
+    }
+
+    .site-footer__column {
+      padding: 32px;
+    }
+
+    .site-footer__bar {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding-inline: 40px;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .site-footer__grid {
+      grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    }
+
+    .site-footer__brand {
+      grid-column: span 1;
+    }
+  }
+</style>

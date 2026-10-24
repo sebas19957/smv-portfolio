@@ -1,0 +1,130 @@
+---
+import { images } from '../../assets/images';
+import { sectionIndex, type PortfolioContent } from '../../i18n';
+import MediaFrame from '../../shared/ui/MediaFrame.astro';
+import RichText from '../../shared/ui/RichText.astro';
+import { SECTION_ACCENTS } from '../section-accents';
+import Section from '../../shared/ui/Section.astro';
+import SplitButton from '../../shared/ui/SplitButton.astro';
+
+interface Props {
+  content: PortfolioContent;
+}
+
+const { content } = Astro.props;
+const { copy, profile, locale } = content;
+const { about, ui } = copy;
+const [intro, passion, focus] = about.bio;
+const cvOptions = (['en', 'es'] as const).map((code) => ({
+  label: about.cvButtons[code],
+  href: profile.cv[code],
+  tag: code.toUpperCase(),
+  lang: code,
+}));
+---
+
+<Section
+  id="about"
+  index={sectionIndex('about')}
+  label={ui.nav.about}
+  aside={profile.location}
+>
+  <div class="about section-pad">
+    <div class="about__copy">
+      <h2 class="heading-xl" data-reveal><RichText text={about.heading} accent={SECTION_ACCENTS.about} /></h2>
+      <p class="hud-label about__role text-faint" data-reveal>{about.role} · {profile.location}</p>
+      <p class="lead about__lead" data-reveal>{intro}</p>
+      <p class="body-copy about__body" data-reveal>{about.profile}</p>
+      <p class="body-copy about__body" data-reveal>{passion}</p>
+      <p class="about__focus" data-reveal>{focus}</p>
+      <p class="hud-label about__languages" data-reveal>
+        <span class="text-faint">{about.languages.label}</span>
+        <span class="text-muted">{about.languages.value}</span>
+      </p>
+      <div class="about__cv" data-reveal>
+        <SplitButton
+          id="about-cv"
+          label={about.cvButtons[locale]}
+          href={profile.cv[locale]}
+          icon="arrow-down-to-line"
+          menuLabel={`${about.cvButtons.en} / ${about.cvButtons.es}`}
+          options={cvOptions}
+          helper={about.cvHelper}
+          external
+        />
+      </div>
+    </div>
+    <figure class="about__media" data-reveal>
+      <MediaFrame
+        image={images.profileAbout}
+        alt={about.portraitAlt}
+        aspect="4 / 5"
+        widths={[360, 480, 720, 960]}
+        sizes="(min-width: 1280px) 400px, (min-width: 640px) 400px, calc(100vw - 48px)"
+        position="50% 25%"
+      />
+    </figure>
+  </div>
+</Section>
+
+<style>
+  .about {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .about__copy {
+    min-width: 0;
+  }
+
+  .about__role {
+    margin-top: 20px;
+  }
+
+  .about__lead {
+    margin-top: 20px;
+  }
+
+  .about__body {
+    max-width: 36rem;
+    margin-top: 16px;
+  }
+
+  .about__focus {
+    max-width: 36rem;
+    margin-top: 16px;
+    font-size: 1.125rem;
+    line-height: 1.625;
+    color: var(--ink);
+  }
+
+  .about__languages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin-top: 20px;
+  }
+
+  .about__cv {
+    margin-top: 32px;
+  }
+
+  .about__media {
+    width: 100%;
+    max-width: 400px;
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 80rem) {
+    .about {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .about__media {
+      width: 400px;
+    }
+  }
+</style>
