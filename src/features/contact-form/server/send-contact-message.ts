@@ -19,9 +19,10 @@ export type SendOutcome =
   | { readonly status: 'failed' };
 
 /**
- * Sends one contact message to the portfolio owner, enforcing the per-IP limit. Redis problems
- * fail open (logged, message still sent): losing a real message is worse than brief spam exposure.
- * Only successful sends count as attempts.
+ * Sends one contact message to the portfolio owner, enforcing the per-IP limit. The attempt is
+ * reserved before sending and released if the send fails, so only successful sends count. Redis
+ * problems fail open (logged, message still sent): losing a real message is worse than brief spam
+ * exposure.
  */
 export async function sendContactMessage(
   message: ContactMessage,
@@ -29,8 +30,10 @@ export async function sendContactMessage(
   { mailer, limiter, logger }: SendContactDeps,
 ): Promise<SendOutcome> {
   let status: RateLimitStatus = { allowed: true };
+  let reserved = false;
   try {
-    status = await limiter.check(ip);
+    status = await limiter.reserve(ip);
+    reserved = status.allowed;
   } catch (error) {
     logger.error('[contact] rate limit check failed, continuing without it', error);
   }
@@ -44,13 +47,15 @@ export async function sendContactMessage(
     });
   } catch (error) {
     logger.error('[contact] email delivery failed', error);
+    if (reserved) {
+      try {
+        await limiter.release(ip);
+      } catch (releaseError) {
+        logger.error('[contact] could not release the attempt', releaseError);
+      }
+    }
     return { status: 'failed' };
   }
 
-  try {
-    await limiter.record(ip);
-  } catch (error) {
-    logger.error('[contact] could not record the attempt', error);
-  }
   return { status: 'sent' };
 }

@@ -1,5 +1,5 @@
 import type { Dispose } from '../../shared/lib/dispose';
-import { FIELDS, isFieldValid, type ContactApiResponse, type FieldName } from './contact-message';
+import { FIELDS, RATE_LIMIT, isFieldValid, type ContactApiResponse, type FieldName } from './contact-message';
 
 const ENDPOINT = '/api/send-email';
 
@@ -43,7 +43,7 @@ export function initContactForm(): Dispose {
     else form.removeAttribute('aria-busy');
   };
 
-  const announce = (key: StatusKey | null, hours = 24) => {
+  const announce = (key: StatusKey | null, hours: number = RATE_LIMIT.windowHours) => {
     if (!status) return;
     if (!key) {
       status.textContent = '';

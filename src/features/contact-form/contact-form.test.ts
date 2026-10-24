@@ -120,6 +120,17 @@ describe('initContactForm', () => {
     expect(ui.field('name').value).toBe('Ada Lovelace');
   });
 
+  it('falls back to the full rate-limit window when the 429 body has no hours', async () => {
+    const ui = mount();
+    dispose = initContactForm();
+    fetchMock.mockResolvedValue(new Response('Too Many Requests', { status: 429 }));
+    ui.fill();
+    ui.submit();
+    await flush();
+
+    expect(ui.status.textContent).toBe('Limit reached. Try again in 24 h.');
+  });
+
   it('shows the generic error for server failures and network errors', async () => {
     const ui = mount();
     dispose = initContactForm();
