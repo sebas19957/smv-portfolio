@@ -35,7 +35,7 @@ const railWords = RAIL_GROUPS.map((group) => ({
 
 <BaseLayout locale={locale} meta={copy.meta}>
   <a class="skip-link hud-label" href="#main">{copy.ui.skipToContent}</a>
-  <SiteNav locale={locale} ui={copy.ui} logo={profile.logo} brand={profile.brand} ctaLabel={copy.hero.ctaPrimary} />
+  <SiteNav locale={locale} ui={copy.ui} brand={profile.brand} ctaLabel={copy.hero.ctaPrimary} />
   <main id="main">
     <HeroSection content={content} />
     <AboutSection content={content} />

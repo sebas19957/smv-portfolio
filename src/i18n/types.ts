@@ -156,7 +156,6 @@ export interface Profile {
   readonly fullName: string;
   readonly nameLines: readonly [RichText, RichText];
   readonly brand: string;
-  readonly logo: string;
   readonly location: string;
   readonly contactEmail: string;
   readonly yearsOfExperience: string;

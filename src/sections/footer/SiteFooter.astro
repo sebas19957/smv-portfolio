@@ -1,5 +1,6 @@
 ---
 import { SECTION_ORDER, type PortfolioContent } from '../../i18n';
+import SiteLogo from '../../shared/ui/SiteLogo.astro';
 import TechChip from '../../shared/ui/TechChip.astro';
 import { ARTCRAFT_URL, SITE_STACK, splitLinkSlot } from './colophon';
 
@@ -48,7 +49,7 @@ const columns = [
   <div class="site-footer__frame">
     <div class="hairline-grid site-footer__grid">
       <div class="site-footer__brand">
-        <span class="font-display site-footer__logo" aria-hidden="true">{profile.logo}</span>
+        <SiteLogo height={28} />
         <p class="body-copy site-footer__text">{footer.text}</p>
         <a class="hud-label site-footer__email" href={`mailto:${profile.contactEmail}`}>{profile.contactEmail}</a>
       </div>
@@ -116,14 +117,6 @@ const columns = [
 
   .site-footer__brand {
     padding: 24px;
-  }
-
-  .site-footer__logo {
-    display: block;
-    font-size: 32px;
-    line-height: 1;
-    letter-spacing: -0.04em;
-    color: var(--ink-strong);
   }
 
   .site-footer__text {

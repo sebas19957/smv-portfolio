@@ -1,18 +1,18 @@
 ---
 import { SECTION_ORDER, type Locale, type UiCopy } from '../../i18n';
 import Icon from '../../shared/ui/Icon.astro';
+import SiteLogo from '../../shared/ui/SiteLogo.astro';
 import ThemeToggle from '../theme/ThemeToggle.astro';
 import LanguageSwitch from './LanguageSwitch.astro';
 
 interface Props {
   locale: Locale;
   ui: UiCopy;
-  logo: string;
   brand: string;
   ctaLabel: string;
 }
 
-const { locale, ui, logo, brand, ctaLabel } = Astro.props;
+const { locale, ui, brand, ctaLabel } = Astro.props;
 const links = SECTION_ORDER.map((id) => ({ id, label: ui.nav[id] }));
 ---
 
@@ -20,7 +20,7 @@ const links = SECTION_ORDER.map((id) => ({ id, label: ui.nav[id] }));
   <div class="site-nav__bar">
     <div class="site-nav__start" data-intro-item>
       <a class="site-nav__logo" href="#home" aria-label={brand}>
-        <span class="font-display site-nav__mark" aria-hidden="true">{logo}</span>
+        <SiteLogo height={18} />
       </a>
       <ul class="site-nav__links">
         {
@@ -113,19 +113,11 @@ const links = SECTION_ORDER.map((id) => ({ id, label: ui.nav[id] }));
     align-items: center;
     padding-inline: 16px;
     border-right: 1px solid var(--line);
-    color: var(--ink-strong);
     transition: opacity 150ms var(--ease-standard);
   }
 
   .site-nav__logo:hover {
     opacity: 0.7;
-  }
-
-  .site-nav__mark {
-    font-size: 20px;
-    line-height: 1;
-    letter-spacing: -0.04em;
-    white-space: nowrap;
   }
 
   .site-nav__links {

@@ -8,7 +8,6 @@ export const profile = {
   fullName: 'Sebastián Mosquera Valencia',
   nameLines: [['Sebastián'], ['Mosquera ', { accent: 'Valencia' }]],
   brand: 'SebastiánMV',
-  logo: '</>',
   location: 'Medellín, Antioquia, Colombia',
   contactEmail: 'sebasmval@gmail.com',
   yearsOfExperience: '6+',
