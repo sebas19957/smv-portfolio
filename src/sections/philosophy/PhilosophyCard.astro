@@ -1,0 +1,97 @@
+---
+import type { AccentKey, PhilosophyCard } from '../../i18n';
+import Icon from '../../shared/ui/Icon.astro';
+import type { IconName } from '../../shared/ui/icons';
+
+interface Props {
+  index: string;
+  card: PhilosophyCard;
+  icon: IconName;
+  accent: AccentKey;
+  /** Columns spanned on the 4-column desktop grid. */
+  span: 1 | 2 | 3;
+}
+
+const { index, card, icon, accent, span } = Astro.props;
+---
+
+<li class:list={['trait cell-pad', `accent-${accent}`, `trait--span-${span}`]} data-reveal>
+  <div class="trait__top">
+    <span class="trait__icon" aria-hidden="true"><Icon name={icon} size={22} /></span>
+    <span class="hud-label trait__index">{index}</span>
+  </div>
+  <h3 class="trait__title font-display">{card.title}</h3>
+  <p class="trait__text">{card.text}</p>
+</li>
+
+<style>
+  /*
+   * Full-colour tile: the item's vivid fill with solid black ink, which passes AA (≥4.9:1) on
+   * every fill used here, in both themes.
+   */
+  .trait {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    background: var(--app);
+    color: #000;
+  }
+
+  .trait__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  /* Solid black square with the glyph in the tile's own fill. */
+  .trait__icon {
+    display: flex;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    color: var(--app);
+  }
+
+  .trait__index {
+    font-weight: 700;
+  }
+
+  .trait__title {
+    margin-top: auto;
+    padding-top: 40px;
+    font-size: 1.625rem;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: #000;
+  }
+
+  .trait__text {
+    max-width: 36rem;
+    margin-top: 12px;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  @media (min-width: 48rem) {
+    .trait__title {
+      font-size: 1.875rem;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .trait--span-2 {
+      grid-column: span 2;
+    }
+
+    .trait--span-3 {
+      grid-column: span 3;
+    }
+
+    .trait__title {
+      padding-top: 56px;
+    }
+  }
+</style>

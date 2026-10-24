@@ -30,6 +30,7 @@ export const SECTION_ORDER: readonly SectionId[] = [
   'resume',
   'projects',
   'testimonials',
+  'philosophy',
   'contact',
 ];
 

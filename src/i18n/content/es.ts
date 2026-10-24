@@ -16,6 +16,7 @@ export const es = {
       resume: 'Resumen',
       projects: 'Proyectos',
       testimonials: 'Testimonios',
+      philosophy: 'Filosofía',
       contact: 'Contacto',
     },
     navLabel: 'Principal',
@@ -244,6 +245,55 @@ export const es = {
           'Sebastián se caracteriza por ser un profesional apasionado por su carrera, siempre está en pro del aprendizaje continuo y en busca de nuevos retos que le permitan crecer profesional y personalmente. Dentro de sus aptitudes están su atención al detalle, la innovación y la colaboración en equipo, adicionalmente, se caracteriza por su lealtad, responsabilidad y compromiso pues son pilares de su personalidad.',
       },
     ],
+  },
+  philosophy: {
+    heading: ['Mi ', { accent: 'filosofía de vida' }],
+    intro:
+      'Creé esta sección para que conozcan un poquito más a la persona detrás del profesional. Con el tiempo, esos dos mundos se han ido separando cada vez más, pero para mí la persona siempre va primero.',
+    cards: [
+      {
+        id: 'football',
+        title: 'La pelota',
+        text: 'Soy un apasionado del fútbol. De hecho, antes de pensar en ser programador intenté ser futbolista; es como mi sueño frustrado. Todavía juego algunas noches entre semana. Soy hincha de Atlético Nacional y del FC Barcelona, y amo a Messi con todo mi corazón. Ah, y siempre quiero que pierda el Real Madrid.',
+      },
+      {
+        id: 'friends',
+        title: 'Los amigos',
+        text: 'Me gusta mucho compartir con amigos. Soy de los que se ríen todo el tiempo, hasta cuando estoy nervioso o preocupado, pero sé respetar muy bien los espacios. Con mis compañeros soy de charlar un poquito pesado, sin pasar los límites ni faltar al respeto.',
+      },
+      {
+        id: 'newPlaces',
+        title: 'Lo nuevo',
+        text: 'Al principio soy muy tímido, pero me integro fácil a los ambientes nuevos y hago amistades muy rápido, porque me gusta debatir de cualquier cosa: desde la situación del país hasta cómo juega la Selección.',
+      },
+      {
+        id: 'travelMusic',
+        title: 'Viajes y música',
+        text: 'Amo viajar; vivo para conocer lugares y culturas diferentes. Escucho música todo el tiempo, de todo un poquito, según mi estado de ánimo. Y me encanta Harry Potter.',
+      },
+      {
+        id: 'curiosity',
+        title: 'Curiosidad',
+        text: 'Me gustan la geografía, la geopolítica y la historia, pero detesto la política como tal y a los políticos. No soy muy religioso, pero creo en Dios.',
+      },
+      {
+        id: 'beers',
+        title: 'Unas cervezas',
+        text: 'Me tomo unas cervezas de vez en cuando, y me gusta tomarme algunas con compañeros, no como hábito sino para salir de la rutina.',
+      },
+      {
+        id: 'goals',
+        title: 'Propósitos',
+        text: 'Estoy un poquito gordito, pero tengo como propósito bajar de peso y meterme al gym.',
+      },
+      {
+        id: 'temper',
+        title: 'Mi carácter',
+        text: 'Soy muy justo con todo, para dar y para recibir, en cualquier ámbito. A veces soy temperamental. No del tipo que te va a decir groserías, pero si es necesario te voy a decir las cosas, sin faltar al respeto y sin pasar la línea. También suelo ser perfeccionista y muy exigente con los demás, y sobre todo conmigo mismo. No me cae bien la gente conformista y no me gustan para nada las excusas.',
+      },
+    ],
+    closing:
+      'Y amo lo que hago. No lo digo por quedar bien: de verdad me apasiona, y para mí es un logro personal estar haciendo lo que realmente me gusta, y no solo por dinero.',
   },
   contact: {
     title: 'Contáctame',

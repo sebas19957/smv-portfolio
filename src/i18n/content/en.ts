@@ -17,6 +17,7 @@ export const en = {
       resume: 'Resume',
       projects: 'Projects',
       testimonials: 'Testimonials',
+      philosophy: 'Philosophy',
       contact: 'Contact',
     },
     navLabel: 'Main',
@@ -242,6 +243,55 @@ export const en = {
           'Sebastián is characterized as a professional passionate about his career, always focused on continuous learning and seeking new challenges that allow him to grow both professionally and personally. His skills include attention to detail, innovation, and teamwork, in addition to being known for his loyalty, responsibility, and commitment, which are key aspects of his personality.',
       },
     ],
+  },
+  philosophy: {
+    heading: ['My ', { accent: 'life philosophy' }],
+    intro:
+      'I made this section so you can get to know a little more about the person behind the professional. Over time, those two worlds have drifted further and further apart, but for me the person always comes first.',
+    cards: [
+      {
+        id: 'football',
+        title: 'The ball',
+        text: "I'm crazy about football. In fact, before I ever thought about being a programmer, I tried to become a footballer; it's kind of my unfulfilled dream. I still play a few nights a week. I support Atlético Nacional and FC Barcelona, and I love Messi with all my heart. Oh, and I always want Real Madrid to lose.",
+      },
+      {
+        id: 'friends',
+        title: 'Friends',
+        text: "I love spending time with friends. I'm the kind of person who's laughing all the time, even when I'm nervous or worried, but I know how to respect people's space. With my coworkers I like to joke around a bit rough, without crossing the line or being disrespectful.",
+      },
+      {
+        id: 'newPlaces',
+        title: 'New places',
+        text: "I'm very shy at first, but I fit into new environments easily and make friends fast, because I love debating anything: from how the country is doing to how the national team is playing.",
+      },
+      {
+        id: 'travelMusic',
+        title: 'Travel and music',
+        text: 'I love traveling; I live to discover different places and cultures. I listen to music all the time, a bit of everything, depending on my mood. And I love Harry Potter.',
+      },
+      {
+        id: 'curiosity',
+        title: 'Curiosity',
+        text: "I'm into geography, geopolitics and history, but I can't stand politics itself or politicians. I'm not very religious, but I believe in God.",
+      },
+      {
+        id: 'beers',
+        title: 'A few beers',
+        text: 'I have a few beers now and then, and I like grabbing some with coworkers, not as a habit but to break the routine once in a while.',
+      },
+      {
+        id: 'goals',
+        title: 'Goals',
+        text: "I'm a little chubby, but my goal is to lose some weight and get into the gym.",
+      },
+      {
+        id: 'temper',
+        title: 'My temper',
+        text: "I'm very fair about everything, both giving and receiving, in any part of life. Sometimes I can be temperamental. Not the type who'll curse at you, but if needed I'll tell you how things are, without being disrespectful or crossing the line. I also tend to be a perfectionist and very demanding of others, and above all of myself. I don't get along with conformist people, and I can't stand excuses.",
+      },
+    ],
+    closing:
+      "And I love what I do. I'm not saying it to look good: I'm truly passionate about it, and it's a personal achievement for me to be doing what I really love, and not just for the money.",
   },
   contact: {
     title: 'Contact Me',

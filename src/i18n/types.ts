@@ -10,7 +10,15 @@ import type { Locale } from './locales';
 /** Inline rich text: plain runs plus at most one accent run per headline. */
 export type RichText = ReadonlyArray<string | { readonly accent: string }>;
 
-export type SectionId = 'home' | 'about' | 'skills' | 'resume' | 'projects' | 'testimonials' | 'contact';
+export type SectionId =
+  | 'home'
+  | 'about'
+  | 'skills'
+  | 'resume'
+  | 'projects'
+  | 'testimonials'
+  | 'philosophy'
+  | 'contact';
 
 export type AccentKey =
   | 'blue'
@@ -297,6 +305,32 @@ export interface TestimonialsCopy {
   readonly items: readonly TestimonialCopy[];
 }
 
+/** Personal traits of the "life philosophy" section; icon and fill are assigned per id in the section. */
+export type PhilosophyCardId =
+  | 'football'
+  | 'friends'
+  | 'newPlaces'
+  | 'travelMusic'
+  | 'curiosity'
+  | 'beers'
+  | 'goals'
+  | 'temper';
+
+export interface PhilosophyCard {
+  readonly id: PhilosophyCardId;
+  readonly title: string;
+  readonly text: string;
+}
+
+export interface PhilosophyCopy {
+  readonly heading: RichText;
+  /** Opening statement, shown prominently under the heading. */
+  readonly intro: string;
+  readonly cards: readonly PhilosophyCard[];
+  /** Emotional closing statement, rendered as a standout quote. */
+  readonly closing: string;
+}
+
 export interface ContactCopy {
   readonly title: string;
   readonly heading: RichText;
@@ -352,6 +386,7 @@ export interface LocalizedCopy {
   readonly resume: ResumeCopy;
   readonly projects: ProjectsCopy;
   readonly testimonials: TestimonialsCopy;
+  readonly philosophy: PhilosophyCopy;
   readonly contact: ContactCopy;
   readonly footer: FooterCopy;
 }

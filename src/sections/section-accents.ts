@@ -13,5 +13,7 @@ export const SECTION_ACCENTS: Readonly<Record<Exclude<SectionId, 'home'>, Accent
   resume: 'green', // 3.09 · 5.32
   projects: 'violet', // 3.75 · 4.39
   testimonials: 'magenta', // 3.65 · 4.51
+  // On its own coloured ground the section repaints the run (see PhilosophySection).
+  philosophy: 'violet',
   contact: 'blue', // 3.53 · 4.66
 };
