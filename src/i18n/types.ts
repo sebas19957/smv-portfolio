@@ -199,9 +199,8 @@ export interface HeroCopy {
 export interface AboutCopy {
   readonly heading: RichText;
   readonly role: string;
-  readonly bio: readonly [string, string, string];
-  /** Professional profile from the CV. */
-  readonly profile: string;
+  /** Paragraphs in reading order; the first one opens the section. */
+  readonly bio: readonly string[];
   readonly languages: { readonly label: string; readonly value: string };
   readonly cvButtons: Readonly<Record<'en' | 'es', string>>;
   readonly cvHelper: string;

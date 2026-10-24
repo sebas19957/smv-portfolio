@@ -14,7 +14,6 @@ interface Props {
 const { content } = Astro.props;
 const { copy, profile, locale } = content;
 const { about, ui } = copy;
-const [intro, passion, focus] = about.bio;
 const cvOptions = (['en', 'es'] as const).map((code) => ({
   label: about.cvButtons[code],
   href: profile.cv[code],
@@ -33,10 +32,9 @@ const cvOptions = (['en', 'es'] as const).map((code) => ({
     <div class="about__copy">
       <h2 class="heading-xl" data-reveal><RichText text={about.heading} accent={SECTION_ACCENTS.about} /></h2>
       <p class="hud-label about__role text-faint" data-reveal>{about.role} · {profile.location}</p>
-      <p class="lead about__lead" data-reveal>{intro}</p>
-      <p class="body-copy about__body" data-reveal>{about.profile}</p>
-      <p class="body-copy about__body" data-reveal>{passion}</p>
-      <p class="about__focus" data-reveal>{focus}</p>
+      <div class="about__bio">
+        {about.bio.map((paragraph) => <p class="about__text" data-reveal>{paragraph}</p>)}
+      </div>
       <p class="hud-label about__languages" data-reveal>
         <span class="text-faint">{about.languages.label}</span>
         <span class="text-muted">{about.languages.value}</span>
@@ -82,20 +80,23 @@ const cvOptions = (['en', 'es'] as const).map((code) => ({
     margin-top: 20px;
   }
 
-  .about__lead {
-    margin-top: 20px;
+  /* One size and rhythm for every paragraph; only the opener is set in ink. */
+  .about__bio {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 38rem;
+    margin-top: 24px;
   }
 
-  .about__body {
-    max-width: 36rem;
-    margin-top: 16px;
+  .about__text {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--muted);
+    text-wrap: pretty;
   }
 
-  .about__focus {
-    max-width: 36rem;
-    margin-top: 16px;
-    font-size: 1.125rem;
-    line-height: 1.625;
+  .about__text:first-child {
     color: var(--ink);
   }
 
