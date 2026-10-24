@@ -1,0 +1,387 @@
+---
+/**
+ * Fixed right-edge "ruler": tick rail + needle + % readout, section words that queue at the
+ * bottom, stand up on the rail and flip letter by letter into the top heading stack.
+ * Server-rendered skeleton; `scroll-rail.ts` drives it every frame. Hidden unless
+ * `html[data-ruler]` is set (desktop ≥1024px with a fine, hover-capable pointer); with reduced
+ * motion (`static`) the rail stays and the words become a static list of links.
+ */
+export interface RailWord {
+  /** First covered section: jump target and anchor of the word. */
+  id: string;
+  label: string;
+  /** Every section the word covers, in document order. */
+  members: readonly string[];
+}
+
+interface Props {
+  words: readonly RailWord[];
+  label: string;
+  jumpTo: string;
+  sectionsLabel: string;
+}
+
+const { words, label, jumpTo, sectionsLabel } = Astro.props;
+const digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+---
+
+<div class="rail-pools" aria-hidden="true">
+  <div class="rail-pool rail-pool--top" data-rail-pool="top"></div>
+  <div class="rail-pool rail-pool--bottom" data-rail-pool="bottom"></div>
+</div>
+
+<div
+  class="rail"
+  role="scrollbar"
+  aria-controls="main"
+  aria-orientation="vertical"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  aria-valuenow="0"
+  aria-label={label}
+  data-rail
+>
+  <div class="rail__frost" aria-hidden="true" data-rail-frost></div>
+  <div class="rail__strip" aria-hidden="true" data-rail-strip></div>
+  <div class="rail__bracket" aria-hidden="true" data-rail-bracket>
+    <div class="rail__bracket-fill"></div>
+    <span class="rail__bracket-edge rail__bracket-edge--top"></span>
+    <span class="rail__bracket-edge rail__bracket-edge--bottom"></span>
+  </div>
+  <div class="rail__needle" aria-hidden="true" data-rail-needle>
+    <span class="rail__needle-line"></span>
+    <span class="rail__readout" data-rail-readout>
+      <span class="rail__digits">
+        {
+          [0, 1, 2].map(() => (
+            <span class="rail__digit-col" data-rail-digit>
+              {digits.map((d) => (
+                <span>{d}</span>
+              ))}
+            </span>
+          ))
+        }
+      </span><span class="rail__pct">%</span>
+    </span>
+  </div>
+</div>
+
+<div class="rail-ghost" aria-hidden="true" data-rail-ghost>
+  <div class="rail-ghost__bar" data-rail-ghost-bar></div>
+</div>
+
+<div class="rail-words" data-rail-words>
+  {
+    words.map((word) => (
+      <>
+        <a
+          class="rail-words__hit"
+          href={`#${word.id}`}
+          aria-label={`${jumpTo} ${word.label}`}
+          data-rail-hit={word.id}
+          data-rail-members={word.members.join(' ')}
+        />
+        {[...word.label].map((char) => (
+          <span class="rail-words__letter font-display" aria-hidden="true" data-rail-letter={word.id}>
+            {char}
+          </span>
+        ))}
+      </>
+    ))
+  }
+</div>
+
+<nav class="rail-static" aria-label={sectionsLabel}>
+  <div class="rail-static__pool" aria-hidden="true"></div>
+  <ul class="rail-static__list">
+    {
+      words.map((word) => (
+        <li>
+          <a class="font-display rail-static__link" href={`#${word.id}`}>
+            {word.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .rail-pools,
+  .rail,
+  .rail-ghost,
+  .rail-words,
+  .rail-static {
+    display: none;
+  }
+
+  :global(html[data-ruler='on']) .rail-pools,
+  :global(html[data-ruler='on']) .rail,
+  :global(html[data-ruler='static']) .rail,
+  :global(html[data-ruler='on']) .rail-ghost,
+  :global(html[data-ruler='on']) .rail-words {
+    display: block;
+  }
+
+  :global(html[data-ruler='static']) .rail-static {
+    display: block;
+  }
+
+  /* Contrast pools behind the heading stack (top) and the queue (bottom). */
+  .rail-pools {
+    position: fixed;
+    inset: 0;
+    z-index: 39;
+    pointer-events: none;
+  }
+
+  .rail-pool {
+    position: absolute;
+    right: 0;
+    opacity: 0;
+    backdrop-filter: blur(9px);
+    background-color: color-mix(in srgb, var(--bg) 80%, transparent);
+  }
+
+  .rail-pool--top {
+    top: 0;
+    mask-image: radial-gradient(100% 100% at 100% 0%, black 38%, rgba(0, 0, 0, 0.82) 56%, rgba(0, 0, 0, 0.48) 72%, rgba(0, 0, 0, 0.2) 86%, rgba(0, 0, 0, 0.05) 94%, transparent 97%);
+  }
+
+  .rail-pool--bottom {
+    bottom: 0;
+    mask-image: radial-gradient(100% 100% at 100% 100%, black 38%, rgba(0, 0, 0, 0.82) 56%, rgba(0, 0, 0, 0.48) 72%, rgba(0, 0, 0, 0.2) 86%, rgba(0, 0, 0, 0.05) 94%, transparent 97%);
+  }
+
+  /* The rail: 60px wide, full height, acts as the page scrollbar. */
+  .rail {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 40;
+    width: 60px;
+    overflow: hidden;
+    cursor: crosshair;
+    touch-action: none;
+  }
+
+  .rail__frost {
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(9px);
+    background-color: color-mix(in srgb, var(--bg) 55%, transparent);
+    mask-image: linear-gradient(to left, black 40%, rgba(0, 0, 0, 0.745) 47.5%, rgba(0, 0, 0, 0.531) 55%, rgba(0, 0, 0, 0.356) 62.5%, rgba(0, 0, 0, 0.218) 70%, rgba(0, 0, 0, 0.116) 77.5%, rgba(0, 0, 0, 0.047) 85%, rgba(0, 0, 0, 0.01) 92.5%, transparent 100%);
+  }
+
+  .rail__strip {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    will-change: transform;
+  }
+
+  /* Tick rows are injected by the controller (one per 1% of document height). */
+  .rail__strip :global(.rail-tick) {
+    position: absolute;
+    inset-inline: 0;
+    height: 0;
+  }
+
+  .rail__strip :global(.rail-tick__line) {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: block;
+    height: 1px;
+    background: var(--ink);
+    transform-origin: right center;
+  }
+
+  .rail__strip :global(.rail-tick__label) {
+    position: absolute;
+    right: 24px;
+    top: 0;
+    transform: translateY(-50%);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    line-height: 1.5;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+  }
+
+  .rail__bracket {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 0;
+    opacity: 0;
+  }
+
+  .rail__bracket-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    opacity: 0.1;
+  }
+
+  .rail__bracket-edge {
+    position: absolute;
+    inset-inline: 0;
+    display: block;
+    height: 1px;
+    background: var(--ink);
+    opacity: 0.5;
+  }
+
+  .rail__bracket-edge--top {
+    top: 0;
+  }
+
+  .rail__bracket-edge--bottom {
+    bottom: 0;
+  }
+
+  .rail__needle {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 0;
+    opacity: 0;
+  }
+
+  .rail__needle-line {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    display: block;
+    height: 1px;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+  }
+
+  .rail__readout {
+    position: absolute;
+    right: 2px;
+    top: 4px;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    line-height: 1.5;
+    letter-spacing: 0.08em;
+    color: var(--accent-ink);
+  }
+
+  /* Odometer: each digit is a 0–9 column moved by whole ems. */
+  .rail__digits {
+    display: inline-flex;
+    height: 1em;
+    line-height: 1;
+    overflow: hidden;
+  }
+
+  .rail__digit-col {
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.2, 1);
+  }
+
+  .rail__digit-col > span {
+    display: block;
+    height: 1em;
+  }
+
+  .rail__pct {
+    margin-left: 2px;
+  }
+
+  /* Ghost line: previews where a rail click would land. */
+  .rail-ghost {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 40;
+    width: 60px;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .rail-ghost__bar {
+    position: absolute;
+    right: 0;
+    top: -1.5px;
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: var(--ink);
+  }
+
+  .rail-words {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    pointer-events: none;
+  }
+
+  .rail-words__hit {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    cursor: pointer;
+  }
+
+  .rail-words__letter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: pre;
+    font-size: 34px;
+    line-height: 1;
+    color: var(--ink-strong);
+    opacity: 0;
+    will-change: transform, opacity;
+    text-shadow:
+      0 0 4px var(--bg),
+      0 0 10px var(--bg);
+  }
+
+  /* Reduced-motion fallback: a static bottom-right list of section links over a blurred pool. */
+  .rail-static {
+    position: fixed;
+    right: 60px;
+    bottom: 36px;
+    z-index: 40;
+    text-align: right;
+  }
+
+  .rail-static__pool {
+    position: absolute;
+    inset: -40px -64px;
+    backdrop-filter: blur(9px);
+    background-color: color-mix(in srgb, var(--bg) 82%, transparent);
+    mask-image: radial-gradient(closest-side, black 55%, transparent 100%);
+  }
+
+  .rail-static__list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .rail-static__link {
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  .rail-static__link:hover {
+    color: var(--ink-strong);
+  }
+
+  .rail-static__link:active {
+    color: var(--accent-ink);
+  }
+</style>
