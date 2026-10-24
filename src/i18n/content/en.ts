@@ -275,5 +275,12 @@ export const en = {
     linksHeading: 'Links',
     followHeading: 'Follow Me',
     legal: '© {year} SebastiánMV Portfolio. All rights reserved.',
+    colophon: {
+      label: 'About this site',
+      builtWith: 'Built with',
+      credit:
+        'The visual style is inspired by {link}. I loved their design and adapted much of it for this portfolio; full credit goes to their team.',
+      creditLink: 'Artcraft',
+    },
   },
 } as const satisfies LocalizedCopy;

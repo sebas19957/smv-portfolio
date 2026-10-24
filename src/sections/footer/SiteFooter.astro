@@ -1,5 +1,7 @@
 ---
 import { SECTION_ORDER, type PortfolioContent } from '../../i18n';
+import TechChip from '../../shared/ui/TechChip.astro';
+import { ARTCRAFT_URL, SITE_STACK, splitLinkSlot } from './colophon';
 
 interface Props {
   content: PortfolioContent;
@@ -9,6 +11,8 @@ const { content } = Astro.props;
 const { copy, profile } = content;
 const { footer, ui, about, contact } = copy;
 const year = String(new Date().getFullYear());
+const { colophon } = footer;
+const [creditBefore, creditAfter] = splitLinkSlot(colophon.credit);
 
 const columns = [
   {
@@ -69,6 +73,28 @@ const columns = [
           </nav>
         ))
       }
+    </div>
+    <div class="hairline-grid colophon" role="group" aria-labelledby="colophon-label">
+      <div class="colophon__cell">
+        <p id="colophon-label" class="hud-label text-faint">{colophon.label}</p>
+        <p class="colophon__credit">
+          {creditBefore}<a class="inline-link" href={ARTCRAFT_URL} target="_blank" rel="noopener noreferrer"
+            >{colophon.creditLink}<span class="sr-only"> {ui.opensInNewTab}</span></a
+          >{creditAfter}
+        </p>
+      </div>
+      <div class="colophon__cell">
+        <p class="hud-label text-faint">{colophon.builtWith}</p>
+        <ul class="colophon__stack">
+          {
+            SITE_STACK.map((chip) => (
+              <li>
+                <TechChip label={chip.label} tech={chip.tech} size="md" />
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     </div>
     <div class="site-footer__bar">
       <p class="hud-label text-faint">{footer.legal.replace('{year}', year)}</p>
@@ -135,6 +161,30 @@ const columns = [
     color: var(--ink);
   }
 
+  /* "About this site": credit and the site's own stack, a quiet row above the legal bar. */
+  .colophon {
+    border-top: 1px solid var(--line);
+  }
+
+  .colophon__cell {
+    padding: 24px;
+  }
+
+  .colophon__credit {
+    max-width: 34rem;
+    margin-top: 12px;
+    font-size: 0.875rem;
+    line-height: 1.625;
+    color: var(--muted);
+  }
+
+  .colophon__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
   .site-footer__bar {
     display: flex;
     flex-direction: column;
@@ -157,6 +207,14 @@ const columns = [
       padding: 32px;
     }
 
+    .colophon {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .colophon__cell {
+      padding: 32px 40px;
+    }
+
     .site-footer__bar {
       flex-direction: row;
       align-items: center;
@@ -172,6 +230,11 @@ const columns = [
 
     .site-footer__brand {
       grid-column: span 1;
+    }
+
+    /* Credit lines up under the brand column, the stack under the link columns. */
+    .colophon {
+      grid-template-columns: 2fr 4fr;
     }
   }
 </style>

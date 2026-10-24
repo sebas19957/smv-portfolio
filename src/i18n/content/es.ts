@@ -277,5 +277,12 @@ export const es = {
     linksHeading: 'Enlaces',
     followHeading: 'Sígueme',
     legal: '© {year} SebastiánMV Portafolio. Todos los derechos reservados.',
+    colophon: {
+      label: 'Sobre este sitio',
+      builtWith: 'Hecho con',
+      credit:
+        'El estilo visual está inspirado en {link}. Me encantó su diseño y adapté gran parte de él para este portafolio; todo el reconocimiento es para su equipo.',
+      creditLink: 'Artcraft',
+    },
   },
 } as const satisfies LocalizedCopy;

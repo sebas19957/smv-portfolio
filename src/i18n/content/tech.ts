@@ -8,6 +8,7 @@ import type { BrandIconRef } from '../../shared/ui/brand-icons';
 export const TECH = {
   android: { label: 'Android', icon: { set: 'logos', name: 'android-icon' } },
   angular: { label: 'Angular', icon: { set: 'devicon', name: 'angularjs' } },
+  astro: { label: 'Astro', icon: { set: 'simple-icons', name: 'astro' } },
   aws: { label: 'AWS', icon: { set: 'logos', name: 'aws', dark: { recolor: ['#252f3e'] } } },
   awsS3: { label: 'Amazon S3', icon: { set: 'logos', name: 'aws-s3' } },
   axios: { label: 'Axios', icon: { set: 'logos', name: 'axios' } },

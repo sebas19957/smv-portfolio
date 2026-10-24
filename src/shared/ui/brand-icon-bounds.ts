@@ -109,6 +109,7 @@ export const ICON_BOUNDS: Readonly<Record<string, readonly [number, number, numb
   'selfhst:nodemailer': [0, 134.4, 512, 243.2],
   'selfhst:odoo': [0, 0, 512, 512],
   'selfhst:woodpecker-ci': [0, 27.47, 511.89, 457.13],
+  'simple-icons:astro': [2.4, 0, 19.21, 24],
   'simple-icons:celery': [0, 0, 24, 24],
   'simple-icons:drizzle': [0, 5.74, 24, 12.52],
   'simple-icons:heroui': [0, 0, 24, 24],

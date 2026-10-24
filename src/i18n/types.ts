@@ -331,6 +331,16 @@ export interface FooterCopy {
   readonly linksHeading: string;
   readonly followHeading: string;
   readonly legal: string;
+  readonly colophon: ColophonCopy;
+}
+
+/** "About this site" block in the footer: the site's own stack and the design credit. */
+export interface ColophonCopy {
+  readonly label: string;
+  readonly builtWith: string;
+  /** Credit sentence; `{link}` marks where the linked `creditLink` text goes. */
+  readonly credit: string;
+  readonly creditLink: string;
 }
 
 export interface LocalizedCopy {
