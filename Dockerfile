@@ -36,7 +36,9 @@ ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3000
 
-RUN addgroup --system --gid 1001 nodejs \
+# tini runs as PID 1 so SIGTERM (docker stop, Dokploy redeploys) reaches node and stops it promptly.
+RUN apk add --no-cache tini \
+    && addgroup --system --gid 1001 nodejs \
     && adduser --system --uid 1001 --ingroup nodejs astro
 
 # Secrets (EMAIL_*, REDIS_URL) are NOT part of the image: pass them at runtime (`--env-file`, Dokploy).
@@ -49,4 +51,9 @@ USER astro
 
 EXPOSE 3000
 
+# The prerendered home page is served by the same Node process, so a 200 means the server is up.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD wget -q --spider http://127.0.0.1:3000/ || exit 1
+
+ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["node", "./dist/server/entry.mjs"]
