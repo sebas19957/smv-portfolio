@@ -34,6 +34,13 @@ export const en = {
   hero: {
     greeting: "Hello, I'm",
     tagline: 'Software developer with 6+ years of experience building scalable, user-centered web solutions.',
+    fixedPhrase: '6+ years building software',
+    typedPhrases: [
+      'Technical Lead & Full-Stack Developer',
+      'Frontend, Backend & Mobile',
+      'AWS · GCP · Azure · Docker',
+      'AI-assisted development',
+    ],
     roles: ['Systems Engineer', 'Full-stack Developer'],
     statusLabel: 'Status',
     statusValue: 'Available',
@@ -46,9 +53,8 @@ export const en = {
     heading: ["I'm ", { accent: 'Sebastián' }],
     role: 'Systems Engineer · Full-stack Developer',
     bio: [
-      "I'm a systems engineer with about six years of building software, from web and mobile apps to the services that keep them running behind the scenes. I like working across the whole product: one day I'm tuning a screen so it loads faster, the next I'm designing an API or figuring out why a query got slow. Seeing both sides helps me make better calls, because I know what breaks on the other end when I change something.",
-      "I care a lot about the parts nobody sees: an architecture where each piece has one job, tests that actually catch bugs and clear contracts between frontend and backend. I also have a soft spot for infrastructure and the cloud, for knowing where and how the things I build actually run. Containers, pipelines that test and deploy on their own, environments you can rebuild from scratch, metrics and logs that flag a problem before anyone reports it. I've deployed to on-premises servers and to several cloud providers, and handling production incidents left me with a habit of making things a little easier to debug next time.",
-      "AI is the other thing I'm really into, but as a way to optimize, not something to hand everything off to. It helps me explore options, automate the repetitive parts and review faster, while design decisions and ownership of the code stay with me. In some projects it's part of the product itself, through semantic search and AI models, always with a fallback for when the model isn't available. And when I'm not at work, I'm usually still coding: most of what you'll find under Projects I built on my own, to solve something I needed or to try ideas I had no room for at my day job.",
+      "I'm a Systems Engineer with experience in technical leadership and full-stack development of web and mobile applications. I have solid foundations in programming, software design and architecture, and I work with technologies such as React, Angular, Next.js, Node.js and NestJS.",
+      'I have experience integrating REST and GraphQL APIs, databases and cloud services (AWS, GCP and Azure). I bring AI tools and AI-assisted development workflows into my work, combining software engineering knowledge with new methodologies to speed up development and build scalable, efficient and maintainable solutions.',
     ],
     languages: { label: 'Languages', value: 'Spanish: Native | English: Intermediate' },
     cvButtons: { en: 'Download CV', es: 'Descargar CV' },
@@ -87,28 +93,31 @@ export const en = {
     tasksLabel: 'Tasks and duties',
     achievementsLabel: 'Achievements',
     presentLabel: 'Present',
-    educationCategories: { systems: 'Systems', health: 'Health', diploma: 'Diploma' },
+    educationCategories: { systems: 'Systems', diploma: 'Diploma' },
     experience: [
       {
         id: 'home-power',
-        position: 'Full-stack Developer',
+        position: 'Technical Lead & Senior Full-Stack Developer',
         period: 'May 2025 - Present',
         responsibilities: [
+          'Leadership and support of the development team, coordinating technical activities, task assignment and follow-up on the achievement of objectives.',
+          'Definition of technical guidelines, technology selection and architecture decisions to ensure the quality, scalability and maintainability of the solutions built.',
           'Development and maintenance of cross-platform web and mobile applications.',
           'Development of mobile application features using React Native CLI, Expo and Flutter.',
           'Integration and consumption of REST APIs for communication between applications and backend services.',
           'Implementation of unit tests and component validation using Jest.',
-          'State management and performance optimization in frontend applications.',
-          'Configuration of builds and deployments for mobile environments with Expo and React Native CLI.',
           'Participation in application configuration, version control and development processes using GitHub.',
+          'Coordination between multidisciplinary teams to ensure technical and functional alignment throughout the full development cycle.',
         ],
         achievements: [
           'Optimized the frontend architecture and state flow, reducing production errors and improving the stability of mobile and web applications.',
+          'Managed the continuous integration of automated tests into DevOps pipelines, increasing coverage and reducing production defects.',
+          'Collaborated with design and product teams to define scalable architectures that supported sustained growth in the number of users.',
         ],
       },
       {
         id: 'mercadeo-virtual',
-        position: 'Full-stack Developer',
+        position: 'Senior Full-Stack Developer',
         period: 'March 2021 - February 2025',
         description:
           'Responsible for the development and maintenance of web interfaces, database optimization, and deployment of applications in cloud and local environments.',
@@ -122,7 +131,6 @@ export const en = {
           'Generation and delivery of automated reports.',
           'Deployment of applications on IIS and cloud platforms such as AWS, GCP, Azure and Vercel.',
           'Resolution of critical production incidents and maintenance of existing applications.',
-          'Implementation of unit and integration tests to improve code quality.',
         ],
         achievements: [
           'Developed new websites and improved the architecture of existing projects.',
@@ -134,7 +142,7 @@ export const en = {
       },
       {
         id: 'atlas-global',
-        position: 'Frontend Developer',
+        position: 'Junior Frontend Developer',
         period: 'January 2020 - November 2020',
         description:
           'Responsible for maintaining and customizing WordPress, integrating forms, and providing basic technical support in Salesforce.',
@@ -142,7 +150,7 @@ export const en = {
           'Maintenance and customization of websites built with WordPress.',
           'Basic configuration and management of Salesforce.',
           'Optimization of styles and user experience with HTML and CSS.',
-          'Implementation of custom forms and templates.',
+          'Implementation of forms and templates.',
           'Technical support and resolution of low-impact incidents.',
           'Basic testing and functional adjustments.',
         ],
@@ -164,11 +172,11 @@ export const en = {
         category: 'systems',
       },
       {
-        title: 'Health Administrative Process Management',
-        institution: 'Escolme University Institution (SENA)',
-        period: '2014 - 2016',
-        description: 'Technical training in administrative process management in the healthcare sector.',
-        category: 'health',
+        title: 'NestJS + Microservices: Scalable and Modular Applications',
+        institution: 'Udemy',
+        period: '2021',
+        description: 'Building scalable, modular backend applications with NestJS and a microservices architecture.',
+        category: 'diploma',
       },
       {
         title: 'Diploma in React.js and Next.js',
@@ -291,7 +299,7 @@ export const en = {
       },
     ],
     closing:
-      "And I love what I do. I'm not saying it to look good: I'm truly passionate about it, and it's a personal achievement for me to be doing what I really love, and not just for the money.",
+      "I love what I do. I don't say that just to sound good; I'm genuinely passionate about it. For me, being able to do what I truly love is a personal achievement, and it's about much more than just making money.",
   },
   contact: {
     title: 'Contact Me',

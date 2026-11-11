@@ -49,7 +49,11 @@ const experience = profile.experience.flatMap((fact) => {
   </div>
 
   <SubBar index={`${sectionIndex('resume')}.2`} label={resume.educationHeading} aside={pad2(resume.education.length)} />
-  <ol class="hairline-grid resume__education" data-reveal-group>
+  <ol
+    class="hairline-grid resume__education"
+    style={`--education-cols: ${Math.min(resume.education.length, 3)}`}
+    data-reveal-group
+  >
     {
       resume.education.map((item, i) => (
         <EducationCell index={pad2(i + 1)} item={item} categoryLabel={resume.educationCategories[item.category]} />
@@ -70,9 +74,10 @@ const experience = profile.experience.flatMap((fact) => {
     background: var(--line);
   }
 
+  /* One column per entry, up to three, so a short list never leaves an empty cell. */
   @media (min-width: 48rem) {
     .resume__education {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(var(--education-cols, 3), minmax(0, 1fr));
     }
   }
 </style>

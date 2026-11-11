@@ -34,6 +34,13 @@ export const es = {
     greeting: 'Hola, soy',
     tagline:
       'Desarrollador de software con +6 años de experiencia creando soluciones web escalables y centradas en el usuario.',
+    fixedPhrase: '+6 años construyendo software',
+    typedPhrases: [
+      'Technical Lead & Full-Stack Developer',
+      'Frontend, Backend y Mobile',
+      'AWS · GCP · Azure · Docker',
+      'Desarrollo asistido por IA',
+    ],
     roles: ['Ingeniero de Sistemas', 'Full-stack Developer'],
     statusLabel: 'Estado',
     statusValue: 'Disponible',
@@ -46,9 +53,8 @@ export const es = {
     heading: ['Soy ', { accent: 'Sebastián' }],
     role: 'Ingeniero de Sistemas · Full-stack Developer',
     bio: [
-      'Soy ingeniero de sistemas y llevo unos seis años haciendo software, desde aplicaciones web y móviles hasta los servicios que las mantienen funcionando por detrás. Me gusta estar en todo el recorrido de un producto: un día ajusto una pantalla para que cargue más rápido y al siguiente estoy diseñando una API o buscando por qué una consulta se volvió lenta. Ver las dos caras me ayuda a decidir mejor, porque sé qué se rompe del otro lado cuando cambio algo.',
-      'Me importa mucho lo que no se ve: una arquitectura donde cada parte tiene una sola responsabilidad, pruebas que de verdad atrapan errores y contratos claros entre el frontend y el backend. Además, tengo un gusto especial por la infraestructura y la nube, por saber dónde y cómo corre lo que construyo. Contenedores, pipelines que prueban y despliegan solos, entornos que se levantan de cero, métricas y logs que avisan antes de que alguien reporte el problema. He desplegado en servidores propios y en varios proveedores cloud, y atender incidentes en producción me dejó la costumbre de dejar todo un poco más fácil de diagnosticar para la próxima.',
-      'La inteligencia artificial también me entusiasma, pero como un medio para optimizar, no para delegarle todo. Me ayuda a explorar opciones, automatizar lo repetitivo y revisar más rápido, mientras las decisiones de diseño y la responsabilidad sobre el código siguen siendo mías. En algunos proyectos la integro dentro del producto, con búsqueda semántica y modelos de IA, siempre con un plan B si el modelo no está disponible. Y cuando no estoy trabajando, casi siempre sigo programando: la mayoría de lo que vas a ver en Proyectos lo hice por mi cuenta, para resolver algo que necesitaba o probar ideas que en el trabajo no tenía dónde aplicar.',
+      'Ingeniero de Sistemas con experiencia en liderazgo técnico y desarrollo Full Stack de aplicaciones web y móviles. Cuento con sólidos fundamentos de programación, diseño de software y arquitectura, trabajando con tecnologías como React, Angular, Next.js, Node.js y NestJS.',
+      'Tengo experiencia en integración de APIs REST y GraphQL, bases de datos y servicios cloud (AWS, GCP y Azure). Integro herramientas de inteligencia artificial y flujos de desarrollo asistidos por IA en mi trabajo, combinando conocimientos de ingeniería de software con nuevas metodologías para agilizar el desarrollo y construir soluciones escalables, eficientes y mantenibles.',
     ],
     languages: { label: 'Idiomas', value: 'Español: Nativo | Inglés: Intermedio' },
     cvButtons: { en: 'Download CV', es: 'Descargar CV' },
@@ -87,28 +93,31 @@ export const es = {
     tasksLabel: 'Tareas y deberes',
     achievementsLabel: 'Logros',
     presentLabel: 'Actualidad',
-    educationCategories: { systems: 'Ingeniería', health: 'Gestión', diploma: 'Diplomado' },
+    educationCategories: { systems: 'Ingeniería', diploma: 'Diplomado' },
     experience: [
       {
         id: 'home-power',
-        position: 'Full-stack Developer',
+        position: 'Technical Lead & Senior Full-Stack Developer',
         period: 'Mayo 2025 - Actualidad',
         responsibilities: [
+          'Liderazgo y acompañamiento del equipo de desarrollo, coordinando actividades técnicas, asignación de tareas y seguimiento al cumplimiento de objetivos.',
+          'Definición de lineamientos técnicos, selección de tecnologías y toma de decisiones de arquitectura para garantizar la calidad, escalabilidad y mantenibilidad de las soluciones desarrolladas.',
           'Desarrollo y mantenimiento de aplicaciones web y móviles multiplataforma.',
           'Desarrollo de funcionalidades para aplicaciones móviles utilizando React Native CLI, Expo y Flutter.',
           'Integración y consumo de APIs REST para comunicación entre aplicaciones y servicios backend.',
           'Implementación de pruebas unitarias y validación de componentes utilizando Jest.',
-          'Gestión de estado y optimización del rendimiento en aplicaciones frontend.',
-          'Configuración de builds y despliegues en entornos móviles mediante Expo y React Native CLI.',
           'Participación en la configuración de aplicaciones, control de versiones y procesos de desarrollo utilizando GitHub.',
+          'Gestión de la coordinación entre equipos multidisciplinarios para asegurar la alineación técnica y funcional durante el ciclo completo de desarrollo.',
         ],
         achievements: [
           'Optimización de la arquitectura frontend y del flujo de estado, reduciendo errores en producción y mejorando la estabilidad de las aplicaciones móviles y web.',
+          'Gestión de la integración continua de pruebas automatizadas en pipelines DevOps, incrementando la cobertura y reduciendo defectos en producción.',
+          'Colaboración con equipos de diseño y producto para definir arquitecturas escalables que soportaron un crecimiento sostenido del número de usuarios.',
         ],
       },
       {
         id: 'mercadeo-virtual',
-        position: 'Full-stack Developer',
+        position: 'Senior Full-Stack Developer',
         period: 'Marzo 2021 - Febrero 2025',
         description:
           'Encargado del desarrollo y mantenimiento de interfaces web, optimización de bases de datos y despliegue de aplicaciones en entornos cloud y locales.',
@@ -122,7 +131,6 @@ export const es = {
           'Generación y envío de reportes automatizados.',
           'Despliegue de aplicaciones en IIS y plataformas cloud como AWS, GCP, Azure y Vercel.',
           'Resolución de incidentes críticos en producción y mantenimiento de aplicaciones existentes.',
-          'Implementación de pruebas unitarias y de integración para mejorar la calidad del código.',
         ],
         achievements: [
           'Desarrollé nuevos sitios web y mejoré la arquitectura de proyectos existentes.',
@@ -134,7 +142,7 @@ export const es = {
       },
       {
         id: 'atlas-global',
-        position: 'Frontend Developer',
+        position: 'Junior Frontend Developer',
         period: 'Enero 2020 - Noviembre 2020',
         description:
           'Responsable del mantenimiento y personalización de WordPress, integración de formularios y soporte técnico básico en Salesforce.',
@@ -142,7 +150,7 @@ export const es = {
           'Mantenimiento y personalización de sitios web desarrollados en WordPress.',
           'Configuración y gestión básica de Salesforce.',
           'Optimización de estilos y experiencia de usuario mediante HTML y CSS.',
-          'Implementación de formularios y templates personalizados.',
+          'Implementación de formularios y templates.',
           'Soporte técnico y resolución de incidencias de bajo impacto.',
           'Realización de pruebas básicas y ajustes funcionales.',
         ],
@@ -165,11 +173,11 @@ export const es = {
         category: 'systems',
       },
       {
-        title: 'Gestión de Procesos Administrativos en Salud',
-        institution: 'Institución Universitaria Escolme (SENA)',
-        period: '2014 - 2016',
-        description: 'Formación técnica en gestión de procesos administrativos en el sector salud.',
-        category: 'health',
+        title: 'NestJS + Microservicios: Aplicaciones escalables y modulares',
+        institution: 'Udemy',
+        period: '2021',
+        description: 'Desarrollo de aplicaciones backend escalables y modulares con NestJS y arquitectura de microservicios.',
+        category: 'diploma',
       },
       {
         title: 'Diplomado React.js y Next.js',
@@ -293,7 +301,7 @@ export const es = {
       },
     ],
     closing:
-      'Y amo lo que hago. No lo digo por quedar bien: de verdad me apasiona, y para mí es un logro personal estar haciendo lo que realmente me gusta, y no solo por dinero.',
+      'Amo lo que hago. No lo digo por quedar bien; de verdad me apasiona. Para mí, es un logro personal poder dedicarme a lo que realmente me gusta, y no hacerlo únicamente por dinero.',
   },
   contact: {
     title: 'Contáctame',

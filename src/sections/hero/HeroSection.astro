@@ -4,10 +4,11 @@ import { sectionIndex, type PortfolioContent } from '../../i18n';
 import Button from '../../shared/ui/Button.astro';
 import BrandLogo from '../../shared/ui/BrandLogo.astro';
 import { resolveBrandIcon } from '../../shared/ui/brand-icons';
-import RichText from '../../shared/ui/RichText.astro';
 import SegmentedGroup from '../../shared/ui/SegmentedGroup.astro';
 import Section from '../../shared/ui/Section.astro';
+import HeroName from './HeroName.astro';
 import HeroPortrait from './HeroPortrait.astro';
+import HeroTyped from './HeroTyped.astro';
 
 interface Props {
   content: PortfolioContent;
@@ -26,14 +27,8 @@ const { hero, ui, footer } = copy;
 >
   <div class="hero section-pad">
     <div class="hero__copy">
-      <h1 class="heading-xl hero__name" data-reveal>
-        {profile.nameLines.map((line) => (
-          <span class="hero__line">
-            <RichText text={line} />
-          </span>
-        ))}
-      </h1>
-      <p class="lead hero__lead" data-reveal>{hero.tagline}</p>
+      <HeroName lines={profile.nameLines} />
+      <HeroTyped tagline={hero.tagline} fixed={hero.fixedPhrase} phrases={hero.typedPhrases} />
 
       <div class="hero__actions" data-reveal>
         <Button href="#contact" variant="primary" size="lg" icon="message-circle">{hero.ctaPrimary}</Button>
@@ -93,14 +88,6 @@ const { hero, ui, footer } = copy;
 
   .hero__copy {
     min-width: 0;
-  }
-
-  .hero__line {
-    display: block;
-  }
-
-  .hero__lead {
-    margin-top: 20px;
   }
 
   .hero__actions {

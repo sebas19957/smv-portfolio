@@ -135,6 +135,11 @@ html[data-ruler="on"]::-webkit-scrollbar {
   html.js-motion:not(.motion-ready):not(.motion-failsafe) [data-intro-item] {
     opacity: 0;
   }
+
+  /* The hero name waits hidden (not just transparent) so the web-font swap shifts nothing visible. */
+  html.js-motion:not(.motion-ready):not(.motion-failsafe) [data-hero-name] {
+    visibility: hidden;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

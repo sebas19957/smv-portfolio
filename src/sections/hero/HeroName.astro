@@ -1,0 +1,221 @@
+---
+/**
+ * Hero H1. The name is split at build time into words and letters (inline spans, so kerning is
+ * untouched and the name reads normally without JS). The heading keeps the plain name as its
+ * accessible name; the split glyphs are hidden from assistive tech but stay real, selectable text.
+ *
+ * Motion (`hero-name.ts`) locks every letter into a fixed cell as wide as its kerned advance, so the
+ * glyph inside can move, roll or change weight without ever reflowing the line, then plays one of
+ * three treatments picked with `?name=a|b|c` (default "a"):
+ * - a, specimen: cap-height / baseline guides and registration marks drawn around the name, letters rising
+ *   out of the baseline, then a measuring needle that glides across it with a percent readout.
+ * - b, odometer: every letter counts up into place like the rail's counter digits; every few
+ *   seconds one word turns over, each letter's wheel making one clean turn back to itself.
+ * - c, weight: the name swells from hairline to the heading weight, then a light swell of the
+ *   variable weight axis travels across it now and then.
+ * Decorations are aria-hidden and carry their text in pseudo-elements, so copying the name never
+ * picks them up.
+ */
+import type { RichText } from '../../i18n/types';
+import { nameText, splitName } from './name-split';
+
+interface Props {
+  lines: readonly RichText[];
+}
+
+const { lines } = Astro.props;
+const label = nameText(lines);
+const split = splitName(lines);
+---
+
+<h1 class="heading-xl name" aria-label={label} data-hero-name>
+  {
+    split.map((line, li) => (
+      <Fragment>
+        {li > 0 && ' '}
+        <span class="name__line" aria-hidden="true">{line.map((word) => (<Fragment>{word.spaceBefore && ' '}<span class:list={['name__word', word.accent && 'name__word--accent']} data-name-word>{word.chars.map((char) => (<span class="name__char">{char}</span>))}</span></Fragment>))}</span>
+      </Fragment>
+    ))
+  }
+</h1>
+
+<style>
+  /* The overlay of variant "a" sits behind the letters, inside the heading's own stacking context. */
+  .name {
+    --name-ink: var(--ink-strong);
+    position: relative;
+    isolation: isolate;
+  }
+
+  .name__line {
+    display: block;
+  }
+
+  .name__word {
+    white-space: nowrap;
+    color: var(--name-ink);
+  }
+
+  /* "Valencia": the solid accent ink of the original design. */
+  .name__word--accent {
+    --name-ink: var(--accent-ink);
+  }
+
+  /*
+   * Letter cells. "measure" lets each letter take its natural width for one read; "locked" fixes
+   * the cell at the kerned advance and centres the glyph (its negative margins keep the centring
+   * true even when the glyph is wider than the cell), shifted back onto its kerned position.
+   * Inline-blocks, never flex items, so selection and copy still read one line of text.
+   */
+  .name[data-name-cells] :global(.name__char) {
+    display: inline-block;
+  }
+
+  .name[data-name-cells='locked'] :global(.name__char) {
+    position: relative;
+    left: var(--cx, 0);
+    width: var(--cw, auto);
+    text-align: center;
+  }
+
+  .name[data-name-cells='locked'] :global(.name__glyph) {
+    display: inline-block;
+    margin-inline: -0.3em;
+  }
+
+  /* ---------- a · specimen ---------- */
+
+  /* Letters rise out of the baseline: each cell is clipped at it while the entrance plays. */
+  .name[data-name-variant='a'][data-name-state='entering'] :global(.name__char) {
+    clip-path: inset(-0.6em -0.6em var(--base-clip, 0) -0.6em);
+  }
+
+  .name :global(.spec) {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .name :global(.spec__guide) {
+    position: absolute;
+    left: var(--gl);
+    width: var(--gw);
+    height: 1px;
+    background: var(--line);
+    transform-origin: left center;
+  }
+
+  /* Needle glow travelling along the guides (the rail's ticks brighten near its needle the same way). */
+  .name :global(.spec__guide)::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent calc(var(--nx, -999px) - var(--gl) - 72px),
+      var(--accent) calc(var(--nx, -999px) - var(--gl)),
+      transparent calc(var(--nx, -999px) - var(--gl) + 72px)
+    );
+    opacity: calc(var(--glow, 0) * 0.65);
+  }
+
+  .name :global(.spec__label),
+  .name :global(.spec__readout) {
+    position: absolute;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 500;
+    font-stretch: 100%;
+    line-height: 1.5;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+
+  .name :global(.spec__label)::before,
+  .name :global(.spec__readout)::before {
+    content: attr(data-text);
+  }
+
+  .name :global(.spec__label) {
+    color: var(--faint);
+    line-height: 1;
+    transform: translateY(-50%);
+  }
+
+  .name :global(.spec__mark) {
+    transform: translate(-5px, -5px);
+  }
+
+  .name :global(.spec__needle) {
+    position: absolute;
+    left: 0;
+    top: var(--ny);
+    width: 1px;
+    height: var(--nh);
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+    transform-origin: center bottom;
+  }
+
+  .name :global(.spec__readout) {
+    left: 0;
+    bottom: 100%;
+    margin-bottom: 4px;
+    color: var(--accent-ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .name[data-name-state='settled'] :global(.spec__guides) {
+      animation: spec-breathe 7s ease-in-out infinite;
+    }
+
+    .name[data-name-paused] :global(.spec__guides) {
+      animation-play-state: paused;
+    }
+  }
+
+  @keyframes spec-breathe {
+    50% {
+      opacity: 0.55;
+    }
+  }
+
+  /* ---------- b · odometer ---------- */
+
+  /*
+   * While a letter rolls, its glyph hides and a column of glyphs (pseudo-element, so it is never
+   * selected) slides through a window exactly one line box tall (every glyph of the name fits in
+   * it, and windows of stacked lines never overlap). Rows are 1.3em apart and centred on the line
+   * box, so the row at rest sits exactly on the real glyph's baseline.
+   */
+  .name[data-name-variant='b'] :global(.name__char[data-roll]) {
+    clip-path: inset(0 -0.6em);
+  }
+
+  .name[data-name-variant='b'] :global(.name__char[data-roll] .name__glyph) {
+    color: transparent;
+  }
+
+  .name[data-name-variant='b'] :global(.name__char[data-roll])::after {
+    content: attr(data-roll);
+    position: absolute;
+    top: calc((1.02em - 1.3em) / 2); /* line box of .heading-xl (leading 1.02) */
+    left: -1em;
+    right: -1em;
+    white-space: pre;
+    text-align: center;
+    line-height: 1.3em;
+    color: var(--name-ink);
+    transform: translateY(calc(var(--roll, 0) * -1.3em));
+  }
+
+  /* ---------- c · weight ---------- */
+
+  .name[data-name-variant='c'][data-name-cells='locked'] :global(.name__glyph) {
+    font-weight: var(--wg, 620);
+    font-stretch: calc(var(--ws, 118) * 1%);
+  }
+</style>

@@ -1,0 +1,136 @@
+---
+/**
+ * Two mono lines under the hero name: a fixed line (years of experience) and, below it, short
+ * phrases typed in a loop, each letter decoding through a glyph or two before it settles (driven by
+ * `hero-typed.ts`).
+ *
+ * - The full tagline stays in the DOM as the accessible / indexed text; the typed line is aria-hidden.
+ * - Every phrase is stacked invisibly in the same grid cell, so the box always takes the size of
+ *   the longest phrase at the current width and the hero never jumps while phrases change.
+ * - Without JS or with reduced motion the fixed line and the first phrase are shown, static.
+ */
+interface Props {
+  tagline: string;
+  fixed: string;
+  phrases: readonly string[];
+}
+
+const { tagline, fixed, phrases } = Astro.props;
+const [first = ''] = phrases;
+---
+
+<div class="lines" data-reveal>
+  <p class="lines__fixed">{fixed}</p>
+  <p class="typed" data-typed>
+    <span class="sr-only">{tagline}</span>
+    <span class="typed__line" aria-hidden="true">
+      <span class="typed__prompt">›</span>
+      <span class="typed__stage">
+        {phrases.map((phrase) => (<span class="typed__sizer"><span class="typed__caret" data-typed-phrase>{phrase}</span></span>))}
+        <span class="typed__live"><span class="typed__caret typed__caret--live"><span data-typed-text>{first}</span><span class="typed__glyph" data-typed-glyph></span></span></span>
+      </span>
+    </span>
+  </p>
+</div>
+
+<style>
+  /* 17 → 19 (sm) → 21px (md): one step above the lead, in the mono face. */
+  .lines {
+    max-width: 36rem;
+    margin-top: 22px;
+    font-family: var(--font-mono);
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    font-weight: 450;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+  }
+
+  .typed {
+    margin-top: 2px;
+  }
+
+  .typed__line {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8ch;
+  }
+
+  .typed__prompt {
+    flex: none;
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+
+  .typed__stage {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .typed__stage > * {
+    grid-area: 1 / 1;
+  }
+
+  .typed__sizer {
+    visibility: hidden;
+  }
+
+  .typed__glyph {
+    color: var(--accent);
+  }
+
+  .typed__glyph[data-tone='muted'] {
+    color: var(--faint);
+  }
+
+  /*
+   * Thin accent caret, drawn as the end border of the inline text box: it follows the last
+   * character (also across a wrap) while the box itself never moves, so typing shifts no layout.
+   * The sizers carry the same border, transparent, so they wrap exactly like the live text.
+   */
+  .typed__caret {
+    --caret: var(--accent);
+    padding: 0.06em 3px 0.04em 0;
+    border-right: 2px solid var(--caret);
+  }
+
+  .typed__sizer .typed__caret {
+    --caret: transparent;
+  }
+
+  /* Solid while keys are moving, a soft blink while it rests (only once scripts can run). */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js-motion) .typed:not([data-phase='typing'], [data-phase='erasing']) .typed__caret--live {
+      animation: typed-blink 1.1s infinite;
+    }
+  }
+
+  @keyframes typed-blink {
+    0%,
+    38%,
+    100% {
+      border-right-color: var(--accent);
+      animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    55%,
+    83% {
+      border-right-color: color-mix(in srgb, var(--accent) 10%, transparent);
+      animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+
+  @media (min-width: 40rem) {
+    .lines {
+      font-size: 1.1875rem;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .lines {
+      margin-top: 26px;
+      font-size: 1.3125rem;
+    }
+  }
+</style>

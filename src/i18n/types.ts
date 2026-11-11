@@ -52,7 +52,7 @@ export type StackGroup = 'languages' | 'frameworks' | 'libraries' | 'databases' 
 /** Co-authored projects: a pair or a larger team. */
 export type ProjectTeam = 'pair' | 'group';
 
-export type EducationCategory = 'systems' | 'health' | 'diploma';
+export type EducationCategory = 'systems' | 'diploma';
 
 export type ImageKey = 'me' | 'profileAbout';
 
@@ -193,7 +193,12 @@ export interface UiCopy {
 
 export interface HeroCopy {
   readonly greeting: string;
+  /** Full sentence kept as the accessible (and indexed) text of the animated line. */
   readonly tagline: string;
+  /** Static line under the name (years of experience), always visible above the typed line. */
+  readonly fixedPhrase: string;
+  /** Short lines the hero types in a loop under the fixed line; the first one is the static fallback. */
+  readonly typedPhrases: readonly string[];
   readonly roles: readonly string[];
   readonly statusLabel: string;
   readonly statusValue: string;
