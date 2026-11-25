@@ -10,6 +10,8 @@ const pad3 = (value: number) => String(Math.round(value)).padStart(3, '0');
 /**
  * Skill meters sweep their needle from 0 to the level while the mono readout counts up, when the
  * cell reveals. Under reduced motion they simply render at their level.
+ * Every cell is measured before any start state is written (and the triggers, which measure again,
+ * are created after all writes), so the grid is laid out once rather than once per meter.
  */
 export function initSkillMeters(): Dispose {
   const mm = gsap.matchMedia();
@@ -17,17 +19,23 @@ export function initSkillMeters(): Dispose {
     const meters = gsap.utils.toArray<HTMLElement>('[data-skill-meter]');
     const grid = meters[0]?.closest<HTMLElement>('[data-reveal-group]');
     const box = grid?.getBoundingClientRect();
-
-    meters.forEach((meter) => {
-      const level = Number(meter.dataset.skillMeter);
-      const readout = meter.querySelector<HTMLElement>('[data-skill-readout]');
-      const state = { value: 0 };
-      gsap.set(meter, { '--p': 0 });
-      if (readout) readout.textContent = pad3(0);
+    const items = meters.map((meter) => {
       const cell = meter.closest<HTMLElement>('[data-reveal]') ?? meter;
       const delay =
         (box && box.width > 0 ? ((cell.getBoundingClientRect().left - box.left) / box.width) * GROUP_STAGGER : 0) +
         0.25;
+      return { meter, cell, delay, readout: meter.querySelector<HTMLElement>('[data-skill-readout]') };
+    });
+
+    // One tween for every meter: GSAP reads all start values first, then writes.
+    gsap.set(meters, { '--p': 0 });
+    items.forEach(({ readout }) => {
+      if (readout) readout.textContent = pad3(0);
+    });
+
+    items.forEach(({ meter, cell, delay, readout }) => {
+      const level = Number(meter.dataset.skillMeter);
+      const state = { value: 0 };
 
       ScrollTrigger.create({
         trigger: cell,
