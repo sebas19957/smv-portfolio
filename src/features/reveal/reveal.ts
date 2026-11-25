@@ -16,6 +16,18 @@ export const REVEAL_TO: gsap.TweenVars = {
   clearProps: 'all',
 };
 
+const { autoAlpha: _autoAlpha, ...REVEAL_MOTION } = REVEAL_FROM;
+const HEADING_REVEAL_FROM: gsap.TweenVars = { ...REVEAL_MOTION, opacity: 0 };
+
+/**
+ * Start state of a reveal target. Headings wait with opacity only (no `visibility: hidden`): they
+ * look the same, but stay in the accessibility tree, so the page outline is complete for assistive
+ * tech before they scroll into view. Everything else keeps autoAlpha, out of the tab order.
+ */
+export function revealFrom(el: Element): gsap.TweenVars {
+  return /^H[1-6]$/.test(el.tagName) ? HEADING_REVEAL_FROM : REVEAL_FROM;
+}
+
 /** Max left→right stagger across a grid row, in seconds. */
 export const GROUP_STAGGER = 0.18;
 
@@ -60,7 +72,7 @@ export function initReveals(): Dispose {
     });
 
     gsap.utils.toArray<HTMLElement>('[data-reveal]:not([data-reveal-group] [data-reveal])').forEach((el) => {
-      gsap.set(el, REVEAL_FROM);
+      gsap.set(el, revealFrom(el));
       ScrollTrigger.create({
         trigger: el,
         start: 'top 85%',
