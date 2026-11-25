@@ -1,11 +1,10 @@
 ---
-import { PRODUCTS, PROJECTS, pad2, sectionIndex, type PortfolioContent, type ProjectEntry } from '../../i18n';
+import { PROJECTS, pad2, sectionIndex, type PortfolioContent, type ProjectEntry } from '../../i18n';
 import FilterBar from '../../features/collection-filter/FilterBar.astro';
 import RichText from '../../shared/ui/RichText.astro';
 import { SECTION_ACCENTS } from '../section-accents';
 import Section from '../../shared/ui/Section.astro';
 import ProjectCard from './ProjectCard.astro';
-import ProjectDetail from './ProjectDetail.astro';
 import { projectMedia } from './project-media';
 
 interface Props {
@@ -17,21 +16,14 @@ const { copy, locale } = content;
 const { projects, ui } = copy;
 
 const entries: readonly ProjectEntry[] = PROJECTS;
+// Each card's detail sheet is a prerendered fragment (src/pages/project-sheets), loaded on demand.
 const items = entries.map((entry, i) => {
   const text = entry.copy[locale];
-  const related = entries.filter((other) => other.product === entry.product && other.slug !== entry.slug).map(
-    (other) => ({
-      slug: other.slug,
-      title: `${other.copy[locale].title.base}${other.copy[locale].title.accent}`,
-      part: projects.detail.parts[other.part],
-    }),
-  );
-  const ecosystem = PRODUCTS[entry.product]?.copy[locale];
   const media = projectMedia(entry.slug, entry.cover);
   const title = `${text.title.base}${text.title.accent}`.replaceAll('\u00ad', '');
   const coverCaption = media.cover && entry.captions?.[media.cover.key]?.[locale];
   const coverAlt = coverCaption ? `${title} — ${coverCaption}` : title;
-  return { entry, text, related, ecosystem, coverAlt, index: pad2(i + 1), media };
+  return { entry, text, coverAlt, index: pad2(i + 1), media };
 });
 const filterOptions = [
   { value: 'all', label: projects.filters.all },
@@ -79,29 +71,6 @@ const filterOptions = [
       ))
     }
   </div>
-  {
-    items.map(({ entry, text, index, media, related, ecosystem }) => (
-      <template data-project-detail={entry.slug}>
-        <ProjectDetail
-          index={index}
-          locale={locale}
-          entry={entry}
-          text={text}
-          media={media}
-          related={related}
-          ecosystem={ecosystem}
-          labels={{
-            ...projects.detail,
-            category: projects.categoryLabels[entry.category],
-            demo: projects.demoLabel,
-            site: projects.siteLabel,
-            code: projects.codeLabel,
-            newTab: ui.opensInNewTab,
-          }}
-        />
-      </template>
-    ))
-  }
 </Section>
 
 <style>

@@ -1,13 +1,19 @@
 import type Lenis from 'lenis';
 import { noop, type Dispose } from '../../shared/lib/dispose';
 import { prefersReducedMotion } from '../../shared/lib/motion';
+import { afterLoadIdle, createSheetLoader } from './sheet-loader';
 
 const HASH_PREFIX = '#project-';
 const CLOSE_MS = 260;
+/** Quiet period after `load` before prefetching sheets: well clear of the hero entrance. */
+const PREFETCH_DELAY_MS = 2000;
 
 /**
  * Project detail sheet controller:
- * - `[data-project-open="<slug>"]` triggers mount that project's <template> into the dialog;
+ * - `[data-project-open="<slug>"]` triggers mount that project's sheet into the dialog. Sheets are
+ *   prerendered fragments (`data-sheet-src` + slug) prefetched once the page has settled, so opening
+ *   one is instant; one requested before that opens as soon as it arrives (a failed request leaves
+ *   the sheet closed and the next open retries; only the latest request ever opens);
  * - deep links `#project-<slug>` open on load and follow back/forward navigation;
  * - the page is scroll-locked (Lenis stopped) while the sheet scrolls on its own;
  * - ESC / close button / backdrop click close it, focus returns to the trigger;
@@ -25,12 +31,12 @@ export function initProjectSheet(lenis: Lenis | null): Dispose {
   const lightboxCaption = dialog.querySelector<HTMLElement>('[data-lightbox-caption]')!;
   const prevButton = dialog.querySelector<HTMLButtonElement>('[data-lightbox-prev]')!;
   const nextButton = dialog.querySelector<HTMLButtonElement>('[data-lightbox-next]')!;
-  const templates = new Map(
-    [...document.querySelectorAll<HTMLTemplateElement>('template[data-project-detail]')].map((t) => [
-      t.dataset.projectDetail ?? '',
-      t,
-    ]),
-  );
+  const slugs = new Set((dialog.dataset.sheetSlugs ?? '').split(' ').filter(Boolean));
+  const loader = createSheetLoader((slug) => `${dialog.dataset.sheetSrc ?? ''}${encodeURIComponent(slug)}/`);
+  const cancelPrefetch = afterLoadIdle(() => {
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    if (!connection?.saveData) void loader.prefetch(slugs);
+  }, PREFETCH_DELAY_MS);
 
   const controller = new AbortController();
   const { signal } = controller;
@@ -40,12 +46,12 @@ export function initProjectSheet(lenis: Lenis | null): Dispose {
   let closing = 0;
   let shots: HTMLElement[] = [];
   let shotIndex = 0;
+  /** Bumped by every open / close, so a sheet that arrives late only opens if still wanted. */
+  let request = 0;
 
   const slugFromHash = () => (location.hash.startsWith(HASH_PREFIX) ? decodeURIComponent(location.hash.slice(HASH_PREFIX.length)) : null);
 
-  const mount = (slug: string) => {
-    const template = templates.get(slug);
-    if (!template) return false;
+  const mount = (slug: string, template: HTMLTemplateElement) => {
     content.replaceChildren(template.content.cloneNode(true));
     const article = content.querySelector<HTMLElement>('[data-detail-slug]');
     const titleId = article?.dataset.titleId;
@@ -55,11 +61,21 @@ export function initProjectSheet(lenis: Lenis | null): Dispose {
     scroller.scrollTop = 0;
     current = slug;
     closeLightbox();
-    return true;
   };
 
   const open = (slug: string, history: 'push' | 'replace' | 'none') => {
-    if (!mount(slug)) return;
+    if (!slugs.has(slug)) return;
+    const token = ++request;
+    const ready = loader.get(slug);
+    if (ready) show(slug, ready, history);
+    else
+      void loader.load(slug).then((template) => {
+        if (template && token === request) show(slug, template, history);
+      });
+  };
+
+  const show = (slug: string, template: HTMLTemplateElement, history: 'push' | 'replace' | 'none') => {
+    mount(slug, template);
     window.clearTimeout(closing);
     dialog.classList.remove('is-closing');
     if (!dialog.open) {
@@ -83,6 +99,7 @@ export function initProjectSheet(lenis: Lenis | null): Dispose {
   };
 
   const close = () => {
+    request++;
     if (!dialog.open || dialog.classList.contains('is-closing')) return;
     if (prefersReducedMotion()) {
       finishClose();
@@ -150,13 +167,15 @@ export function initProjectSheet(lenis: Lenis | null): Dispose {
   // Back / forward and manual hash edits.
   const sync = () => {
     const slug = slugFromHash();
-    if (slug && templates.has(slug)) {
+    if (slug && slugs.has(slug)) {
       // Opened by navigation (typed hash, back/forward): closing should not walk history back.
       pushedEntry = false;
       if (slug !== current) open(slug, 'none');
     } else if (dialog.open) {
       pushedEntry = false;
       close();
+    } else {
+      request++;
     }
   };
   window.addEventListener('popstate', sync, { signal });
@@ -216,10 +235,12 @@ export function initProjectSheet(lenis: Lenis | null): Dispose {
 
   // Deep link on load.
   const initial = slugFromHash();
-  if (initial && templates.has(initial)) open(initial, 'none');
+  if (initial) open(initial, 'none');
 
   return () => {
     controller.abort();
+    cancelPrefetch();
+    loader.dispose();
     window.clearTimeout(closing);
     if (dialog.open) dialog.close();
   };

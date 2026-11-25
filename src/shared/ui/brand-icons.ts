@@ -12,12 +12,16 @@
  *
  * Every logo is cropped to its measured content bounds (`brand-icon-bounds.ts`) so different
  * aspect ratios and built-in padding can be normalised to the same optical size.
+ *
+ * Bodies are optimized with SVGO at build time (this module only runs while prerendering), with
+ * path coordinates rounded only as far as stays invisible at the largest size a logo is drawn.
  */
 import { icons as devicon } from '@iconify-json/devicon';
 import { icons as logos } from '@iconify-json/logos';
 import { icons as selfhst } from '@iconify-json/selfhst';
 import { icons as simpleIcons } from '@iconify-json/simple-icons';
 import { icons as tabler } from '@iconify-json/tabler';
+import { optimize } from 'svgo';
 import { ICON_BOUNDS } from './brand-icon-bounds';
 
 export type BrandIconRef = (
@@ -42,6 +46,11 @@ export type BrandIconRef = (
 };
 
 export interface ResolvedIcon {
+  /**
+   * Sprite id, stable per logo variant (set, name and recolouring): the body is emitted once in
+   * the page's sprite (`BrandIconSprite`) and every `BrandLogo` draws it through `<use>`.
+   */
+  readonly id: string;
   /** Content-cropped viewBox. */
   readonly viewBox: string;
   readonly body: string;
@@ -56,9 +65,6 @@ type IconSet = typeof logos;
 
 const SETS: Record<BrandIconRef['set'], IconSet> = { logos, devicon, tabler, selfhst, 'simple-icons': simpleIcons };
 
-/** Unique ids per inlined copy, so gradients/masks of repeated logos never collide. */
-let instance = 0;
-
 export function iconKey(ref: Pick<BrandIconRef, 'set' | 'name'>): string {
   return `${ref.set}:${ref.name}`;
 }
@@ -70,15 +76,55 @@ export function rawIcon(ref: Pick<BrandIconRef, 'set' | 'name'>): { body: string
   return { body: icon.body, width: icon.width ?? set.width ?? 16, height: icon.height ?? set.height ?? 16 };
 }
 
-export function resolveBrandIcon(ref: BrandIconRef): ResolvedIcon {
+/** Largest size a logo is drawn at, in CSS px (stack-cover tiles: ≈51px, ≈54px on hover). */
+export const MAX_DRAWN_PX = 64;
+/** Largest shift path rounding may cause at that size, in CSS px (invisible even at 3x). */
+export const MAX_ROUNDING_PX = 0.01;
+
+/** Decimals kept in path data for a logo whose content spans `size` viewBox units. */
+export function pathPrecision(size: number): number {
+  return Math.max(1, Math.ceil(-Math.log10((MAX_ROUNDING_PX * size) / MAX_DRAWN_PX)));
+}
+
+const optimized = new Map<string, string>();
+
+/** The icon body after SVGO (memoized: every logo is resolved many times per build). */
+function optimizedBody(ref: Pick<BrandIconRef, 'set' | 'name'>, contentSize: number): string {
+  const key = iconKey(ref);
+  const cached = optimized.get(key);
+  if (cached !== undefined) return cached;
   const raw = rawIcon(ref);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${raw.width} ${raw.height}">${raw.body}</svg>`;
+  const { data } = optimize(svg, {
+    multipass: true,
+    plugins: [
+      {
+        name: 'preset-default',
+        params: {
+          overrides: {
+            // Ids are namespaced per sprite entry below; keep them readable and stable.
+            cleanupIds: false,
+            convertPathData: { floatPrecision: pathPrecision(contentSize) },
+          },
+        },
+      },
+    ],
+  });
+  const body = data.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '');
+  optimized.set(key, body);
+  return body;
+}
+
+export function resolveBrandIcon(ref: BrandIconRef): ResolvedIcon {
   const bounds = ICON_BOUNDS[iconKey(ref)];
   if (!bounds) throw new Error(`Missing measured bounds for "${iconKey(ref)}" (re-run the bounds script)`);
   const [x, y, w, h] = bounds;
+  const recolor = ref.dark && ref.dark !== 'invert' ? ref.dark.recolor : [];
+  const spriteId = ['brand', ref.set, ref.name, ...recolor.map((color) => color.replace('#', ''))].join('-');
 
-  let body = raw.body;
-  // Namespace internal ids (gradients, masks, clip paths).
-  const suffix = `-i${++instance}`;
+  let body = optimizedBody(ref, Math.max(w, h));
+  // Namespace internal ids (gradients, masks, clip paths) per variant, so logos never collide in the sprite.
+  const suffix = `-${spriteId}`;
   const ids = [...body.matchAll(/id="([^"]+)"/g)].map((m) => m[1]);
   for (const id of ids) {
     body = body
@@ -86,12 +132,11 @@ export function resolveBrandIcon(ref: BrandIconRef): ResolvedIcon {
       .replaceAll(`url(#${id})`, `url(#${id}${suffix})`)
       .replaceAll(`href="#${id}"`, `href="#${id}${suffix}"`);
   }
-  if (ref.dark && ref.dark !== 'invert') {
-    for (const color of ref.dark.recolor) {
-      body = body.replaceAll(`fill="${color}"`, `fill="${color}" style="fill: var(--logo-ink, ${color})"`);
-    }
+  for (const color of recolor) {
+    body = body.replaceAll(`fill="${color}"`, `fill="${color}" style="fill: var(--logo-ink, ${color})"`);
   }
   return {
+    id: spriteId,
     viewBox: `${x} ${y} ${w} ${h}`,
     body,
     aspect: w / h,
@@ -99,4 +144,14 @@ export function resolveBrandIcon(ref: BrandIconRef): ResolvedIcon {
     tint: ref.tint ?? false,
     optical: ref.optical ?? 1,
   };
+}
+
+/** Resolves every distinct logo variant once, in first-use order (the sprite's contents). */
+export function uniqueBrandIcons(refs: readonly BrandIconRef[]): ResolvedIcon[] {
+  const icons = new Map<string, ResolvedIcon>();
+  for (const ref of refs) {
+    const icon = resolveBrandIcon(ref);
+    if (!icons.has(icon.id)) icons.set(icon.id, icon);
+  }
+  return [...icons.values()];
 }

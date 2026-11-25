@@ -9,6 +9,9 @@ export default defineConfig({
   // Request bodies over 64 KiB are cut off by the adapter (default 1 GiB); the contact API, the
   // only consumer, rejects anything over 16 KiB itself.
   adapter: node({ mode: 'standalone', bodySizeLimit: 64 * 1024 }),
+  // One stylesheet for the whole site: the project-sheet fragments (src/pages/project-sheets) share
+  // components with the page, which would otherwise split the page's CSS into a second blocking file.
+  vite: { build: { cssCodeSplit: false } },
   i18n: {
     locales: ['en', 'es'],
     defaultLocale: 'en',

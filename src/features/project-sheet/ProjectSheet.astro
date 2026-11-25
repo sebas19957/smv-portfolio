@@ -1,8 +1,8 @@
 ---
 /**
  * Project detail sheet: one native <dialog> (modal: focus trap, ESC, inert page) that slides up
- * almost to the top of the viewport. Its content is mounted from the per-project <template>s
- * rendered by the projects section. Includes an image lightbox.
+ * almost to the top of the viewport. Its content is mounted from the per-project fragments
+ * prerendered under `src` (see `project-sheet.ts`). Includes an image lightbox.
  */
 import Icon from '../../shared/ui/Icon.astro';
 
@@ -12,12 +12,16 @@ interface Props {
   closeLabel: string;
   previousLabel: string;
   nextLabel: string;
+  /** Base URL of this locale's sheet fragments (slug + `/` is appended). */
+  src: string;
+  /** Projects that have a sheet. */
+  slugs: readonly string[];
 }
 
-const { sectionIndex, sectionLabel, closeLabel, previousLabel, nextLabel } = Astro.props;
+const { sectionIndex, sectionLabel, closeLabel, previousLabel, nextLabel, src, slugs } = Astro.props;
 ---
 
-<dialog class="sheet" data-project-sheet>
+<dialog class="sheet" data-project-sheet data-sheet-src={src} data-sheet-slugs={slugs.join(' ')}>
   <div class="sheet__panel">
     <div class="sheet__bar">
       <p class="hud-label sheet__crumb">

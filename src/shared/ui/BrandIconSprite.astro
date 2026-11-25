@@ -1,0 +1,29 @@
+---
+/**
+ * Brand-logo sprite: each logo's artwork is emitted once here and drawn by every `BrandLogo`
+ * through `<use>`, so a mark repeated across the page (and inside the project-sheet templates,
+ * which cannot hold the definitions themselves) costs a few bytes per copy instead of its full
+ * path data. Must be rendered in the live document, outside any `<template>`.
+ * Hidden by size, never with `display: none`, so gradients and masks inside the logos still paint.
+ */
+import { uniqueBrandIcons, type BrandIconRef } from './brand-icons';
+
+interface Props {
+  refs: readonly BrandIconRef[];
+}
+
+const icons = uniqueBrandIcons(Astro.props.refs);
+---
+
+<svg class="brand-sprite" xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>{icons.map((icon) => <g id={icon.id} set:html={icon.body} />)}</defs>
+</svg>
+
+<style>
+  .brand-sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+</style>

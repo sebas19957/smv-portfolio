@@ -4,9 +4,10 @@
  * presentational sections. All client behaviour boots from `client.ts`.
  */
 import ProjectSheet from '../features/project-sheet/ProjectSheet.astro';
+import { sheetBase } from '../features/project-sheet/sheet-loader';
 import ScrollRail from '../features/scroll-rail/ScrollRail.astro';
 import SiteNav from '../features/navigation/SiteNav.astro';
-import { getContent, sectionIndex, toUpper, type Locale } from '../i18n';
+import { PROJECTS, getContent, sectionIndex, toUpper, type Locale } from '../i18n';
 import AboutSection from '../sections/about/AboutSection.astro';
 import ContactSection from '../sections/contact/ContactSection.astro';
 import SiteFooter from '../sections/footer/SiteFooter.astro';
@@ -16,7 +17,10 @@ import ProjectsSection from '../sections/projects/ProjectsSection.astro';
 import ResumeSection from '../sections/resume/ResumeSection.astro';
 import SkillsSection from '../sections/skills/SkillsSection.astro';
 import TestimonialsSection from '../sections/testimonials/TestimonialsSection.astro';
+import BrandIconSprite from '../shared/ui/BrandIconSprite.astro';
+import { resolveBrandIcon } from '../shared/ui/brand-icons';
 import BaseLayout from './BaseLayout.astro';
+import { pageBrandIcons } from './brand-sprites';
 import { RAIL_GROUPS } from './rail-groups';
 
 interface Props {
@@ -31,6 +35,8 @@ const railWords = RAIL_GROUPS.map((group) => ({
   label: toUpper(copy.ui.nav[group.label], locale),
   members: group.sections,
 }));
+const brandIcons = pageBrandIcons();
+Astro.locals.brandSprite = new Set(brandIcons.map((ref) => resolveBrandIcon(ref).id));
 ---
 
 <BaseLayout locale={locale} meta={copy.meta}>
@@ -53,6 +59,8 @@ const railWords = RAIL_GROUPS.map((group) => ({
     closeLabel={copy.projects.detail.close}
     previousLabel={copy.projects.detail.previousImage}
     nextLabel={copy.projects.detail.nextImage}
+    src={sheetBase(locale)}
+    slugs={PROJECTS.map((entry) => entry.slug)}
   />
   <ScrollRail
     words={railWords}
@@ -60,6 +68,8 @@ const railWords = RAIL_GROUPS.map((group) => ({
     jumpTo={copy.ui.railJumpTo}
     sectionsLabel={copy.ui.railSectionsLabel}
   />
+  {/* Last, so its bytes never delay the first paint (`<use>` references resolve as soon as it is parsed). */}
+  <BrandIconSprite refs={brandIcons} />
 </BaseLayout>
 
 <script>

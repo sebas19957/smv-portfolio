@@ -1,0 +1,35 @@
+---
+/**
+ * One project's detail sheet as a bare HTML fragment (a partial: no document shell, styles or
+ * scripts; the portfolio page bundles them), fetched by the sheet controller when needed. It is not
+ * a page: nothing links to it and crawlers are asked not to index it. It defines only the logos of
+ * its stack the page sprite lacks.
+ */
+import { pageBrandIcons, sheetOnlyBrandIcons } from '../../../app/brand-sprites';
+import { LOCALES, PROJECTS, getContent, type Locale, type ProjectEntry } from '../../../i18n';
+import ProjectDetail from '../../../sections/projects/ProjectDetail.astro';
+import { projectDetailProps } from '../../../sections/projects/project-detail-props';
+import BrandIconSprite from '../../../shared/ui/BrandIconSprite.astro';
+import { resolveBrandIcon } from '../../../shared/ui/brand-icons';
+
+export const partial = true;
+
+export function getStaticPaths() {
+  return LOCALES.flatMap((locale) =>
+    PROJECTS.map((entry) => ({ params: { locale, slug: entry.slug }, props: { locale, entry } })),
+  );
+}
+
+interface Props {
+  locale: Locale;
+  entry: ProjectEntry;
+}
+
+const { locale, entry } = Astro.props;
+const ownIcons = sheetOnlyBrandIcons(entry);
+Astro.locals.brandSprite = new Set([...pageBrandIcons(), ...ownIcons].map((ref) => resolveBrandIcon(ref).id));
+---
+
+<meta name="robots" content="noindex" />
+<ProjectDetail {...projectDetailProps(entry, getContent(locale))} />
+{ownIcons.length > 0 && <BrandIconSprite refs={ownIcons} />}

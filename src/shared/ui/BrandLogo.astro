@@ -3,6 +3,9 @@
  * Inline official logo with optical sizing: every mark gets the same visual area (a 1em square)
  * whatever its aspect ratio, times its optical correction, capped so neither side exceeds the
  * 1.36em slot. Size it by setting `font-size` on the component (or a parent).
+ * The artwork itself lives once in the document's `BrandIconSprite` and is drawn here with `<use>`
+ * (same user space as an inline body, so it renders identically and still inherits `color` and
+ * `--logo-ink`). The rendering page lists the ids it defines in `Astro.locals.brandSprite`.
  */
 import type { ResolvedIcon } from './brand-icons';
 
@@ -12,6 +15,10 @@ interface Props {
 }
 
 const { icon, class: className } = Astro.props;
+// Fail the build rather than ship an empty mark: the document must define this logo.
+if (Astro.locals.brandSprite && !Astro.locals.brandSprite.has(icon.id)) {
+  throw new Error(`Logo "${icon.id}" is drawn but not defined in this document's sprite (src/app/brand-sprites.ts)`);
+}
 const SLOT = 1.36;
 const root = Math.sqrt(icon.aspect);
 const fit = Math.min(icon.optical, SLOT / Math.max(root, 1 / root));
@@ -25,8 +32,9 @@ const style = `--iw: ${(root * fit).toFixed(3)}; --ih: ${(fit / root).toFixed(3)
     xmlns="http://www.w3.org/2000/svg"
     viewBox={icon.viewBox}
     focusable="false"
-    set:html={icon.body}
-  />
+  >
+    <use href={`#${icon.id}`} />
+  </svg>
 </span>
 
 <style>
