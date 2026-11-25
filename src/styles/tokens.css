@@ -9,7 +9,7 @@
 @property --ink { syntax: "<color>"; inherits: true; initial-value: #101014; }
 @property --ink-strong { syntax: "<color>"; inherits: true; initial-value: #000000; }
 @property --muted { syntax: "<color>"; inherits: true; initial-value: #1010149e; }
-@property --faint { syntax: "<color>"; inherits: true; initial-value: #1010146b; }
+@property --faint { syntax: "<color>"; inherits: true; initial-value: #10101497; }
 @property --line { syntax: "<color>"; inherits: true; initial-value: #10101429; }
 @property --line-strong { syntax: "<color>"; inherits: true; initial-value: #10101466; }
 @property --accent { syntax: "<color>"; inherits: true; initial-value: #2d81ff; }
@@ -26,7 +26,8 @@
   --ink: #101014;
   --ink-strong: #000000;
   --muted: #1010149e;
-  --faint: #1010146b;
+  /* The lightest text ink that still reads at 4.5:1 (WCAG AA) on --bg, --bg-raised and --bg-sunken. */
+  --faint: #10101497;
   --line: #10101429;
   --line-strong: #10101466;
   --accent: #2d81ff;
@@ -57,7 +58,7 @@
   --ink: #f2f1ee;
   --ink-strong: #ffffff;
   --muted: #f2f1ee99;
-  --faint: #f2f1ee61;
+  --faint: #f2f1ee7b;
   --line: #f2f1ee26;
   --line-strong: #f2f1ee66;
   --accent: #2d81ff;
@@ -77,7 +78,7 @@
     --ink: #f2f1ee;
     --ink-strong: #ffffff;
     --muted: #f2f1ee99;
-    --faint: #f2f1ee61;
+    --faint: #f2f1ee7b;
     --line: #f2f1ee26;
     --line-strong: #f2f1ee66;
     --accent: #2d81ff;
