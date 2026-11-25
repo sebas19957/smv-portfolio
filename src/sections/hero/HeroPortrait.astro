@@ -17,8 +17,9 @@ interface Props {
 }
 
 const { image, alt, statusLabel, statusValue, experienceLabel, experienceValue } = Astro.props;
-// Never upscale: candidate widths stop at the source width.
-const widths = [...new Set([300, 360, 420, 540, 720, 840].filter((w) => w < image.width).concat(image.width))];
+// Never upscale: candidate widths stop at the source width. 640 matches the 360px slot at the common
+// 1.75x mobile density, so those phones skip the 720 rendition.
+const widths = [...new Set([300, 360, 420, 540, 640, 720, 840].filter((w) => w < image.width).concat(image.width))];
 ---
 
 <figure class="figure" data-reveal>
